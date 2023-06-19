@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:test3/login/login_page.dart';
 import 'package:test3/main.dart';
-import 'package:test3/main2.dart';
-import '../register/register_page.dart';
-import '../register/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../login/login_page.dart';
 import 'package:lottie/lottie.dart';
-import 'login_modl.dart';
+import 'register_modl.dart';
 
-class Login extends StatefulWidget {
+class Registe extends StatefulWidget {
   @override
   _Registe createState() => _Registe();
 }
 
-class _Registe extends State<Login> {
+class _Registe extends State<Registe> {
   // メッセージ表示用
   String infoText = '';
   // 入力したメールアドレス・パスワード
@@ -23,16 +22,16 @@ class _Registe extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("ログイン画面"),
+        title: const Text('新規登録画面'),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(30),
-            child: Container(
-              alignment: Alignment.center, //中央に配置
-              child: Lottie.asset('assets/i.json'),
-            ),
+          Container(
+            alignment: Alignment.center, //中央に配置
+            child: Lottie.asset('assets/u.json'),
+          ),
+          SizedBox(
+            height: 30,
           ),
           Container(
             child: Container(
@@ -74,30 +73,55 @@ class _Registe extends State<Login> {
                             ),
                       ),
                       child: const Text(
-                        'ログイン',
+                        'ユーザー登録',
                         style: TextStyle(fontSize: 18),
                       ),
                       onPressed: () async {
-                        Future<void> signInWithEmailAndPassword(
-                            String email, String password) async {
-                          try {
-                            UserCredential userCredential = await FirebaseAuth
-                                .instance
-                                .signInWithEmailAndPassword(
-                              email: email,
-                              password: password,
-                            );
-                            // ログイン成功時の処理
-                            User? user = userCredential.user;
-                            print('ログイン成功：${user!.email}');
-                          } catch (e) {
-                            // ログイン失敗時の処理
-                            print('ログイン失敗：$e');
-                          }
+                        try {
+                          // メール/パスワードでユーザー登録
+                          final FirebaseAuth auth = FirebaseAuth.instance;
+                          await auth.createUserWithEmailAndPassword(
+                            email: email,
+                            password: password,
+                          );
+                        } catch (e) {
+                          // ユーザー登録に失敗した場合
+                          setState(() {
+                            infoText = "登録に失敗しました："; //${e.toString()};
+                          });
                         }
                       },
                     ),
                   ),
+
+                  const SizedBox(
+                    height: 40,
+                  ),
+
+                  Container(
+                    width: double.infinity,
+                    child: TextButton(
+                      child: Text(
+                        "ログインはこちら",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 18,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        onPrimary: Colors.black, //押したときの色！！
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20) //角丸めてる
+                            ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Login()),
+                        );
+                      },
+                    ),
+                  )
                 ],
               ),
             ),

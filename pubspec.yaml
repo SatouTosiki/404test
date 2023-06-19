@@ -19,6 +19,8 @@ dependencies:
   google_fonts: ^4.0.4
   cupertino_icons: ^1.0.5
   firebase_auth: ^4.6.3
+  lottie: ^1.1.0
+  
 
 
 dev_dependencies:
@@ -31,6 +33,7 @@ dev_dependencies:
 flutter:
     assets:
     - img/
+    - assets/
 
 uses-material-design: true
 
