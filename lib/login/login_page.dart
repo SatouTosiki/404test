@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:test3/main.dart';
-import 'package:test3/main2.dart';
-import '../register/register_page.dart';
-import '../register/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
-import 'login_modl.dart';
+import 'package:test3/mypage/mypage.dart';
 
 class Login extends StatefulWidget {
   @override
-  _Registe createState() => _Registe();
+  _LoginState createState() => _LoginState();
 }
 
-class _Registe extends State<Login> {
+class _LoginState extends State<Login> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   // メッセージ表示用
   String infoText = '';
+
   // 入力したメールアドレス・パスワード
   String email = '';
   String password = '';
@@ -27,6 +26,9 @@ class _Registe extends State<Login> {
       ),
       body: Column(
         children: [
+          SizedBox(
+            height: 30,
+          ),
           Padding(
             padding: const EdgeInsets.all(30),
             child: Container(
@@ -70,30 +72,32 @@ class _Registe extends State<Login> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20) //角丸める
-                            ),
+                          borderRadius: BorderRadius.circular(20), //角丸める
+                        ),
                       ),
                       child: const Text(
                         'ログイン',
                         style: TextStyle(fontSize: 18),
                       ),
                       onPressed: () async {
-                        Future<void> signInWithEmailAndPassword(
-                            String email, String password) async {
-                          try {
-                            UserCredential userCredential = await FirebaseAuth
-                                .instance
-                                .signInWithEmailAndPassword(
-                              email: email,
-                              password: password,
-                            );
-                            // ログイン成功時の処理
-                            User? user = userCredential.user;
-                            print('ログイン成功：${user!.email}');
-                          } catch (e) {
-                            // ログイン失敗時の処理
-                            print('ログイン失敗：$e');
-                          }
+                        try {
+                          UserCredential userCredential =
+                              await _auth.signInWithEmailAndPassword(
+                            email: email,
+                            password: password,
+                          );
+                          // ログイン成功時の処理
+                          User? user = userCredential.user;
+                          print('ログイン成功：${user!.email}');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyPage(user: user),
+                            ),
+                          );
+                        } catch (e) {
+                          // ログイン失敗時の処理
+                          print('ログイン失敗：$e');
                         }
                       },
                     ),

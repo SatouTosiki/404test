@@ -17,6 +17,7 @@ class _Registe extends State<Registe> {
   // 入力したメールアドレス・パスワード
   String email = '';
   String password = '';
+  String name = "";
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +52,19 @@ class _Registe extends State<Registe> {
                   // パスワード入力
                   TextFormField(
                     decoration: InputDecoration(labelText: 'パスワード'),
-                    obscureText: true,
+                    obscureText: true, //パスワード見えないようにする
                     onChanged: (String value) {
                       setState(() {
                         password = value;
+                      });
+                    },
+                  ),
+
+                  TextField(
+                    decoration: InputDecoration(labelText: "ユーザー名"),
+                    onChanged: (String value) {
+                      setState(() {
+                        name = value;
                       });
                     },
                   ),
@@ -80,10 +90,13 @@ class _Registe extends State<Registe> {
                         try {
                           // メール/パスワードでユーザー登録
                           final FirebaseAuth auth = FirebaseAuth.instance;
-                          await auth.createUserWithEmailAndPassword(
+                          UserCredential userCredential =
+                              await auth.createUserWithEmailAndPassword(
                             email: email,
                             password: password,
                           );
+
+                          await userCredential.user?.updateDisplayName(name);
                         } catch (e) {
                           // ユーザー登録に失敗した場合
                           setState(() {
