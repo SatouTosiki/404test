@@ -31,7 +31,7 @@ class _Registe extends State<Registe> {
             alignment: Alignment.center, //中央に配置
             child: Lottie.asset('assets/u.json'),
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           Container(
@@ -90,7 +90,7 @@ class _Registe extends State<Registe> {
                         try {
                           // メール/パスワードでユーザー登録
                           final FirebaseAuth auth = FirebaseAuth.instance;
-                          UserCredential userCredential =
+                          final UserCredential userCredential =
                               await auth.createUserWithEmailAndPassword(
                             email: email,
                             password: password,

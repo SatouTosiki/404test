@@ -1,5 +1,7 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/rendering.dart';
 import 'package:test3/login/login_page.dart';
 
 class MyPage extends StatelessWidget {
@@ -11,7 +13,7 @@ class MyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("マイページ"),
+        title: const Text("mypage"),
       ),
       body: Center(
         child: Column(
@@ -22,10 +24,12 @@ class MyPage extends StatelessWidget {
               style: TextStyle(fontSize: 24),
             ),
             const SizedBox(height: 16),
+
             Text(
-              user?.email ?? '',
+              user?.displayName ?? '',
               style: const TextStyle(fontSize: 18),
             ),
+            //const TextureBox(),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
