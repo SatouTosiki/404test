@@ -20,7 +20,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   firebase_auth: ^4.6.3
   lottie: ^1.1.0
-  flare_flutter: ^2.0.3
+  #flare_flutter: ^3.0.0-nullsafety.0
   
 
 
@@ -33,7 +33,6 @@ dev_dependencies:
 
 flutter:
     assets:
-    - img/
     - assets/
 
 uses-material-design: true

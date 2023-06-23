@@ -32,7 +32,7 @@ class _Registe extends State<Registe> {
             child: Lottie.asset('assets/u.json'),
           ),
           const SizedBox(
-            height: 30,
+            height: 39,
           ),
           Container(
             child: Container(

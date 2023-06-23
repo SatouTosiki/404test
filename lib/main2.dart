@@ -20,7 +20,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: const Padding(
-          padding: EdgeInsets.only(left: 30), // パディングの値を調整
+          padding: EdgeInsets.only(left: 10), // パディングの値を調整
           child: CircleAvatar(
             backgroundImage: AssetImage(
               '/Users/satoutoshiki/Desktop/pr/test3/lib/img/rika.jpg',
