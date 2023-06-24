@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'register/register_page.dart';
-import 'package:google_fonts/google_fonts.dart';
+//import 'package:google_fonts/google_fonts.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:lottie/lottie.dart';
 
@@ -20,12 +20,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: const Padding(
-          padding: EdgeInsets.only(left: 10), // パディングの値を調整wwwwww
+          padding: EdgeInsets.only(left: 10), // パディングの値を調整
           child: CircleAvatar(
             backgroundImage: AssetImage(
               '/Users/satoutoshiki/Desktop/pr/test3/lib/img/rika.jpg',
             ),
           ),
+        ),
+
+        title: Image.asset(
+          "/Users/satoutoshiki/Desktop/pr/test3/lib/img/main.jpeg",
+          height: 150,
+          width: 150,
         ),
         actions: [
           Padding(
@@ -45,24 +51,20 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ],
-        title: Text(
-          "料理SNS",
-          style: GoogleFonts.getFont(
-            color: Colors.blue, // テキストの色を赤に指定
-            'Kaisei Opti',
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+
+        // title: Text(
+        //   "料理SNS",
+        //   style: GoogleFonts.getFont(
+        //     color: Colors.blue, // テキストの色を赤に指定
+        //     'Kaisei Opti',
+        //     fontSize: 40,
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
         backgroundColor: Colors.white,
       ),
       body: Column(
         children: [
-          // Container(
-          //   alignment: Alignment.center, //中央に配置
-          //   child: Lottie.asset('assets/404.json'),
-          // )
-
           InkWell(
             onTap: () {
               // ボタンがタップされたときの処理
@@ -81,7 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(
+              Icons.account_circle,
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(

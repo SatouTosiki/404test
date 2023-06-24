@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../login/login_page.dart';
 import 'package:lottie/lottie.dart';
 import 'register_modl.dart';
+import 'package:test3/main2.dart';
 
 class Registe extends StatefulWidget {
   @override
@@ -23,7 +24,44 @@ class _Registe extends State<Registe> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('新規登録画面'),
+        leading: IconButton(
+          iconSize: 30,
+          icon: const Icon(
+            Icons.home,
+            color: Colors.blue,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyHomePage(title: 'My Home Page'),
+              ),
+            );
+          },
+        ),
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 10),
+        //     child: IconButton(
+        //       iconSize: 30,
+        //       icon: const Icon(
+        //         Icons.search_outlined,
+        //         color: Colors.blue,
+        //       ),
+        //       onPressed: () {
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(builder: (context) => Registe()),
+        //         );
+        //       },
+        //     ),
+        //   ),
+        // ],
+        title: const Text(
+          '新規登録画面',
+          style: TextStyle(color: Colors.blue, fontSize: 23),
+        ),
+        backgroundColor: Colors.white,
       ),
       body: Column(
         children: [
