@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'register/register_page.dart';
-//import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:lottie/lottie.dart';
 
@@ -27,11 +27,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-
-        title: Image.asset(
-          "/Users/satoutoshiki/Desktop/pr/test3/lib/img/main.jpeg",
-          height: 150,
-          width: 150,
+        title: Text(
+          "chefGourmet",
+          style: GoogleFonts.happyMonkey(
+            textStyle: const TextStyle(
+              fontSize: 30,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         actions: [
           Padding(
@@ -39,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: IconButton(
               iconSize: 30,
               icon: const Icon(
-                Icons.search_outlined,
+                Icons.home,
                 color: Colors.blue,
               ),
               onPressed: () {
@@ -51,31 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ],
-
-        // title: Text(
-        //   "料理SNS",
-        //   style: GoogleFonts.getFont(
-        //     color: Colors.blue, // テキストの色を赤に指定
-        //     'Kaisei Opti',
-        //     fontSize: 40,
-        //     fontWeight: FontWeight.bold,
-        //   ),
-        // ),
         backgroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          InkWell(
-            onTap: () {
-              // ボタンがタップされたときの処理
-            },
-            child: Container(
-              width: 100,
-              height: 100,
-              child: Lottie.asset('assets/u.json'),
-            ),
-          )
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [],
+        ),
       ),
 
       //下のバー

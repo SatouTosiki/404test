@@ -39,24 +39,6 @@ class _Registe extends State<Registe> {
             );
           },
         ),
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(right: 10),
-        //     child: IconButton(
-        //       iconSize: 30,
-        //       icon: const Icon(
-        //         Icons.search_outlined,
-        //         color: Colors.blue,
-        //       ),
-        //       onPressed: () {
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => Registe()),
-        //         );
-        //       },
-        //     ),
-        //   ),
-        // ],
         title: const Text(
           '新規登録画面',
           style: TextStyle(color: Colors.blue, fontSize: 23),
@@ -179,6 +161,22 @@ class _Registe extends State<Registe> {
           )
         ],
       ),
+
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.account_circle,
+      //       ),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.search),
+      //       label: 'Search',
+      //     ),
+      //     // 他のアイテム
+      //   ],
+      // ),
     );
   }
 }
