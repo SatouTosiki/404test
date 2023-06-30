@@ -1,15 +1,20 @@
-import 'main.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'register/register_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:lottie/lottie.dart';
+//--------------------------------
+import 'screens/account.dart';
+import 'screens/bookmark.dart';
+import 'screens/home.dart';
+import 'screens/notification.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
   final String title;
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -62,24 +67,46 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [],
         ),
       ),
+      bottomNavigationBar: MyStatefulWidget(),
+    );
+  }
+}
 
-      //下のバー
+class MyStatefulWidget extends StatefulWidget {
+  const MyStatefulWidget({Key? key}) : super(key: key);
 
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.account_circle,
-            ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          // 他のアイテム
-        ],
-      ),
+  @override
+  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+}
+
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  static const _screens = [
+    HomeScreen(),
+    BookmarkScreen(),
+    NotificationScreen(),
+    AccountScreen()
+  ];
+
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
+        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'お気に入り'),
+        BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'お知らせ'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'アカウント'),
+      ],
+      type: BottomNavigationBarType.fixed,
     );
   }
 }

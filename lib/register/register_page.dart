@@ -4,7 +4,6 @@ import 'package:test3/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../login/login_page.dart';
 import 'package:lottie/lottie.dart';
-import 'register_modl.dart';
 import 'package:test3/main2.dart';
 
 class Registe extends StatefulWidget {

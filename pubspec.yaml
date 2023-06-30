@@ -16,11 +16,11 @@ dependencies:
     sdk: flutter
   #fiarbaseのパッケージ？
   firebase_core: ^2.13.1
-  google_fonts: 
-  #google_fonts: ^4.0.4
+  google_fonts: ^4.0.4
   cupertino_icons: ^1.0.5
   firebase_auth: ^4.6.3
   lottie: ^1.1.0
+  #google_fonts: ^5.1.0
   #flare_flutter: ^3.0.0-nullsafety.0
   
 
