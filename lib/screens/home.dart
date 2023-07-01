@@ -10,8 +10,11 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('ホーム'),
       ),
-      body:
-          const Center(child: Text('ホーム画面', style: TextStyle(fontSize: 32.0))),
+      body: const Center(
+          child: Text('ホーム画面',
+              style: TextStyle(
+                fontSize: 32,
+              ))),
     );
   }
 }

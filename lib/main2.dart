@@ -20,6 +20,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int selectedindex = 0; //ページ間管理
+
+  final List<Widget> widgelist = [
+    HomeScreen(),
+    BookmarkScreen(),
+    NotificationScreen(),
+    AccountScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,51 +71,30 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         backgroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [],
-        ),
+
+      body: widgelist[selectedindex],
+      // body: SingleChildScrollView(
+      //   child: Column(
+      //     children: [
+      //       _screens[selectedindex], // 選択されたインデックスに対応する画面を表示
+      //     ],
+      //   ),
+      // ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.blue,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.face), label: "ホーム"),
+          BottomNavigationBarItem(icon: Icon(Icons.face), label: "ハート"),
+          BottomNavigationBarItem(icon: Icon(Icons.face), label: "通知"),
+          BottomNavigationBarItem(icon: Icon(Icons.face), label: "アカウント"),
+        ],
+        currentIndex: selectedindex,
+        onTap: (index) {
+          setState(() {
+            selectedindex = index;
+          });
+        },
       ),
-      bottomNavigationBar: MyStatefulWidget(),
-    );
-  }
-}
-
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
-
-  @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  static const _screens = [
-    HomeScreen(),
-    BookmarkScreen(),
-    NotificationScreen(),
-    AccountScreen()
-  ];
-
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: _selectedIndex,
-      onTap: _onItemTapped,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'お気に入り'),
-        BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'お知らせ'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'アカウント'),
-      ],
-      type: BottomNavigationBarType.fixed,
     );
   }
 }
