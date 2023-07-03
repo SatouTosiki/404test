@@ -4,8 +4,8 @@ import 'register/register_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:lottie/lottie.dart';
-import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
+
 //--------------------------------
 import 'screens/account.dart';
 import 'screens/bookmark.dart';
@@ -76,11 +76,12 @@ class _MyHomePageState extends State<MyHomePage> {
       body: widgelist[selectedindex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "ホーム"),
-          BottomNavigationBarItem(icon: Icon(Icons.face), label: "ハート"),
-          BottomNavigationBarItem(icon: Icon(Icons.face), label: "通知"),
-          BottomNavigationBarItem(icon: Icon(Icons.face), label: "アカウント"),
+          BottomNavigationBarItem(icon: Icon(LineIcons.cog), label: "ハート"),
+          BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "通知"),
+          BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "アカウント"),
         ],
         currentIndex: selectedindex,
         onTap: (index) {

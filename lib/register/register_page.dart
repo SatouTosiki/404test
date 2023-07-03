@@ -49,7 +49,7 @@ class _Registe extends State<Registe> {
           children: [
             Container(
               alignment: Alignment.center, //中央に配置
-              child: Lottie.asset('assets/u.json'),
+              child: Lottie.asset('assets/re.json'),
             ),
             const SizedBox(
               height: 39,
