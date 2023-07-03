@@ -26,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HomeScreen(),
     BookmarkScreen(),
     NotificationScreen(),
-    AccountScreen(),
+    Registe(),
   ];
 
   @override
@@ -71,15 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         backgroundColor: Colors.white,
       ),
-
       body: widgelist[selectedindex],
-      // body: SingleChildScrollView(
-      //   child: Column(
-      //     children: [
-      //       _screens[selectedindex], // 選択されたインデックスに対応する画面を表示
-      //     ],
-      //   ),
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
         items: const [
