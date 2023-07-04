@@ -5,7 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:line_icons/line_icons.dart';
-
+import "search/search.dart";
+import 'login/login_page.dart';
 //--------------------------------
 import 'screens/account.dart';
 import 'screens/bookmark.dart';
@@ -28,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HomeScreen(),
     BookmarkScreen(),
     NotificationScreen(),
-    Registe(),
+    Login(),
   ];
 
   @override
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Registe()),
+                  MaterialPageRoute(builder: (context) => search()),
                 );
               },
             ),
@@ -73,14 +74,15 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         backgroundColor: Colors.white,
       ),
-      body: widgelist[selectedindex],
+      body: widgelist[selectedindex], //body表示
+
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "ホーム"),
           BottomNavigationBarItem(icon: Icon(LineIcons.cog), label: "ハート"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "通知"),
+          BottomNavigationBarItem(icon: Icon(LineIcons.heart), label: "ハート"),
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "アカウント"),
         ],
         currentIndex: selectedindex,

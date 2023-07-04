@@ -22,28 +22,9 @@ class _Registe extends State<Registe> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   leading: IconButton(
-      //     iconSize: 30,
-      //     icon: const Icon(
-      //       Icons.home,
-      //       color: Colors.blue,
-      //     ),
-      //     onPressed: () {
-      //       Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder: (context) => MyHomePage(title: 'My Home Page'),
-      //         ),
-      //       );
-      //     },
-      //   ),
-      //   title: const Text(
-      //     '新規登録画面',
-      //     style: TextStyle(color: Colors.blue, fontSize: 23),
-      //   ),
-      //   backgroundColor: Colors.white,
-      // ),
+      appBar: AppBar(
+        title: const Text("新規登録画面"),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -56,7 +37,7 @@ class _Registe extends State<Registe> {
             ),
             Container(
               child: Container(
-                padding: EdgeInsets.all(25),
+                padding: EdgeInsets.all(35),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center, //画面中央に寄せる
                   children: [
@@ -131,30 +112,30 @@ class _Registe extends State<Registe> {
                       height: 40,
                     ),
 
-                    Container(
-                      width: double.infinity,
-                      child: TextButton(
-                        child: Text(
-                          "ログインはこちら",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 18,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          onPrimary: Colors.black, //押したときの色！！
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20) //角丸めてる
-                              ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Login()),
-                          );
-                        },
-                      ),
-                    )
+                    // Container(
+                    //   width: double.infinity,
+                    //   child: TextButton(
+                    //     child: Text(
+                    //       "ログインはこちら",
+                    //       style: TextStyle(
+                    //         color: Colors.blue,
+                    //         fontSize: 18,
+                    //       ),
+                    //     ),
+                    //     style: ElevatedButton.styleFrom(
+                    //       onPrimary: Colors.black, //押したときの色！！
+                    //       shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(20) //角丸めてる
+                    //           ),
+                    //     ),
+                    //     onPressed: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(builder: (context) => Login()),
+                    //       );
+                    //     },
+                    //   ),
+                    // )
                   ],
                 ),
               ),

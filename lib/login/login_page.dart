@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
 import 'package:test3/mypage/mypage.dart';
+import "package:test3/register/register_page.dart";
 
 class Login extends StatefulWidget {
   @override
@@ -21,9 +22,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("ログイン画面"),
-      ),
       body: Column(
         children: [
           SizedBox(
@@ -68,7 +66,7 @@ class _LoginState extends State<Login> {
                   ),
                   Container(
                     width: double.infinity,
-                    // ユーザー登録ボタン
+                    // ログインボタン
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -100,6 +98,28 @@ class _LoginState extends State<Login> {
                           print('ログイン失敗：$e');
                         }
                       },
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    // 新規登録ボタン
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Registe(),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: const Text(
+                          '新規登録はこちら',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
                     ),
                   ),
                 ],
