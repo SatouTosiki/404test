@@ -1,9 +1,9 @@
-//import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test3/login/login_page.dart';
+import 'dart:math'; // 追加
 
 class MyPage extends StatelessWidget {
   final User? user;
@@ -12,6 +12,8 @@ class MyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Random random = Random(); // 追加
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -20,6 +22,12 @@ class MyPage extends StatelessWidget {
             textStyle: const TextStyle(fontSize: 30),
           ),
         ),
+        backgroundColor: Color.fromARGB(
+          255,
+          random.nextInt(256),
+          random.nextInt(256),
+          random.nextInt(256),
+        ), // ランダムな色を設定
       ),
       body: Center(
         child: Column(
