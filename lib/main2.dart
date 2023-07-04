@@ -38,17 +38,17 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         leading: const Padding(
           padding: EdgeInsets.only(left: 10), // パディングの値を調整
-          child: CircleAvatar(
-            backgroundImage: AssetImage(
-              '/Users/satoutoshiki/Desktop/pr/test3/lib/img/rika.jpg',
-            ),
-          ),
+          // child: CircleAvatar(
+          //   backgroundImage: AssetImage(
+          //     '/Users/satoutoshiki/Desktop/pr/test3/lib/img/rika.jpg',
+          //   ),
+          // ),
         ),
         title: Text(
           "chefGourmet",
           style: GoogleFonts.happyMonkey(
             textStyle: const TextStyle(
-              fontSize: 30,
+              fontSize: 35,
               color: Colors.black,
               fontWeight: FontWeight.bold,
             ),

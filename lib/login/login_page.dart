@@ -113,9 +113,9 @@ class _LoginState extends State<Login> {
                           ),
                         );
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: const Text(
+                      child: const Padding(
+                        padding: EdgeInsets.all(30.0),
+                        child: Text(
                           '新規登録はこちら',
                           style: TextStyle(fontSize: 20),
                         ),
