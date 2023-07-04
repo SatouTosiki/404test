@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test3/login/login_page.dart';
 import 'dart:math'; // 追加
+import 'package:line_icons/line_icons.dart';
 
 class MyPage extends StatelessWidget {
   final User? user;
@@ -13,11 +14,10 @@ class MyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Random random = Random(); // 追加
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${user?.displayName ?? ''}の部屋',
+          '${user?.displayName ?? ''}のpage',
           style: GoogleFonts.happyMonkey(
             textStyle: const TextStyle(fontSize: 30),
           ),
