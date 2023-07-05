@@ -6,9 +6,8 @@ import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:line_icons/line_icons.dart';
 import "search/search.dart";
-import 'login/login_page.dart';
 //--------------------------------
-import 'screens/account.dart';
+import 'login/login_page.dart';
 import 'screens/bookmark.dart';
 import 'screens/home.dart';
 import 'screens/notification.dart';
@@ -74,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         backgroundColor: Colors.white,
       ),
-      body: widgelist[selectedindex], //body表示
+      //body: widgelist[selectedindex], //body表示
 
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
@@ -92,6 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
       ),
+
+      body: widgelist[selectedindex], //body表示
     );
   }
 }
