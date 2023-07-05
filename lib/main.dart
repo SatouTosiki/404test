@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'register/register_page.dart';
+// import 'firebase_options.dart';
+// import 'register/register_page.dart';
 
 import 'package:cupertino_icons/cupertino_icons.dart';
-import 'main2.dart';
+import 'src/main2.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
