@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test3/src/login/login_page.dart';
+import 'package:test3/src/screens/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../login/login_page.dart';
+import '../screens/login_page.dart';
 import 'package:lottie/lottie.dart';
 import 'package:test3/src/main2.dart';
 

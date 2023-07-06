@@ -6,8 +6,9 @@ import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:line_icons/line_icons.dart';
 import "search/search.dart";
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 //--------------------------------
-import 'login/login_page.dart';
+import 'screens/login_page.dart';
 import 'screens/bookmark.dart';
 import 'screens/home.dart';
 import 'screens/notification.dart';

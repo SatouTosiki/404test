@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:test3/src/login/login_page.dart';
+import 'package:test3/src/screens/login_page.dart';
 import 'dart:math'; // 追加
 import 'package:line_icons/line_icons.dart';
 
