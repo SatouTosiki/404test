@@ -5,7 +5,7 @@ import "search/search.dart";
 //--------------------------------
 import 'screens/login_page.dart';
 import 'screens/bookmark.dart';
-import 'screens/home.dart';
+import 'screens/Home.dart';
 import 'screens/notification.dart';
 
 // class MyHomePage extends StatefulWidget {

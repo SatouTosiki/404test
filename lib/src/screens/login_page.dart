@@ -95,6 +95,7 @@ class _LoginState extends State<Login> {
                           );
                         } catch (e) {
                           // ログイン失敗時の処理
+                          Text:
                           print('ログイン失敗：$e');
                         }
                       },
