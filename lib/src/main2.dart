@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
-import 'firebase_options.dart';
-import 'register/register_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
-import 'package:lottie/lottie.dart';
 import 'package:line_icons/line_icons.dart';
 import "search/search.dart";
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 //--------------------------------
 import 'screens/login_page.dart';
 import 'screens/bookmark.dart';
 import 'screens/home.dart';
 import 'screens/notification.dart';
 
+// class MyHomePage extends StatefulWidget {
+//   const MyHomePage({Key? key, required this.title}) : super(key: key);
+//   final String title;
+
+//   @override
+//   State<MyHomePage> createState() => _MyHomePageState();
+// }
+
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
