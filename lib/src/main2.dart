@@ -7,14 +7,8 @@ import 'screens/login_page.dart';
 import 'screens/bookmark.dart';
 import 'screens/Home.dart';
 import 'screens/notification.dart';
-
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({Key? key, required this.title}) : super(key: key);
-//   final String title;
-
-//   @override
-//   State<MyHomePage> createState() => _MyHomePageState();
-// }
+import 'package:firebase_auth/firebase_auth.dart';
+import 'mypage/mypage.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -84,6 +78,25 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {
             selectedindex = index;
           });
+
+          if (index == widgelist.indexOf(Login())) {
+            // Login()アイテムが選択された場合の処理
+            final currentUser = FirebaseAuth.instance.currentUser;
+            if (currentUser != null) {
+              // ログインしている場合の処理
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MyPage(user: currentUser)),
+              );
+            } else {
+              // ログインしていない場合の処理
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            }
+          }
         },
       ),
 

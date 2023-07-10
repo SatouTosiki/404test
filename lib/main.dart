@@ -7,8 +7,8 @@ import 'src/main2.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -22,5 +22,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-//あーあー！テスト〜テ〜スト〜

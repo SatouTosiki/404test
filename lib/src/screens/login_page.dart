@@ -14,7 +14,6 @@ class _LoginState extends State<Login> {
 
   // メッセージ表示用
   String infoText = '';
-
   // 入力したメールアドレス・パスワード
   String email = '';
   String password = '';
