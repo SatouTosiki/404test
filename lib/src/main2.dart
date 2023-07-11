@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
-import "search/search.dart";
-import 'screens/login_page.dart';
-
-//--------------------------------
-import 'screens/login_page.dart';
+import 'search/search.dart';
 import 'screens/bookmark.dart';
 import 'screens/Home.dart';
 import 'screens/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'mypage/mypage.dart';
+import 'screens/login_page.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -80,8 +77,8 @@ class _MyHomePageState extends State<MyHomePage> {
             selectedindex = index;
           });
 
-          if (index == widgelist.indexOf(Login())) {
-            // Login()アイテムが選択された場合の処理
+          if (index == 3) {
+            // MyPage アイテムが選択された場合の処理
             final currentUser = FirebaseAuth.instance.currentUser;
             if (currentUser != null) {
               // ログインしている場合の処理
