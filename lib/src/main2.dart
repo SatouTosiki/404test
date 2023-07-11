@@ -62,7 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         backgroundColor: Colors.white,
       ),
-      //body: widgelist[selectedindex], //body表示
 
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
