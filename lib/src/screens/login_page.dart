@@ -11,7 +11,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   // メッセージ表示用
   String infoText = '';
   // 入力したメールアドレス・パスワード
@@ -25,13 +24,13 @@ class _LoginState extends State<Login> {
         child: Column(
           children: [
             SizedBox(
-              height: 80,
+              height: 40,
             ),
             Padding(
-              padding: const EdgeInsets.all(30),
+              padding: const EdgeInsets.all(80),
               child: Container(
                 alignment: Alignment.center, //中央に配置
-                child: Lottie.asset("assets/u2.json"),
+                child: Lottie.asset("assets/i.json"),
               ),
             ),
             Container(

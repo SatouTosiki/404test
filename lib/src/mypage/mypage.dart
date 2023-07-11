@@ -40,23 +40,6 @@ class MyPage extends StatelessWidget {
               },
               child: const Text('ログアウト'),
             ),
-            // ElevatedButton(
-            //   onPressed: () async {
-            //     final currentUser = FirebaseAuth.instance.currentUser;
-            //     if (currentUser != null) {
-            //       // ログアウト処理
-            //       await FirebaseAuth.instance.signOut();
-            //       Navigator.pop(context); // マイページ画面を閉じてログイン画面に戻る
-            //     } else {
-            //       // ログインしていない場合の処理
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(builder: (context) => test2()),
-            //       );
-            //     }
-            //   },
-            //   child: const Text('test'),
-            // ),
           ],
         ),
       ),
