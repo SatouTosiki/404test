@@ -21,112 +21,114 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: 30,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(30),
-            child: Container(
-              alignment: Alignment.center, //中央に配置
-              child: Lottie.asset('assets/i.json'),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 80,
             ),
-          ),
-          Container(
-            child: Container(
-              padding: EdgeInsets.all(25),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, //画面中央に寄せる
-                children: [
-                  // メールアドレス入力
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'メールアドレス'),
-                    onChanged: (String value) {
-                      setState(() {
-                        email = value;
-                      });
-                    },
-                  ),
-                  // パスワード入力
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'パスワード'),
-                    obscureText: true,
-                    onChanged: (String value) {
-                      setState(() {
-                        password = value;
-                      });
-                    },
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(9),
-                    // メッセージ表示
-                    child: Text(infoText),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    // ログインボタン
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20), //角丸める
+            Padding(
+              padding: const EdgeInsets.all(30),
+              child: Container(
+                alignment: Alignment.center, //中央に配置
+                child: Lottie.asset("assets/u2.json"),
+              ),
+            ),
+            Container(
+              child: Container(
+                padding: EdgeInsets.all(25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center, //画面中央に寄せる
+                  children: [
+                    // メールアドレス入力
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'メールアドレス'),
+                      onChanged: (String value) {
+                        setState(() {
+                          email = value;
+                        });
+                      },
+                    ),
+                    // パスワード入力
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'パスワード'),
+                      obscureText: true,
+                      onChanged: (String value) {
+                        setState(() {
+                          password = value;
+                        });
+                      },
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(9),
+                      // メッセージ表示
+                      child: Text(infoText),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      // ログインボタン
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20), //角丸める
+                          ),
                         ),
+                        child: const Text(
+                          'ログイン',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        onPressed: () async {
+                          try {
+                            UserCredential userCredential =
+                                await _auth.signInWithEmailAndPassword(
+                              email: email,
+                              password: password,
+                            );
+                            // ログイン成功時の処理
+                            User? user = userCredential.user;
+                            //print('ログイン成功：${user!.email}');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyPage(user: user),
+                              ),
+                            );
+                          } catch (e) {
+                            // ログイン失敗時の処理
+                            Text:
+                            print('ログイン失敗：$e');
+                          }
+                        },
                       ),
-                      child: const Text(
-                        'ログイン',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      onPressed: () async {
-                        try {
-                          UserCredential userCredential =
-                              await _auth.signInWithEmailAndPassword(
-                            email: email,
-                            password: password,
-                          );
-                          // ログイン成功時の処理
-                          User? user = userCredential.user;
-                          //print('ログイン成功：${user!.email}');
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      // 新規登録ボタン
+                      child: TextButton(
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MyPage(user: user),
+                              builder: (context) => Registe(),
                             ),
                           );
-                        } catch (e) {
-                          // ログイン失敗時の処理
-                          Text:
-                          print('ログイン失敗：$e');
-                        }
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    width: double.infinity,
-                    // 新規登録ボタン
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Registe(),
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(30.0),
+                          child: Text(
+                            '新規登録はこちら',
+                            style: TextStyle(fontSize: 20),
                           ),
-                        );
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(30.0),
-                        child: Text(
-                          '新規登録はこちら',
-                          style: TextStyle(fontSize: 20),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
