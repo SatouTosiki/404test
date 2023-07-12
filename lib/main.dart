@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'firebase_options.dart';
-// import 'register/register_page.dart';
 import 'src/main2.dart';
 import 'src/screens/login_page.dart';
 

@@ -22,6 +22,7 @@ dependencies:
   lottie: ^2.3.2
   google_fonts: ^4.0.4
   persistent_bottom_nav_bar: ^4.0.2
+  flutter_native_splash: ^2.2.19  
 
  
 dev_dependencies:
@@ -37,5 +38,11 @@ flutter:
     - assets/googlefont/
 
 uses-material-design: true
+
+
+flutter_native_splash:
+  image: 'lib/src/img/アセット 12.png' 
+  color: "#e0ffff"
+
 
   
