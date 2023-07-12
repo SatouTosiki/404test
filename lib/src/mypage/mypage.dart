@@ -26,27 +26,30 @@ class MyPage extends StatelessWidget {
       //     random.nextInt(256),
       //   ), // ランダムな色を設定
       // ),
-      body: Center(
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            Text(
-              '${user?.displayName ?? ''} is room',
-              style: GoogleFonts.happyMonkey(
-                  textStyle: const TextStyle(fontSize: 20)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // ログアウト処理
-                FirebaseAuth.instance.signOut();
-                Navigator.pop(context); // マイページ画面を閉じてログイン画面に戻る
-              },
-              child: const Text('ログアウト'),
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, // 左右に要素を配置
+            children: [
+              Text(
+                '${user?.displayName ?? ''} is room',
+                style: GoogleFonts.happyMonkey(
+                    textStyle: const TextStyle(fontSize: 25)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // ログアウト処理
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pop(context); // マイページ画面を閉じてログイン画面に戻る
+                },
+                child: const Text(
+                  'ログアウト',
+                  style: TextStyle(fontSize: 10),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
