@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math'; // 追加
-import 'package:line_icons/line_icons.dart';
-import 'test.dart';
 
 class MyPage extends StatelessWidget {
   final User? user;

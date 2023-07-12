@@ -9,6 +9,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'mypage/mypage.dart';
 import 'screens/login_page.dart';
 
+final currentUser = FirebaseAuth.instance.currentUser;
+
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -21,7 +23,8 @@ class _MyHomePageState extends State<MyHomePage> {
     HomeScreen(),
     BookmarkScreen(),
     NotificationScreen(),
-    Login(),
+    //Login(user: null),
+    MyPage(user: currentUser),
   ];
 
   @override
@@ -77,24 +80,29 @@ class _MyHomePageState extends State<MyHomePage> {
             selectedindex = index;
           });
 
-          if (index == 3) {
-            // MyPage アイテムが選択された場合の処理
-            final currentUser = FirebaseAuth.instance.currentUser;
-            if (currentUser != null) {
-              // ログインしている場合の処理
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MyPage(user: currentUser)),
-              );
-            } else {
-              // ログインしていない場合の処理
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
-            }
-          }
+          //MyPage アイテムが選択された場合の処理
+          // if (index == 3) {
+          //   final currentUser = FirebaseAuth.instance.currentUser;
+          //   if (currentUser != null) {
+          //     // ログインしている場合の処理
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => MyPage(user: currentUser),
+          //       ),
+          //     );
+          //   } else {
+          //     // ログインしていない場合の処理
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => Login(
+          //           user: null,
+          //         ),
+          //       ),
+          //     );
+          //   }
+          // }
         },
       ),
 

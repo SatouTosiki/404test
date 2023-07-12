@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 // import 'firebase_options.dart';
 // import 'register/register_page.dart';
 import 'src/main2.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
 import 'src/screens/login_page.dart';
 
 void main() async {
@@ -29,7 +28,9 @@ class MyApp extends StatelessWidget {
               return MyHomePage();
             }
             // User が null である、つまり未サインインのサインイン画面へ
-            return Login();
+            return Login(
+              user: null,
+            );
           },
         ),
       );
