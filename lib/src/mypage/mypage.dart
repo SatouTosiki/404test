@@ -28,10 +28,15 @@ class MyPage extends StatelessWidget {
       // ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(
+              height: 15,
+            ),
             Text(
-              '${user?.displayName ?? ''}のpage',
+              '${user?.displayName ?? ''} is room',
+              style: GoogleFonts.happyMonkey(
+                  textStyle: const TextStyle(fontSize: 20)),
             ),
             ElevatedButton(
               onPressed: () {
