@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_icons/line_icons.dart';
 import 'dart:math'; // 追加
 
 class MyPage extends StatelessWidget {
@@ -28,7 +29,7 @@ class MyPage extends StatelessWidget {
       // ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween, // 左右に要素を配置
             children: [
@@ -37,16 +38,17 @@ class MyPage extends StatelessWidget {
                 style: GoogleFonts.happyMonkey(
                     textStyle: const TextStyle(fontSize: 25)),
               ),
-              ElevatedButton(
+              IconButton(
+                icon: Icon(LineIcons.android),
                 onPressed: () {
                   // ログアウト処理
                   FirebaseAuth.instance.signOut();
                   Navigator.pop(context); // マイページ画面を閉じてログイン画面に戻る
                 },
-                child: const Text(
-                  'ログアウト',
-                  style: TextStyle(fontSize: 10),
-                ),
+                // child: const Text(
+                //   'ログアウト',
+                //   style: TextStyle(fontSize: 10),
+                // ),
               ),
             ],
           ),
