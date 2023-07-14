@@ -89,7 +89,6 @@ class _LoginState extends State<Login> {
                             );
                             // ログイン成功時の処理
                             User? user = userCredential.user;
-                            //print('ログイン成功：${user!.email}');
                             Navigator.push(
                               context,
                               MaterialPageRoute(

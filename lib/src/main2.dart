@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
-import 'search/search.dart';
+import 'screens/search.dart';
 import 'screens/bookmark.dart';
 import 'screens/Home.dart';
 import 'screens/notification.dart';
@@ -22,6 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HomeScreen(),
     BookmarkScreen(),
     NotificationScreen(),
+    search(),
     //Login(user: null),
     MyPage(user: currentUser),
   ];
@@ -43,24 +44,24 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: IconButton(
-              iconSize: 30,
-              icon: const Icon(
-                LineIcons.search,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => search()),
-                );
-              },
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 10),
+        //     child: IconButton(
+        //       iconSize: 30,
+        //       icon: const Icon(
+        //         LineIcons.search,
+        //         color: Colors.black,
+        //       ),
+        //       onPressed: () {
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(builder: (context) => search()),
+        //         );
+        //       },
+        //     ),
+        //   ),
+        // ],
         backgroundColor: Colors.white,
       ),
 
@@ -69,8 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "ホーム"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.cog), label: "ハート"),
           BottomNavigationBarItem(icon: Icon(LineIcons.heart), label: "ハート"),
+          BottomNavigationBarItem(icon: Icon(LineIcons.camera), label: "投稿"),
+          BottomNavigationBarItem(icon: Icon(LineIcons.search), label: "検索"),
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "アカウント"),
         ],
         currentIndex: selectedindex,
