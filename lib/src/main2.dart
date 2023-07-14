@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
               iconSize: 30,
               icon: const Icon(
                 LineIcons.search,
-                color: Colors.blue,
+                color: Colors.black,
               ),
               onPressed: () {
                 Navigator.push(
@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "ホーム"),
