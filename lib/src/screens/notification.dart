@@ -7,8 +7,7 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-          const Center(child: Text('お知らせ画面', style: TextStyle(fontSize: 32.0))),
+      body: const Center(child: Text('投稿', style: TextStyle(fontSize: 32.0))),
     );
   }
 }

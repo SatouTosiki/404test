@@ -44,24 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(right: 10),
-        //     child: IconButton(
-        //       iconSize: 30,
-        //       icon: const Icon(
-        //         LineIcons.search,
-        //         color: Colors.black,
-        //       ),
-        //       onPressed: () {
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => search()),
-        //         );
-        //       },
-        //     ),
-        //   ),
-        // ],
         backgroundColor: Colors.white,
       ),
 
@@ -70,9 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "ホーム"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.heart), label: "ハート"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.camera), label: "投稿"),
           BottomNavigationBarItem(icon: Icon(LineIcons.search), label: "検索"),
+          BottomNavigationBarItem(icon: Icon(LineIcons.camera), label: "投稿"),
+          BottomNavigationBarItem(icon: Icon(LineIcons.heart), label: "ハート"),
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "アカウント"),
         ],
         currentIndex: selectedindex,

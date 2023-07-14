@@ -7,9 +7,6 @@ class search extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('検索'),
-      ),
       body: Center(
         child: Text(
           '検索画面',
