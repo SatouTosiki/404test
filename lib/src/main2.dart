@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "ホーム"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.search), label: " "),
+          BottomNavigationBarItem(icon: Icon(LineIcons.search), label: "探す"),
           BottomNavigationBarItem(icon: Icon(LineIcons.camera), label: "投稿"),
           BottomNavigationBarItem(icon: Icon(LineIcons.heart), label: "検索"),
           BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "アカウント"),
