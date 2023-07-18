@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
-import 'dart:math'; // 追加
 
 class MyPage extends StatelessWidget {
   final User? user;
@@ -11,7 +10,6 @@ class MyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Random random = Random(); // 追加
     return Scaffold(
       appBar: AppBar(
         title: Row(
