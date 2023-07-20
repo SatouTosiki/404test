@@ -34,33 +34,6 @@ class MyPage extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
       ),
-      // body: SingleChildScrollView(
-      //   child: Padding(
-      //     padding: const EdgeInsets.all(10),
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween, // 左右に要素を配置
-      //       children: [
-      //         Text(
-      //           '${user?.displayName ?? ''} is room',
-      //           style: GoogleFonts.happyMonkey(
-      //               textStyle: const TextStyle(fontSize: 25)),
-      //         ),
-      //         IconButton(
-      //           icon: Icon(LineIcons.android),
-      //           onPressed: () {
-      //             // ログアウト処理
-      //             FirebaseAuth.instance.signOut();
-      //             Navigator.pop(context); // マイページ画面を閉じてログイン画面に戻る
-      //           },
-      //           // child: const Text(
-      //           //   'ログアウト',
-      //           //   style: TextStyle(fontSize: 10),
-      //           // ),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

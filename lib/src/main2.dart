@@ -7,6 +7,7 @@ import 'screens/Home.dart';
 import 'screens/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'mypage/mypage.dart';
+import 'push/oush.dart';
 
 final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -44,24 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(right: 10),
-        //     child: IconButton(
-        //       iconSize: 30,
-        //       icon: const Icon(
-        //         LineIcons.search,
-        //         color: Colors.black,
-        //       ),
-        //       onPressed: () {
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => search()),
-        //         );
-        //       },
-        //     ),
-        //   ),
-        // ],
         backgroundColor: Colors.white,
       ),
 
@@ -80,30 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {
             selectedindex = index;
           });
-
-          //MyPage アイテムが選択された場合の処理
-          // if (index == 3) {
-          //   final currentUser = FirebaseAuth.instance.currentUser;
-          //   if (currentUser != null) {
-          //     // ログインしている場合の処理
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => MyPage(user: currentUser),
-          //       ),
-          //     );
-          //   } else {
-          //     // ログインしていない場合の処理
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => Login(
-          //           user: null,
-          //         ),
-          //       ),
-          //     );
-          //   }
-          // }
         },
       ),
 
