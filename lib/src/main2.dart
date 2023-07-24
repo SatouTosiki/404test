@@ -4,7 +4,6 @@ import 'package:line_icons/line_icons.dart';
 import 'screens/search.dart';
 import 'screens/bookmark.dart';
 import 'screens/Home.dart';
-import 'screens/notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'mypage/mypage.dart';
 import 'push/oush.dart';
