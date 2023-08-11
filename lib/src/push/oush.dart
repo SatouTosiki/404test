@@ -64,7 +64,8 @@ class _NotificationScreen extends State<NotificationScreen> {
                   ? const Padding(
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        "画像が選択されています",
+                        "",
+                        //画像が入っているときはtextなし
                         style: TextStyle(
                             //fontStyle: FontStyle.italic,
                             fontSize: 20),
@@ -75,7 +76,7 @@ class _NotificationScreen extends State<NotificationScreen> {
                       child: Text(
                         "画像は5枚まで^_^",
                         style: TextStyle(
-                            fontStyle: FontStyle.italic, fontSize: 20),
+                            fontStyle: FontStyle.italic, fontSize: 25),
                       ),
                     ),
               FilledButton.tonal(
