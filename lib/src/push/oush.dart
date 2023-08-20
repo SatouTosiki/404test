@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:test3/src/push/confirmation.dart';
 
 //カラーコード指定のためのclass
 class HexColor extends Color {
@@ -74,7 +75,7 @@ class _NotificationScreen extends State<NotificationScreen> {
                   : const Padding(
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        "画像は5枚まで^_^",
+                        "選べる画像は5枚までです",
                         style: TextStyle(
                             fontStyle: FontStyle.italic, fontSize: 25),
                       ),
@@ -88,7 +89,8 @@ class _NotificationScreen extends State<NotificationScreen> {
                   getImageFromCamera();
                 },
                 style: FilledButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 ),
               ),
 
@@ -103,42 +105,59 @@ class _NotificationScreen extends State<NotificationScreen> {
                   getImageFromGallery();
                 },
                 style: FilledButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 ),
               ),
 
               const SizedBox(height: 20),
               // 選択された画像を表示
 
-              Column(
-                children: images.map((image) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      height: 400,
-                      width: 400,
-                      child: Image.file(image, fit: BoxFit.cover),
-                    ),
-                  );
-                }).toList(),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: images.map((image) {
+                    return Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Container(
+                        height: 350,
+                        width: 350,
+                        child: Image.file(image, fit: BoxFit.cover),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
+
+              // Row(
+              //   children: images.map((image) {
+              //     return Padding(
+              //       padding: const EdgeInsets.all(10),
+              //       child: Container(
+              //         height: 400,
+              //         width: 400,
+              //         child: Image.file(image, fit: BoxFit.cover),
+              //       ),
+              //     );
+              //   }).toList(),
+              // ),
               const SizedBox(height: 40),
 
               if (images.isNotEmpty) // 画像が選択されている場合にのみ表示
 
-                OutlinedButton(
+                FilledButton.tonal(
                   child: Text(
                     '次へ',
                     style: TextStyle(fontSize: 20),
                   ),
-                  style: OutlinedButton.styleFrom(
-                    fixedSize: Size(200, 50), // 幅200、高さ50の大きさに設定
-
-                    primary: Colors.black,
-                    shape: const StadiumBorder(),
-                    side: const BorderSide(color: Colors.orange),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => con()));
+                  },
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
                   ),
-                  onPressed: () {},
                 ),
               const SizedBox(
                 height: 50,
