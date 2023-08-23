@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'push_class.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
@@ -26,16 +27,6 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreen extends State<NotificationScreen> {
   List<File> images = []; // 選択された複数の画像を格納するリスト
   final picker = ImagePicker();
-
-  //カメラで撮影した画像を取得する命令
-  Future getImageFromCamera() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        images.add(File(pickedFile.path)); // images リストに画像を追加
-      }
-    });
-  }
 
   // 端末のアルバムに保存されている画像を取得する命令
   Future getImageFromGallery() async {
@@ -75,30 +66,17 @@ class _NotificationScreen extends State<NotificationScreen> {
                   : const Padding(
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        "選べる画像は5枚までです",
+                        "選べる画像は5枚まで",
                         style: TextStyle(
                             fontStyle: FontStyle.italic, fontSize: 25),
                       ),
                     ),
-              FilledButton.tonal(
-                child: Text(
-                  '写真を撮る',
-                  style: TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  getImageFromCamera();
-                },
-                style: FilledButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                ),
-              ),
 
               const SizedBox(height: 25),
 
               FilledButton.tonal(
                 child: const Text(
-                  'ライブラリから選ぶ',
+                  '画像を追加',
                   style: TextStyle(fontSize: 20),
                 ),
                 onPressed: () {
@@ -144,21 +122,22 @@ class _NotificationScreen extends State<NotificationScreen> {
               const SizedBox(height: 40),
 
               if (images.isNotEmpty) // 画像が選択されている場合にのみ表示
+                RecipeForm(),
 
-                FilledButton.tonal(
-                  child: Text(
-                    '次へ',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => con()));
-                  },
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
-                  ),
-                ),
+              // FilledButton.tonal(
+              //   child: Text(
+              //     '次へ',
+              //     style: TextStyle(fontSize: 20),
+              //   ),
+              //   onPressed: () {
+              //     Navigator.push(context,
+              //         MaterialPageRoute(builder: (context) => con()));
+              //   },
+              //   style: FilledButton.styleFrom(
+              //     padding: const EdgeInsets.symmetric(
+              //         horizontal: 40, vertical: 15),
+              //   ),
+              // ),
               const SizedBox(
                 height: 50,
               )
