@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:test3/src/push/confirmation.dart';
+import 'confirmation.dart';
+import 'push_class.dart';
+import 'push_class.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //カラーコード指定のためのclass
 class HexColor extends Color {
@@ -107,37 +111,12 @@ class _NotificationScreen extends State<NotificationScreen> {
                 ),
               ),
 
-              // Row(
-              //   children: images.map((image) {
-              //     return Padding(
-              //       padding: const EdgeInsets.all(10),
-              //       child: Container(
-              //         height: 400,
-              //         width: 400,
-              //         child: Image.file(image, fit: BoxFit.cover),
-              //       ),
-              //     );
-              //   }).toList(),
-              // ),
               const SizedBox(height: 40),
 
               if (images.isNotEmpty) // 画像が選択されている場合にのみ表示
-                RecipeForm(),
+                //AddDocumentScreen(),
+                RecipeForm(), //クラスを別ファイルから呼び出してる
 
-              // FilledButton.tonal(
-              //   child: Text(
-              //     '次へ',
-              //     style: TextStyle(fontSize: 20),
-              //   ),
-              //   onPressed: () {
-              //     Navigator.push(context,
-              //         MaterialPageRoute(builder: (context) => con()));
-              //   },
-              //   style: FilledButton.styleFrom(
-              //     padding: const EdgeInsets.symmetric(
-              //         horizontal: 40, vertical: 15),
-              //   ),
-              // ),
               const SizedBox(
                 height: 50,
               )

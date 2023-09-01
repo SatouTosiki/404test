@@ -1,8 +1,41 @@
+import 'oush.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'push.dart';
+import 'oush.dart';
+
+//pushで使うclass記述用ファイル
+
+//カラーコード指定のためのclass
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+}
+
+//colorクラス
+
+class RecipeForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        //Text("レシピを追加"),
+        TextField(
+          decoration: InputDecoration(hintText: "タイトル"),
+        ),
+        TextField(
+          decoration: InputDecoration(hintText: "説明"),
+        ),
+      ],
+    );
+  }
+}
 
 class AddDocumentScreen extends StatelessWidget {
   final TextEditingController titleController = TextEditingController();
@@ -55,32 +88,3 @@ class AddDocumentScreen extends StatelessWidget {
     );
   }
 }
-
-// class con extends StatelessWidget {
-//   const con({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("投稿ページ"),
-//         leading: IconButton(
-//           icon: const Icon(Icons.arrow_back),
-//           onPressed: () {
-//             Navigator.pop(context); // この行で前のページに戻る
-//           },
-//         ),
-//         // ... 他のAppBarの設定 ...
-//       ),
-//       body: Center(
-//         child: Text(
-//           "Hello, World!",
-//           style: TextStyle(fontSize: 24, color: Colors.black),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-

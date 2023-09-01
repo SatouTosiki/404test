@@ -6,7 +6,8 @@ import 'screens/bookmark.dart';
 import 'screens/Home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'mypage/mypage.dart';
-import 'push/oush.dart';
+import 'push/push.dart';
+import 'push/push2.dart';
 
 final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -21,7 +22,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> widgelist = [
     HomeScreen(),
     BookmarkScreen(),
-    NotificationScreen(),
+    //NotificationScreen(),
+    AddBookPage(),
     search(),
     //Login(user: null),
     MyPage(user: currentUser),
