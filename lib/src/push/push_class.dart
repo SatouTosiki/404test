@@ -37,14 +37,6 @@ class AddBookModel extends ChangeNotifier {
 
     final doc = FirebaseFirestore.instance.collection('user_post').doc();
 
-    // String? imgURL;
-    // if (imageFile != null) {
-    //   // storageにアップロード
-    //   final task = await FirebaseStorage.instance
-    //       .ref('user_post/${doc.id}')
-    //       .putFile(imageFile!);
-    //   imgURL = await task.ref.getDownloadURL();
-    // }
     for (var imageFile in imageFiles) {
       // storageにアップロード
       final task = await FirebaseStorage.instance
@@ -68,19 +60,22 @@ class AddBookModel extends ChangeNotifier {
     final List<XFile>? pickedFiles = await picker.pickMultiImage();
     if (pickedFiles != null) {
       for (var pickedFile in pickedFiles) {
-        // 各画像ファイルのパスにアクセス
-        String imagePath = pickedFile.path;
-        imageFiles.add(File(imagePath)); // 画像ファイルのパスをリストに追加」
-      }
+        if (imageFiles.length < 5) {
+          String imagePath = pickedFile.path;
+          imageFiles.add(File(imagePath)); // 画像ファイルのパスをリストに追加」
+          int length = imageFiles.length;
+          print("リスト内の要素数は $length です。"); // リスト内の要素数は 3 です。
+        } else {
+          print("画像が多い");
+        }
 
-      // imageFiles リストにはすべての画像ファイルのパスが格納されています
+        // 各画像ファイルのパスにアクセ
+      }
 
       notifyListeners();
     }
   }
 }
-
-//カラークラス
 
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
