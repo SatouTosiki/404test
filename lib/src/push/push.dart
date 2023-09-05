@@ -100,11 +100,11 @@ class _NotificationScreen extends State<NotificationScreen> {
 
               if (images.isNotEmpty) // 画像が選択されている場合にのみ表示
                 //AddDocumentScreen(),
-                RecipeForm(), //クラスを別ファイルから呼び出してる
+                //RecipeForm(), //クラスを別ファイルから呼び出してる
 
-              const SizedBox(
-                height: 50,
-              )
+                const SizedBox(
+                  height: 50,
+                )
             ],
           ),
         ),

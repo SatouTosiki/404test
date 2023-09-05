@@ -22,7 +22,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> widgelist = [
     HomeScreen(),
     BookmarkScreen(),
-    //NotificationScreen(),
     AddBookPage(),
     search(),
     //Login(user: null),
