@@ -52,7 +52,7 @@ class AddBookPage extends StatelessWidget {
                                       }).toList()
                                     : [
                                         Image.asset(
-                                          "/Users/satoutoshiki/Desktop/pr/test3/lib/src/img/aaa.png",
+                                          "lib/src/img/aaa.png",
                                         ),
                                       ],
                               ),
