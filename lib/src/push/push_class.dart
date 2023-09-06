@@ -2,16 +2,22 @@ import 'push.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+// ユーザーがログインしていることを確認する関数
+Future<User?> getCurrentUser() async {
+  return FirebaseAuth.instance.currentUser;
+}
+
 class AddBookModel extends ChangeNotifier {
   String? title;
   String? author;
   List<File> imageFiles = []; // 複数の画像ファイルのパスを格納するリスト
+  String? timestamp;
   bool isLoading = false;
 
   final picker = ImagePicker();
@@ -51,6 +57,7 @@ class AddBookModel extends ChangeNotifier {
       'title': title,
       'author': author,
       'imgURL': imgURLs,
+      'time': timestamp,
     });
   }
 
@@ -64,7 +71,6 @@ class AddBookModel extends ChangeNotifier {
           String imagePath = pickedFile.path;
           imageFiles.add(File(imagePath)); // 画像ファイルのパスをリストに追加」
           int length = imageFiles.length;
-          print("リスト内の要素数は $length です。"); // リスト内の要素数は 3 です。
         } else {
           print("画像が多い");
         }

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// ユーザーがログインしていることを確認する関数
 
 class MyPage extends StatelessWidget {
   final User? user;

@@ -10,20 +10,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'push_class.dart';
 
-// class ListLengthPrinter {
-//   List<File> imageFiles;
-
-//   ListLengthPrinter(this.imageFiles);
-
-//   String printListLength() {
-//     int length = imageFiles.length;
-//     return "リスト内の要素数は $length です。";
-//   }
-// }
-
 class AddBookPage extends StatelessWidget {
   //List<File> images = [];
   final picker = ImagePicker();
+
   AddBookModel model = AddBookModel();
   @override
   Widget build(BuildContext context) {
@@ -64,15 +54,16 @@ class AddBookPage extends StatelessWidget {
                             await model.pickImage();
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Text(
                           " ${model.imageFiles.length} 枚選択中。",
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ), // length の値を表示する Text ウィジェット
+
                         TextField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'タイトル',
                           ),
                           onChanged: (text) {
@@ -83,20 +74,24 @@ class AddBookPage extends StatelessWidget {
                           height: 8,
                         ),
                         TextField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: '説明文',
                           ),
                           onChanged: (text) {
                             model.author = text;
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 16,
                         ),
                         ElevatedButton(
                           onPressed: () async {
                             // 追加の処理
                             try {
+                              // timestampを現在の日時に設定
+                              final DateTime now = DateTime.now();
+                              model.timestamp =
+                                  now.toString(); // タイムスタンプを文字列として設定
                               model.startLoading();
                               await model.addBook();
                               Navigator.of(context).pop(true);
@@ -106,8 +101,8 @@ class AddBookPage extends StatelessWidget {
                                 backgroundColor: Colors.red,
                                 content: Text(e.toString()),
                               );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
+                              // ScaffoldMessenger.of(context)
+                              //     .showSnackBar(snackBar);
                             } finally {
                               model.endLoading();
                             }
