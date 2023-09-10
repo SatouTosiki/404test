@@ -20,7 +20,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedindex = 0; //ページ間管理
 
   final List<Widget> widgelist = [
-    HomeScreen(),
+    //HomeScreen(),
+    YourScreen(),
     BookmarkScreen(),
     AddBookPage(),
     search(),
