@@ -1,29 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test3/src/main2.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-Future<List<String>> fetchImageURLs() async {
-  try {
-    DocumentReference docRef =
-        firestore.collection('user_post').doc('5IWsRoa6F7kLajjIraHw');
-    DocumentSnapshot docSnapshot = await docRef.get();
-
-    if (docSnapshot.exists) {
-      // ドキュメントが存在する場合、リスト形式のimgURLsフィールドを取得して返します
-      List<String> imageURLs = List<String>.from(docSnapshot.get('imgURLs'));
-      return imageURLs;
-    } else {
-      return []; // ドキュメントが存在しない場合は空のリストを返します
-    }
-  } catch (e) {
-    print('Error fetching image URLs: $e');
-    return []; // エラー時にも空のリストを返します
-  }
-}
 
 class YourScreen extends StatefulWidget {
   @override
@@ -31,7 +9,43 @@ class YourScreen extends StatefulWidget {
 }
 
 class _YourScreenState extends State<YourScreen> {
-  List<String> imageUrls = []; // 画像のURLを格納するリスト
+  List<Map<String, dynamic>> documentList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDocumentData(); // 初期データの取得
+    subscribeToUpdates(); // リアルタイム更新の購読
+  }
+
+  Future<void> fetchDocumentData() async {
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('user_post')
+          .orderBy('time', descending: true) // 'time' フィールドで降順ソート（新しい順）
+          .get();
+
+      List<Map<String, dynamic>> dataList = [];
+      querySnapshot.docs.forEach((doc) {
+        if (doc.exists) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          dataList.add(data);
+        }
+      });
+
+      setState(() {
+        documentList = dataList;
+      });
+    } catch (e) {
+      print('Error fetching documents: $e');
+    }
+  }
+
+  void subscribeToUpdates() {
+    firestore.collection('user_post').snapshots().listen((event) {
+      fetchDocumentData(); // データが変更されたときにデータを更新
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,20 +54,31 @@ class _YourScreenState extends State<YourScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () async {
-                List<String> urls = await fetchImageURLs();
-                setState(() {
-                  imageUrls = urls; // 画像のURLリストを更新
-                });
-              },
-              child: Text('Fetch Image URLs'),
-            ),
             SizedBox(height: 20),
-            Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
-            Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
-            if (documentData['imgURL'] != null)
-              Image.network(documentData['imgURL']), // imgURLがnullでない場合にのみ画像を表示
+
+            // ドキュメントのリストを表示
+            Column(
+              children: documentList.map<Widget>((documentData) {
+                return Column(
+                  children: [
+                    Text('タイトル: ${documentData['title']}'),
+
+                    // 画像URLリストを表示
+                    if (documentData['imgURL'] is List)
+                      Column(
+                        children:
+                            documentData['imgURL'].map<Widget>((imageUrl) {
+                          return Image.network(imageUrl);
+                        }).toList(),
+                      )
+                    else if (documentData['imgURL'] is String)
+                      Image.network(documentData['imgURL']), // 単一のURLの場合
+                    Text('説明: ${documentData['author']}'),
+                    Divider(),
+                  ],
+                );
+              }).toList(),
+            ),
           ],
         ),
       ),
