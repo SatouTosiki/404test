@@ -1,14 +1,9 @@
-import 'dart:io';
+import '../main2.dart';
 import 'push_class.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'push.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:test3/src/push/confirmation.dart';
-import 'confirmation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'push_class.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddBookPage extends StatelessWidget {
   //List<File> images = [];
@@ -94,15 +89,20 @@ class AddBookPage extends StatelessWidget {
                                   now.toString(); // タイムスタンプを文字列として設定
                               model.startLoading();
                               await model.addBook();
-                              Navigator.of(context).pop(true);
+
+                              //投稿が成功したら、ホーム画面に遷移
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => MyHomePage(),
+                                ),
+                              );
                             } catch (e) {
                               print(e);
                               final snackBar = SnackBar(
                                 backgroundColor: Colors.red,
                                 content: Text(e.toString()),
                               );
-                              // ScaffoldMessenger.of(context)
-                              //     .showSnackBar(snackBar);
+                              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             } finally {
                               model.endLoading();
                             }

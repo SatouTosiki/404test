@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -20,8 +21,10 @@ class _YourScreenState extends State<YourScreen> {
 
   Future<void> fetchDocumentData() async {
     try {
-      QuerySnapshot querySnapshot =
-          await firestore.collection('user_post').get();
+      QuerySnapshot querySnapshot = await firestore
+          .collection('user_post')
+          .orderBy('time', descending: true) // 'time' フィールドで降順ソート（新しい順）
+          .get();
 
       List<Map<String, dynamic>> dataList = [];
       querySnapshot.docs.forEach((doc) {
@@ -57,23 +60,94 @@ class _YourScreenState extends State<YourScreen> {
             // ドキュメントのリストを表示
             Column(
               children: documentList.map<Widget>((documentData) {
-                return Column(
-                  children: [
-                    Text('Title: ${documentData['author']}'),
+                return Container(
+                  // 各投稿を囲むContainerを追加
+                  margin: EdgeInsets.all(10), // 枠の余白を追加
+                  padding: EdgeInsets.all(10), // 内容の余白を追加
+                  decoration: BoxDecoration(
+                    // 枠のスタイルを設定
+                    border: Border.all(
+                      // 黒い枠線を追加
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // 画像URLリストを表示
+                      if (documentData['imgURL'] is List)
+                        Column(
+                          children:
+                              documentData['imgURL'].map<Widget>((imageUrl) {
+                            return Image.network(
+                              imageUrl,
+                            );
+                          }).toList(),
+                        )
+                      else if (documentData['imgURL'] is String)
+                        Image.network(
+                          documentData['imgURL'],
+                        ), // 単一のURLの場合
+                      RichText(
+                        textAlign: TextAlign.center, // テキストをセンターに配置
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'title\n',
+                              style: GoogleFonts.happyMonkey(
+                                textStyle: const TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' ${documentData['title']}',
+                              style: TextStyle(
+                                fontSize: 20, // 異なるスタイルを設定
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
-                    // 画像URLリストを表示
-                    if (documentData['imgURL'] is List)
-                      Column(
-                        children:
-                            documentData['imgURL'].map<Widget>((imageUrl) {
-                          return Image.network(imageUrl);
-                        }).toList(),
-                      )
-                    else if (documentData['imgURL'] is String)
-                      Image.network(documentData['imgURL']), // 単一のURLの場合
-
-                    Divider(),
-                  ],
+                      const Divider(
+                        height: 10,
+                        thickness: 2,
+                        indent: 10,
+                        endIndent: 0,
+                        color: Colors.blue,
+                      ),
+                      RichText(
+                        textAlign: TextAlign.center, // テキストをセンターに配置
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'comment\n',
+                              style: GoogleFonts.happyMonkey(
+                                textStyle: const TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' ${documentData['author']}',
+                              style: TextStyle(
+                                fontSize: 20, // 異なるスタイルを設定
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }).toList(),
             ),
