@@ -1,17 +1,9 @@
-import 'dart:io';
 import '../main2.dart';
-import '../screens/home.dart';
 import 'push_class.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'push.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:test3/src/push/confirmation.dart';
-import 'confirmation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'push_class.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddBookPage extends StatelessWidget {
   //List<File> images = [];
