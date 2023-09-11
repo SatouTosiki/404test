@@ -9,7 +9,7 @@ final FirebaseFirestore firestore = FirebaseFirestore.instance;
 Future<Map<String, dynamic>> fetchDocumentData() async {
   try {
     DocumentReference docRef =
-        firestore.collection('user_post').doc('3ztr19CobXNhZ5Epj74P');
+        firestore.collection('user_post').doc('1MvmXTcCUX0N0kGxXVqp');
     DocumentSnapshot docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {
@@ -36,9 +36,6 @@ class _YourScreenState extends State<YourScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Firestore Document Data'),
-      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -54,7 +51,9 @@ class _YourScreenState extends State<YourScreen> {
             ),
             SizedBox(height: 20),
             Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
-            Text('Description: ${documentData['imgURL']}'),
+            Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
+            if (documentData['imgURL'] != null)
+              Image.network(documentData['imgURL']), // imgURLがnullでない場合にのみ画像を表示
           ],
         ),
       ),
