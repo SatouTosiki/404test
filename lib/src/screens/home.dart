@@ -47,7 +47,7 @@ class _YourScreenState extends State<YourScreen> {
                   documentData = data; // 取得したデータを更新
                 });
               },
-              child: Text('Fetch Document Data'),
+              child: Text('a'),
             ),
             SizedBox(height: 20),
             Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
