@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:test3/src/main2.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-Future<Map<String, dynamic>> fetchDocumentData() async {
+Future<List<String>> fetchImageURLs() async {
   try {
     DocumentReference docRef =
-        firestore.collection('user_post').doc('3ztr19CobXNhZ5Epj74P');
+        firestore.collection('user_post').doc('1MvmXTcCUX0N0kGxXVqp');
     DocumentSnapshot docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {
-      // ドキュメントが存在する場合、データを取得して返します
-      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
-      return data;
+      // ドキュメントが存在する場合、リスト形式のimgURLsフィールドを取得して返します
+      List<String> imageURLs = List<String>.from(docSnapshot.get('imgURLs'));
+      return imageURLs;
     } else {
-      return {}; // ドキュメントが存在しない場合は空のMapを返します
+      return []; // ドキュメントが存在しない場合は空のリストを返します
     }
   } catch (e) {
-    print('Error fetching document: $e');
-    return {}; // エラー時にも空のMapを返します
+    print('Error fetching image URLs: $e');
+    return []; // エラー時にも空のリストを返します
   }
 }
 
@@ -31,12 +28,30 @@ class YourScreen extends StatefulWidget {
 }
 
 class _YourScreenState extends State<YourScreen> {
-  Map<String, dynamic> documentData = {}; // 取得したデータを格納する変数
+  List<String> imageUrls = []; // 画像のURLを格納するリスト
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                List<String> urls = await fetchImageURLs();
+                setState(() {
+                  imageUrls = urls; // 画像のURLリストを更新
+                });
+              },
+              child: Text('Fetch Image URLs'),
+            ),
+            SizedBox(height: 20),
+            for (String imageUrl in imageUrls)
+              Image.network(imageUrl), // 画像のURLリスト内の各URLに対して画像を表示
+          ],
+        ),
+      ),
     );
   }
 }
