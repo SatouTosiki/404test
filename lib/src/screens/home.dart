@@ -59,23 +59,51 @@ class _YourScreenState extends State<YourScreen> {
             // ドキュメントのリストを表示
             Column(
               children: documentList.map<Widget>((documentData) {
-                return Column(
-                  children: [
-                    Text('タイトル: ${documentData['title']}'),
-
-                    // 画像URLリストを表示
-                    if (documentData['imgURL'] is List)
-                      Column(
-                        children:
-                            documentData['imgURL'].map<Widget>((imageUrl) {
-                          return Image.network(imageUrl);
-                        }).toList(),
-                      )
-                    else if (documentData['imgURL'] is String)
-                      Image.network(documentData['imgURL']), // 単一のURLの場合
-                    Text('説明: ${documentData['author']}'),
-                    Divider(),
-                  ],
+                return Container(
+                  // 各投稿を囲むContainerを追加
+                  margin: EdgeInsets.all(10), // 枠の余白を追加
+                  padding: EdgeInsets.all(10), // 内容の余白を追加
+                  decoration: BoxDecoration(
+                    // 枠のスタイルを設定
+                    border: Border.all(
+                      // 黒い枠線を追加
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // 画像URLリストを表示
+                      if (documentData['imgURL'] is List)
+                        Column(
+                          children:
+                              documentData['imgURL'].map<Widget>((imageUrl) {
+                            return Image.network(
+                              imageUrl,
+                            );
+                          }).toList(),
+                        )
+                      else if (documentData['imgURL'] is String)
+                        Image.network(
+                          documentData['imgURL'],
+                        ), // 単一のURLの場合
+                      Text(
+                        'タイトル: ${documentData['title']}',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      const Divider(
+                        height: 10,
+                        thickness: 2,
+                        indent: 10,
+                        endIndent: 0,
+                        color: Colors.blue,
+                      ),
+                      Text(
+                        '説明: ${documentData['author']}',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
                 );
               }).toList(),
             ),
