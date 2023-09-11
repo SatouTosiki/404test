@@ -1,29 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test3/src/main2.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-Future<Map<String, dynamic>> fetchDocumentData() async {
-  try {
-    DocumentReference docRef =
-        firestore.collection('user_post').doc('5IWsRoa6F7kLajjIraHw');
-    DocumentSnapshot docSnapshot = await docRef.get();
-
-    if (docSnapshot.exists) {
-      // ドキュメントが存在する場合、データを取得して返します
-      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
-      return data;
-    } else {
-      return {}; // ドキュメントが存在しない場合は空のMapを返します
-    }
-  } catch (e) {
-    print('Error fetching document: $e');
-    return {}; // エラー時にも空のMapを返します
-  }
-}
 
 class YourScreen extends StatefulWidget {
   @override
@@ -31,7 +9,41 @@ class YourScreen extends StatefulWidget {
 }
 
 class _YourScreenState extends State<YourScreen> {
-  Map<String, dynamic> documentData = {}; // 取得したデータを格納する変数
+  List<Map<String, dynamic>> documentList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDocumentData(); // 初期データの取得
+    subscribeToUpdates(); // リアルタイム更新の購読
+  }
+
+  Future<void> fetchDocumentData() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await firestore.collection('user_post').get();
+
+      List<Map<String, dynamic>> dataList = [];
+      querySnapshot.docs.forEach((doc) {
+        if (doc.exists) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          dataList.add(data);
+        }
+      });
+
+      setState(() {
+        documentList = dataList;
+      });
+    } catch (e) {
+      print('Error fetching documents: $e');
+    }
+  }
+
+  void subscribeToUpdates() {
+    firestore.collection('user_post').snapshots().listen((event) {
+      fetchDocumentData(); // データが変更されたときにデータを更新
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,24 +52,31 @@ class _YourScreenState extends State<YourScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () async {
-                Map<String, dynamic> data = await fetchDocumentData();
-                setState(() {
-                  documentData = data; // 取得したデータを更新
-                });
-              },
-              child: Text('a'),
-            ),
             SizedBox(height: 20),
-            Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
-            if (documentData['imgURL'] != null &&
-                documentData['imgURL'].isNotEmpty)
-              Column(
-                children: documentData['imgURL'].map<Widget>((imageUrl) {
-                  return Image.network(imageUrl); // リスト内の各URLをImage.networkで表示
-                }).toList(),
-              ),
+
+            // ドキュメントのリストを表示
+            Column(
+              children: documentList.map<Widget>((documentData) {
+                return Column(
+                  children: [
+                    Text('Title: ${documentData['author']}'),
+
+                    // 画像URLリストを表示
+                    if (documentData['imgURL'] is List)
+                      Column(
+                        children:
+                            documentData['imgURL'].map<Widget>((imageUrl) {
+                          return Image.network(imageUrl);
+                        }).toList(),
+                      )
+                    else if (documentData['imgURL'] is String)
+                      Image.network(documentData['imgURL']), // 単一のURLの場合
+
+                    Divider(),
+                  ],
+                );
+              }).toList(),
+            ),
           ],
         ),
       ),
