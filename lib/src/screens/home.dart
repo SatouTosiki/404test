@@ -10,7 +10,45 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(),
+      appBar: AppBar(
+        title: Text('Firebase Data'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('user_post').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          final documents = snapshot.data!.docs;
+          if (documents.isEmpty) {
+            return Text('No data available');
+          }
+          return ListView.builder(
+            itemCount: documents.length,
+            itemBuilder: (context, index) {
+              final document = documents[index];
+              final author = document['author'] ?? ''; // 'author' フィールドの値を取得
+              final imgURL = document['imgURL'] ?? '';
+              final time = document['time'];
+              final title = document['title']; // 'title' フィールドの値を取得
+              return ListTile(
+                title: Text(author), // 'author' フィールドの値を表示
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(imgURL),
+                    Text(time), // 'time' フィールドの値を表示
+                    Text(title), // 'title' フィールドの値を表示
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
