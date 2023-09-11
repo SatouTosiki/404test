@@ -4,51 +4,39 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+Future<Map<String, dynamic>> fetchDocumentData() async {
+  try {
+    DocumentReference docRef =
+        firestore.collection('user_post').doc('3ztr19CobXNhZ5Epj74P');
+    DocumentSnapshot docSnapshot = await docRef.get();
+
+    if (docSnapshot.exists) {
+      // ドキュメントが存在する場合、データを取得して返します
+      Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+      return data;
+    } else {
+      return {}; // ドキュメントが存在しない場合は空のMapを返します
+    }
+  } catch (e) {
+    print('Error fetching document: $e');
+    return {}; // エラー時にも空のMapを返します
+  }
+}
+
+class YourScreen extends StatefulWidget {
+  @override
+  _YourScreenState createState() => _YourScreenState();
+}
+
+class _YourScreenState extends State<YourScreen> {
+  Map<String, dynamic> documentData = {}; // 取得したデータを格納する変数
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Firebase Data'),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('user_post').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          }
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-          final documents = snapshot.data!.docs;
-          if (documents.isEmpty) {
-            return Text('No data available');
-          }
-          return ListView.builder(
-            itemCount: documents.length,
-            itemBuilder: (context, index) {
-              final document = documents[index];
-              final author = document['author'] ?? ''; // 'author' フィールドの値を取得
-              final imgURL = document['imgURL'] ?? '';
-              final time = document['time'];
-              final title = document['title']; // 'title' フィールドの値を取得
-              return ListTile(
-                title: Text(author), // 'author' フィールドの値を表示
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(imgURL),
-                    Text(time), // 'time' フィールドの値を表示
-                    Text(title), // 'title' フィールドの値を表示
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
+      body: Center(),
     );
   }
 }
