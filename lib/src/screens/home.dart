@@ -6,7 +6,7 @@ final FirebaseFirestore firestore = FirebaseFirestore.instance;
 Future<List<String>> fetchImageURLs() async {
   try {
     DocumentReference docRef =
-        firestore.collection('user_post').doc('1MvmXTcCUX0N0kGxXVqp');
+        firestore.collection('user_post').doc('5IWsRoa6F7kLajjIraHw');
     DocumentSnapshot docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {
@@ -47,8 +47,10 @@ class _YourScreenState extends State<YourScreen> {
               child: Text('Fetch Image URLs'),
             ),
             SizedBox(height: 20),
-            for (String imageUrl in imageUrls)
-              Image.network(imageUrl), // 画像のURLリスト内の各URLに対して画像を表示
+            Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
+            Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
+            if (documentData['imgURL'] != null)
+              Image.network(documentData['imgURL']), // imgURLがnullでない場合にのみ画像を表示
           ],
         ),
       ),
