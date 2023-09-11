@@ -9,7 +9,7 @@ final FirebaseFirestore firestore = FirebaseFirestore.instance;
 Future<Map<String, dynamic>> fetchDocumentData() async {
   try {
     DocumentReference docRef =
-        firestore.collection('user_post').doc('1MvmXTcCUX0N0kGxXVqp');
+        firestore.collection('user_post').doc('5IWsRoa6F7kLajjIraHw');
     DocumentSnapshot docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {
@@ -51,9 +51,13 @@ class _YourScreenState extends State<YourScreen> {
             ),
             SizedBox(height: 20),
             Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
-            Text('Title: ${documentData['author']}'), // ドキュメントのフィールドを表示
-            if (documentData['imgURL'] != null)
-              Image.network(documentData['imgURL']), // imgURLがnullでない場合にのみ画像を表示
+            if (documentData['imgURL'] != null &&
+                documentData['imgURL'].isNotEmpty)
+              Column(
+                children: documentData['imgURL'].map<Widget>((imageUrl) {
+                  return Image.network(imageUrl); // リスト内の各URLをImage.networkで表示
+                }).toList(),
+              ),
           ],
         ),
       ),
