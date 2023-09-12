@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -16,7 +15,6 @@ class _YourScreenState extends State<YourScreen> {
   @override
   void initState() {
     super.initState();
-    //fetchDocumentData(); // 初期データの取得
     fetchDocumentData(); // 初期データの取得
   }
 
@@ -31,7 +29,6 @@ class _YourScreenState extends State<YourScreen> {
       querySnapshot.docs.forEach((doc) {
         if (doc.exists) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
           dataList.add(data);
         }
       });
@@ -82,7 +79,34 @@ class _YourScreenState extends State<YourScreen> {
                     child: Column(
                       children: [
                         Column(
-                          children: [],
+                          children: [
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'name\n', // 'name'フィールドを表示
+                                    style: GoogleFonts.happyMonkey(
+                                      textStyle: const TextStyle(
+                                        fontSize: 30,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        ' ${documentData['name']}', // 'name'フィールドの値を表示
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 10,
@@ -156,6 +180,13 @@ class _YourScreenState extends State<YourScreen> {
                               ),
                             ],
                           ),
+                        ),
+                        const Divider(
+                          height: 10,
+                          thickness: 2,
+                          indent: 10,
+                          endIndent: 0,
+                          color: Colors.blue,
                         ),
                       ],
                     ),
