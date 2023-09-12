@@ -78,10 +78,27 @@ class AddBookPage extends StatelessWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                        Text(
-                          " ${model.imageFiles.length} 枚選択中。",
-                          style: const TextStyle(fontSize: 16),
-                        ), // length の値を表示する Text ウィジェット
+
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: images.map((image) {
+                              return Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Container(
+                                  height: 350,
+                                  width: 350,
+                                  child: Image.file(image, fit: BoxFit.cover),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        if (images.isNotEmpty) // 画像が選択されている場合にのみ表示
+                          Text(
+                            " ${model.imageFiles.length} 枚選択中。",
+                            style: const TextStyle(fontSize: 16),
+                          ), // length の値を表示する Text ウィジェット
 
                         TextField(
                           decoration: const InputDecoration(
