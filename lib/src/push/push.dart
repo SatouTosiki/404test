@@ -1,11 +1,19 @@
 import 'dart:io';
+
 import 'push_class.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:image_picker/image_picker.dart';
+
 import 'package:line_icons/line_icons.dart';
+
 import 'package:test3/src/push/confirmation.dart';
+
 import 'confirmation.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:provider/provider.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -15,16 +23,20 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreen extends State<NotificationScreen> {
   List<File> images = []; // 選択された複数の画像を格納するリスト
+
   final picker = ImagePicker();
 
   // 端末のアルバムに保存されている画像を取得する命令
+
   Future getImageFromGallery() async {
     final List<XFile>? pickedFiles = await picker.pickMultiImage(); // 複数の画像を選択
+
     setState(() {
       if (pickedFiles != null) {
         for (var pickedFile in pickedFiles) {
           if (images.length < 5) {
             // リストにまだ5枚未満の画像がある場合に追加
+
             images.add(File(pickedFile.path)); // images リストに画像を追加
           }
         }
@@ -46,9 +58,13 @@ class _NotificationScreen extends State<NotificationScreen> {
                       padding: EdgeInsets.all(20),
                       child: Text(
                         "",
+
                         //画像が入っているときはtextなし
+
                         style: TextStyle(
+
                             //fontStyle: FontStyle.italic,
+
                             fontSize: 20),
                       ),
                     )
@@ -78,6 +94,7 @@ class _NotificationScreen extends State<NotificationScreen> {
               ),
 
               const SizedBox(height: 20),
+
               // 選択された画像を表示
 
               SingleChildScrollView(
@@ -99,7 +116,9 @@ class _NotificationScreen extends State<NotificationScreen> {
               const SizedBox(height: 40),
 
               if (images.isNotEmpty) // 画像が選択されている場合にのみ表示
+
                 //AddDocumentScreen(),
+
                 //RecipeForm(), //クラスを別ファイルから呼び出してる
 
                 const SizedBox(
@@ -112,55 +131,3 @@ class _NotificationScreen extends State<NotificationScreen> {
     );
   }
 }
-
-// class AddDocumentScreen extends StatelessWidget {
-//   final TextEditingController titleController = TextEditingController();
-//   final TextEditingController contentController = TextEditingController();
-
-//   void addDocument() {
-//     String title = titleController.text;
-//     String content = contentController.text;
-
-//     CollectionReference documents =
-//         FirebaseFirestore.instance.collection('user_post');
-
-//     documents.add({
-//       'title': title,
-//       'content': content,
-//     }).then((docRef) {
-//       print('Document added with ID: ${docRef.id}');
-//     }).catchError((error) {
-//       print('Error adding document: $error');
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Add Document'),
-//       ),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             TextField(
-//               controller: titleController,
-//               decoration: InputDecoration(labelText: 'Title'),
-//             ),
-//             TextField(
-//               controller: contentController,
-//               decoration: InputDecoration(labelText: 'Content'),
-//             ),
-//             SizedBox(height: 16.0),
-//             ElevatedButton(
-//               onPressed: addDocument,
-//               child: Text('Add Document'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

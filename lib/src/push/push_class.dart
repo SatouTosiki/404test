@@ -12,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
 String? userName = user?.displayName; // ユーザー名を取得
+List<File> images = []; // 選択された複数の画像を格納するリスト
+final picker = ImagePicker();
 
 Future<User?> getCurrentUser() async {
   return FirebaseAuth.instance.currentUser;
@@ -22,9 +24,7 @@ class AddBookModel extends ChangeNotifier {
   String? author;
   List<File> imageFiles = []; // 複数の画像ファイルのパスを格納するリスト
   String? timestamp;
-
   bool isLoading = false;
-
   final picker = ImagePicker();
 
   void startLoading() {
@@ -82,21 +82,33 @@ class AddBookModel extends ChangeNotifier {
       for (var pickedFile in pickedFiles) {
         if (imageFiles.length < 5) {
           String imagePath = pickedFile.path;
-
           imageFiles.add(File(imagePath)); // 画像ファイルのパスをリストに追加」
-
           int length = imageFiles.length;
         } else {
           print("画像が多い");
         }
-
         // 各画像ファイルのパスにアクセ
       }
-
       notifyListeners();
     }
   }
 }
+
+Future getImageFromGallery() async {
+  final List<XFile>? pickedFiles = await picker.pickMultiImage(); // 複数の画像を選択
+  setState(() {
+    if (pickedFiles != null) {
+      for (var pickedFile in pickedFiles) {
+        if (images.length < 5) {
+          // リストにまだ5枚未満の画像がある場合に追加
+          images.add(File(pickedFile.path)); // images リストに画像を追加
+        }
+      }
+    }
+  });
+}
+
+void setState(Null Function() param0) {}
 
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {

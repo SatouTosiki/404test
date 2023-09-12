@@ -10,6 +10,7 @@ class AddBookPage extends StatelessWidget {
   final picker = ImagePicker();
 
   AddBookModel model = AddBookModel();
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AddBookModel>(
@@ -23,32 +24,57 @@ class AddBookPage extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        GestureDetector(
-                          child: SizedBox(
-                            width: 300,
-                            height: 420,
-                            child: SingleChildScrollView(
-                              scrollDirection:
-                                  Axis.horizontal, // 画像が水平方向にスクロールできるようにします
-                              child: Row(
-                                children: model.imageFiles.isNotEmpty
-                                    ? model.imageFiles.map((imageFile) {
-                                        return Image.file(imageFile);
-                                      }).toList()
-                                    : [
-                                        Image.asset(
-                                          "lib/src/img/aaa.png",
-                                        ),
-                                      ],
+                        // GestureDetector(
+                        //   child: SizedBox(
+                        //     width: 300,
+                        //     height: 420,
+                        //     child: SingleChildScrollView(
+                        //       scrollDirection:
+                        //           Axis.horizontal, // 画像が水平方向にスクロールできるようにします
+                        //       child: Row(
+                        //         children: model.imageFiles.isNotEmpty
+                        //             ? model.imageFiles.map((imageFile) {
+                        //                 return Image.file(imageFile);
+                        //               }).toList()
+                        //             : [
+                        //                 Image.asset(
+                        //                   "lib/src/img/aaa.png",
+                        //                 ),
+                        //               ],
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   onTap: () async {
+                        //     print("反応！");
+
+                        //     await model.pickImage();
+                        //   },
+                        // ),
+
+                        FilledButton.tonal(
+                          child: Container(
+                            width: 220,
+                            height: 220,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  'lib/src/img/aaa.png',
+                                ),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                          onTap: () async {
-                            print("反応！");
-
-                            await model.pickImage();
+                          onPressed: () {
+                            model.pickImage();
                           },
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 0),
+                          ),
                         ),
+
                         const SizedBox(
                           height: 20,
                         ),
@@ -66,11 +92,11 @@ class AddBookPage extends StatelessWidget {
                           },
                         ),
                         const SizedBox(
-                          height: 8,
+                          height: 40,
                         ),
                         TextField(
                           decoration: const InputDecoration(
-                            hintText: '説明文',
+                            hintText: '作り方',
                           ),
                           onChanged: (text) {
                             model.author = text;

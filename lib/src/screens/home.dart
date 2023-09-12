@@ -67,8 +67,8 @@ class _YourScreenState extends State<YourScreen> {
                       // 枠のスタイルを設定
                       border: Border.all(
                         // 黒い枠線を追加
-                        color: Colors.blue,
-                        width: 2.0,
+                        color: Colors.black,
+                        width: 1,
                       ),
                       borderRadius: BorderRadius.all(
                         // 角を丸くする
@@ -85,18 +85,9 @@ class _YourScreenState extends State<YourScreen> {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: 'name\n', // 'name'フィールドを表示
-                                    style: GoogleFonts.happyMonkey(
-                                      textStyle: const TextStyle(
-                                        fontSize: 30,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        ' ${documentData['name']}', // 'name'フィールドの値を表示
+                                    text: documentData['name'] != null
+                                        ? ' ${documentData['name']}'
+                                        : '名無しさん',
                                     style: const TextStyle(
                                       fontSize: 20,
                                       color: Colors.black,
@@ -151,10 +142,10 @@ class _YourScreenState extends State<YourScreen> {
                         ),
                         const Divider(
                           height: 10,
-                          thickness: 2,
+                          thickness: 1,
                           indent: 10,
                           endIndent: 0,
-                          color: Colors.blue,
+                          color: Colors.black,
                         ),
                         RichText(
                           textAlign: TextAlign.center,
@@ -180,13 +171,6 @@ class _YourScreenState extends State<YourScreen> {
                               ),
                             ],
                           ),
-                        ),
-                        const Divider(
-                          height: 10,
-                          thickness: 2,
-                          indent: 10,
-                          endIndent: 0,
-                          color: Colors.blue,
                         ),
                       ],
                     ),
