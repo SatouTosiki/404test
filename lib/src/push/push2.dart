@@ -101,38 +101,22 @@ class AddBookPage extends StatelessWidget {
                         ), // length の値を表示する Text ウィジェット
 
                         GestureDetector(
-                          child: SizedBox(
-                            width: 300,
-                            height: 420,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: model.imageFiles.isNotEmpty
-                                    ? model.imageFiles.map((imageFile) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.file(
-                                            imageFile,
-                                            width: 100, // 画像の幅を調整してください
-                                            height: 100, // 画像の高さを調整してください
-                                            fit: BoxFit
-                                                .cover, // 画像の表示方法を調整してください
-                                          ),
-                                        );
-                                      }).toList()
-                                    : [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.asset(
-                                            "lib/src/img/aaa.png",
-                                            width: 100, // 画像の幅を調整してください
-                                            height: 100, // 画像の高さを調整してください
-                                            fit: BoxFit
-                                                .cover, // 画像の表示方法を調整してください
-                                          ),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: model.imageFiles.isNotEmpty
+                                  ? model.imageFiles.map((imageFile) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Image.file(
+                                          imageFile,
+                                          width: 100, // 画像の幅を調整してください
+                                          height: 100, // 画像の高さを調整してください
+                                          fit: BoxFit.cover, // 画像の表示方法を調整してください
                                         ),
-                                      ],
-                              ),
+                                      );
+                                    }).toList()
+                                  : [],
                             ),
                           ),
                           onTap: () async {

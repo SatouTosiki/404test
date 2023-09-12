@@ -35,7 +35,6 @@ class AddBookModel extends ChangeNotifier {
 
   void endLoading() {
     isLoading = false;
-
     notifyListeners();
   }
 
