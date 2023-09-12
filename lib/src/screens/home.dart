@@ -17,6 +17,7 @@ class _YourScreenState extends State<YourScreen> {
   void initState() {
     super.initState();
     //fetchDocumentData(); // 初期データの取得
+    fetchDocumentData(); // 初期データの取得
   }
 
   Future<void> fetchDocumentData() async {
@@ -25,7 +26,6 @@ class _YourScreenState extends State<YourScreen> {
           .collection('user_post')
           .orderBy('time', descending: true) // 'time' フィールドで降順ソート（新しい順）
           .get();
-
       List<Map<String, dynamic>> dataList = [];
 
       querySnapshot.docs.forEach((doc) {
@@ -65,6 +65,7 @@ class _YourScreenState extends State<YourScreen> {
                   return Container(
                     margin: EdgeInsets.all(5), // 枠の余白を追加
                     padding: EdgeInsets.all(5), // 内容の余白を追加
+
                     decoration: BoxDecoration(
                       // 枠のスタイルを設定
                       border: Border.all(
@@ -80,6 +81,12 @@ class _YourScreenState extends State<YourScreen> {
 
                     child: Column(
                       children: [
+                        Column(
+                          children: [],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         if (documentData['imgURL'] is List)
                           Column(
                             children:
@@ -100,7 +107,7 @@ class _YourScreenState extends State<YourScreen> {
                               TextSpan(
                                 text: 'title\n',
                                 style: GoogleFonts.happyMonkey(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 30,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -109,7 +116,7 @@ class _YourScreenState extends State<YourScreen> {
                               ),
                               TextSpan(
                                 text: ' ${documentData['title']}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -132,7 +139,7 @@ class _YourScreenState extends State<YourScreen> {
                               TextSpan(
                                 text: 'comment\n',
                                 style: GoogleFonts.happyMonkey(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 30,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -141,7 +148,7 @@ class _YourScreenState extends State<YourScreen> {
                               ),
                               TextSpan(
                                 text: ' ${documentData['author']}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
