@@ -1,18 +1,17 @@
 import 'dart:ffi';
-
 import '../main2.dart';
 import 'push_class.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class AddBookPage extends StatelessWidget {
-  //List<File> images = [];
   final picker = ImagePicker();
+  //List<Widget> textFields = []; // テキストフィールドのリスト
 
   AddBookModel model = AddBookModel();
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AddBookModel>(
@@ -27,26 +26,26 @@ class AddBookPage extends StatelessWidget {
                     child: Column(
                       children: [
                         FilledButton.tonal(
-                          child: Container(
-                            width: 220,
-                            height: 220,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: AssetImage(
-                                  'lib/src/img/aaa.png',
-                                ),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
                           onPressed: () {
                             model.pickImage();
                           },
                           style: FilledButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 0, vertical: 0),
+                          ),
+                          child: Container(
+                            width: 220,
+                            height: 220,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              image: const DecorationImage(
+                                image: AssetImage(
+                                  'lib/src/img/aaa.png',
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
                         ),
 
@@ -71,7 +70,7 @@ class AddBookPage extends StatelessWidget {
                         ),
 
                         Text(
-                          " ${model.imageFiles.length} 枚選択中。",
+                          " ${model.imageFiles.length} 枚選択中",
                           style: const TextStyle(fontSize: 16),
                         ), // length の値を表示する Text ウィジェット
 
@@ -115,15 +114,19 @@ class AddBookPage extends StatelessWidget {
                         ),
                         TextField(
                           decoration: const InputDecoration(
-                            hintText: '作り方',
+                            hintText: 'コメント',
                           ),
                           onChanged: (text) {
                             model.author = text;
                           },
                         ),
-                        const SizedBox(
-                          height: 16,
+
+                        SizedBox(
+                          height: 20,
                         ),
+
+                        text(),
+
                         ElevatedButton(
                           onPressed: () async {
                             // 追加の処理

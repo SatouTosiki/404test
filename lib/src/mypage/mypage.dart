@@ -4,6 +4,44 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:flutter/material.dart';
+
+List<Widget> textFields = []; // テキストフィールドのリスト
+
+class AddTextFieldButton extends StatefulWidget {
+  @override
+  _AddTextFieldButtonState createState() => _AddTextFieldButtonState();
+}
+
+class _AddTextFieldButtonState extends State<AddTextFieldButton> {
+  List<Widget> textFields = []; // テキストフィールドのリスト
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            // ボタンが押されたら新しいテキストフィールドを追加
+            setState(() {
+              textFields.add(TextField());
+            });
+          },
+          child: Text('テキストフィールドを追加'),
+        ),
+        // テキストフィールドをリストから表示
+        Column(
+          children: textFields,
+        ),
+        ElevatedButton(
+          onPressed: () {},
+          child: Text(""),
+        )
+      ],
+    );
+  }
+}
+
 // ユーザーがログインしていることを確認する関数
 
 class MyPage extends StatelessWidget {
@@ -36,6 +74,9 @@ class MyPage extends StatelessWidget {
           ],
         ),
         backgroundColor: Colors.white,
+      ),
+      body: Center(
+        child: AddTextFieldButton(), // クラスを使ってボタンとテキストフィールドを表示
       ),
     );
   }

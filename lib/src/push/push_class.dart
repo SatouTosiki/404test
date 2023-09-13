@@ -7,12 +7,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 // ユーザーがログインしていることを確認する関数
 
 User? user = FirebaseAuth.instance.currentUser;
 String? userName = user?.displayName; // ユーザー名を取得
 List<File> images = []; // 選択された複数の画像を格納するリスト
+List<Widget> textFields = []; // テキストフィールドのリスト
+
 final picker = ImagePicker();
 
 Future<User?> getCurrentUser() async {
@@ -23,19 +26,24 @@ class AddBookModel extends ChangeNotifier {
   String? title;
   String? author;
   List<File> imageFiles = []; // 複数の画像ファイルのパスを格納するリスト
+  List<Widget> textFields = []; //テキストフィールドを追加していくリスト
   String? timestamp;
   bool isLoading = false;
   final picker = ImagePicker();
 
   void startLoading() {
     isLoading = true;
-
     notifyListeners();
   }
 
   void endLoading() {
     isLoading = false;
     notifyListeners();
+  }
+
+  void addTextField() {
+    textFields.add(TextField());
+    notifyListeners(); // 状態変更を通知
   }
 
   Future addBook() async {
@@ -109,6 +117,28 @@ Future getImageFromGallery() async {
 
 void setState(Null Function() param0) {}
 
+class text extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final myModel = Provider.of<AddBookModel>(context);
+
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            myModel.addTextField(); // モデルのメソッドを呼び出し
+          },
+          child: Text('テキストフィールドを追加'),
+        ),
+        // テキストフィールドをリストから表示
+        Column(
+          children: myModel.textFields,
+        ),
+      ],
+    );
+  }
+}
+
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll('#', '');
@@ -121,3 +151,33 @@ class HexColor extends Color {
 
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
+
+// class AddTextFieldButton extends StatefulWidget {
+//   @override
+//   _AddTextFieldButtonState createState() => _AddTextFieldButtonState();
+// }
+
+// class _AddTextFieldButtonState extends State<AddTextFieldButton> {
+//   List<Widget> textFields = []; // テキストフィールドのリスト
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         ElevatedButton(
+//           onPressed: () {
+//             // ボタンが押されたら新しいテキストフィールドを追加
+//             setState(() {
+//               textFields.add(TextField());
+//             });
+//           },
+//           child: Text('テキストフィールドを追加'),
+//         ),
+//         // テキストフィールドをリストから表示
+//         Column(
+//           children: textFields,
+//         ),
+//       ],
+//     );
+//   }
+// }

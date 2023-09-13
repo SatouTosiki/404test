@@ -49,85 +49,9 @@ class _NotificationScreen extends State<NotificationScreen> {
     return Scaffold(
       backgroundColor: HexColor('#F0FFFF'), // HexColorで指定,
 
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              images.isNotEmpty
-                  ? const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text(
-                        "",
-
-                        //画像が入っているときはtextなし
-
-                        style: TextStyle(
-
-                            //fontStyle: FontStyle.italic,
-
-                            fontSize: 20),
-                      ),
-                    )
-                  : const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text(
-                        "選べる画像は5枚まで",
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic, fontSize: 25),
-                      ),
-                    ),
-
-              const SizedBox(height: 25),
-
-              FilledButton.tonal(
-                child: const Text(
-                  '画像を追加',
-                  style: TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  getImageFromGallery();
-                },
-                style: FilledButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // 選択された画像を表示
-
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: images.map((image) {
-                    return Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Container(
-                        height: 350,
-                        width: 350,
-                        child: Image.file(image, fit: BoxFit.cover),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-
-              const SizedBox(height: 40),
-
-              if (images.isNotEmpty) // 画像が選択されている場合にのみ表示
-
-                //AddDocumentScreen(),
-
-                //RecipeForm(), //クラスを別ファイルから呼び出してる
-
-                const SizedBox(
-                  height: 50,
-                )
-            ],
-          ),
-        ),
-      ),
+      // body: Center(
+      //   child: AddTextFieldButton(), // クラスを使ってボタンとテキストフィールドを表示
+      // ),
     );
   }
 }
