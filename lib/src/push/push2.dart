@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import '../main2.dart';
 import 'push_class.dart';
 import 'package:flutter/material.dart';
@@ -24,33 +26,6 @@ class AddBookPage extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        // GestureDetector(
-                        //   child: SizedBox(
-                        //     width: 300,
-                        //     height: 420,
-                        //     child: SingleChildScrollView(
-                        //       scrollDirection:
-                        //           Axis.horizontal, // 画像が水平方向にスクロールできるようにします
-                        //       child: Row(
-                        //         children: model.imageFiles.isNotEmpty
-                        //             ? model.imageFiles.map((imageFile) {
-                        //                 return Image.file(imageFile);
-                        //               }).toList()
-                        //             : [
-                        //                 Image.asset(
-                        //                   "lib/src/img/aaa.png",
-                        //                 ),
-                        //               ],
-                        //       ),
-                        //     ),
-                        //   ),
-                        //   onTap: () async {
-                        //     print("反応！");
-
-                        //     await model.pickImage();
-                        //   },
-                        // ),
-
                         FilledButton.tonal(
                           child: Container(
                             width: 220,
@@ -110,8 +85,8 @@ class AddBookPage extends StatelessWidget {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Image.file(
                                           imageFile,
-                                          width: 100, // 画像の幅を調整してください
-                                          height: 100, // 画像の高さを調整してください
+                                          width: 150, // 画像の幅を調整してください
+                                          height: 150, // 画像の高さを調整してください
                                           fit: BoxFit.cover, // 画像の表示方法を調整してください
                                         ),
                                       );
@@ -124,6 +99,9 @@ class AddBookPage extends StatelessWidget {
                           },
                         ),
 
+                        SizedBox(
+                          height: 20,
+                        ),
                         TextField(
                           decoration: const InputDecoration(
                             hintText: 'タイトル',
