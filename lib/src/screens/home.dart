@@ -91,7 +91,7 @@ class _YourScreenState extends State<YourScreen> {
                                     style: const TextStyle(
                                       fontSize: 20,
                                       color: Colors.black,
-                                      fontWeight: FontWeight.bold,
+                                      //fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
@@ -123,9 +123,9 @@ class _YourScreenState extends State<YourScreen> {
                                 text: 'title\n',
                                 style: GoogleFonts.happyMonkey(
                                   textStyle: const TextStyle(
-                                    fontSize: 30,
+                                    fontSize: 25,
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                    //fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
@@ -134,7 +134,6 @@ class _YourScreenState extends State<YourScreen> {
                                 style: const TextStyle(
                                   fontSize: 20,
                                   color: Colors.black,
-                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
@@ -155,9 +154,8 @@ class _YourScreenState extends State<YourScreen> {
                                 text: 'comment\n',
                                 style: GoogleFonts.happyMonkey(
                                   textStyle: const TextStyle(
-                                    fontSize: 30,
+                                    fontSize: 25,
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
@@ -166,7 +164,7 @@ class _YourScreenState extends State<YourScreen> {
                                 style: const TextStyle(
                                   fontSize: 20,
                                   color: Colors.black,
-                                  fontWeight: FontWeight.bold,
+                                  //fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],

@@ -28,21 +28,21 @@ class _NotificationScreen extends State<NotificationScreen> {
 
   // 端末のアルバムに保存されている画像を取得する命令
 
-  Future getImageFromGallery() async {
-    final List<XFile>? pickedFiles = await picker.pickMultiImage(); // 複数の画像を選択
+  // Future getImageFromGallery() async {
+  //   final List<XFile>? pickedFiles = await picker.pickMultiImage(); // 複数の画像を選択
 
-    setState(() {
-      if (pickedFiles != null) {
-        for (var pickedFile in pickedFiles) {
-          if (images.length < 5) {
-            // リストにまだ5枚未満の画像がある場合に追加
+  //   setState(() {
+  //     if (pickedFiles != null) {
+  //       for (var pickedFile in pickedFiles) {
+  //         if (images.length < 5) {
+  //           // リストにまだ5枚未満の画像がある場合に追加
 
-            images.add(File(pickedFile.path)); // images リストに画像を追加
-          }
-        }
-      }
-    });
-  }
+  //           images.add(File(pickedFile.path)); // images リストに画像を追加
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

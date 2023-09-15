@@ -98,11 +98,12 @@ class AddBookPage extends StatelessWidget {
                           },
                         ),
 
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         TextField(
                           decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
                             hintText: 'タイトル',
                           ),
                           onChanged: (text) {
@@ -121,11 +122,18 @@ class AddBookPage extends StatelessWidget {
                           },
                         ),
 
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
 
-                        text(),
+                        textbotton(),
+
+                        const SizedBox(height: 30),
+
+                        re(),
+                        const SizedBox(
+                          height: 20,
+                        ),
 
                         ElevatedButton(
                           onPressed: () async {
@@ -136,6 +144,8 @@ class AddBookPage extends StatelessWidget {
                               model.timestamp =
                                   now.toString(); // タイムスタンプを文字列として設定
                               model.startLoading();
+                              model.addTextField();
+                              model.rere();
                               await model.addBook();
 
                               //投稿が成功したら、ホーム画面に遷移
