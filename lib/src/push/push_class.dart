@@ -28,6 +28,7 @@ class AddBookModel extends ChangeNotifier {
   List<File> imageFiles = []; // 複数の画像ファイルのパスを格納するリスト
   List<Widget> textFields = []; //テキストフィールドを追加していくリスト
   List<Widget> ingredients = []; //具材を登録
+  List<TextEditingController> textControllers = []; // テキストフィールド用のコントローラーリスト
   String? timestamp;
   bool isLoading = false;
   final picker = ImagePicker();
@@ -43,12 +44,16 @@ class AddBookModel extends ChangeNotifier {
   }
 
   void addTextField() {
+    final textController = TextEditingController();
+    textControllers.add(textController); // コントローラーをリストに追加
+
     textFields.add(
-      const TextField(
+      TextField(
         maxLength: 50,
         maxLines: 4,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(border: OutlineInputBorder()),
+        controller: textController, // コントローラーをテキストフィールドに設定
       ),
     );
     notifyListeners(); // 状態変更を通知
@@ -76,6 +81,11 @@ class AddBookModel extends ChangeNotifier {
 
     final doc = FirebaseFirestore.instance.collection('user_post').doc();
 
+    List<String> textFieldsValues = [];
+    for (var controller in textControllers) {
+      textFieldsValues.add(controller.text); // 各コントローラーから入力値を取得しリストに追加
+    }
+
     for (var imageFile in imageFiles) {
       // storageにアップロード
 
@@ -95,8 +105,9 @@ class AddBookModel extends ChangeNotifier {
       'author': author,
       'imgURL': imgURLs,
       'time': timestamp,
+      "textFields": textFieldsValues, // 各テキストフィールドの入力値を Firestore に追加
       'name': userName, // ユーザー名を Firestore フィールドに追加
-      "textFields": textFields, //作り方手順のリスト
+      //"textFields": textFields, //作り方手順のリスト
       "ingredients": ingredients, //材料
     });
   }
