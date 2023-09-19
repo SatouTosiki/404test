@@ -142,8 +142,8 @@ class _YourScreenState extends State<YourScreen> {
                         const Divider(
                           height: 10,
                           thickness: 1,
-                          indent: 10,
-                          endIndent: 0,
+                          indent: 70,
+                          endIndent: 70,
                           color: Colors.black,
                         ),
                         RichText(
@@ -170,6 +170,13 @@ class _YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
+                        const Divider(
+                          height: 10,
+                          thickness: 1,
+                          indent: 70,
+                          endIndent: 70,
+                          color: Colors.black,
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -178,7 +185,7 @@ class _YourScreenState extends State<YourScreen> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: '具材\n',
+                                text: '食材\n',
                                 style: GoogleFonts.happyMonkey(
                                   textStyle: const TextStyle(
                                     fontSize: 25,
@@ -187,15 +194,27 @@ class _YourScreenState extends State<YourScreen> {
                                 ),
                               ),
                               TextSpan(
-                                text: ' ${documentData['具材']}',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  //fontWeight: FontWeight.bold,
-                                ),
+                                children: [
+                                  for (var item in documentData['具材'])
+                                    TextSpan(
+                                      text: '$item\n',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        //fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                ],
                               ),
                             ],
                           ),
+                        ),
+                        const Divider(
+                          height: 10,
+                          thickness: 1,
+                          indent: 70,
+                          endIndent: 70,
+                          color: Colors.black,
                         ),
                         SizedBox(
                           height: 40,
@@ -214,12 +233,17 @@ class _YourScreenState extends State<YourScreen> {
                                 ),
                               ),
                               TextSpan(
-                                text: ' ${documentData['手順']}',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  //fontWeight: FontWeight.bold,
-                                ),
+                                children: [
+                                  for (var item in documentData['手順'])
+                                    TextSpan(
+                                      text: '$item\n',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        //fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                ],
                               ),
                             ],
                           ),
