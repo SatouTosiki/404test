@@ -173,7 +173,6 @@ class _YourScreenState extends State<YourScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
@@ -198,11 +197,9 @@ class _YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
-
                         SizedBox(
                           height: 40,
                         ),
-
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
@@ -227,19 +224,6 @@ class _YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
-
-                        // RichText(
-                        //   textAlign: TextAlign.center,
-                        //   text: TextSpan(
-                        //       text: ' ${documentData['具材']}',
-                        //       style: const TextStyle(color: Colors.black)),
-                        // ),
-                        // RichText(
-                        //   text: TextSpan(
-                        //     text: ' ${documentData["手順"]}',
-                        //     style: const TextStyle(color: Colors.black),
-                        //   ),
-                        // ),
                       ],
                     ),
                   );
