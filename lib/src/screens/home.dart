@@ -170,6 +170,76 @@ class _YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '具材\n',
+                                style: GoogleFonts.happyMonkey(
+                                  textStyle: const TextStyle(
+                                    fontSize: 25,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ${documentData['具材']}',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  //fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(
+                          height: 40,
+                        ),
+
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '作り方手順\n',
+                                style: GoogleFonts.happyMonkey(
+                                  textStyle: const TextStyle(
+                                    fontSize: 25,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ${documentData['手順']}',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  //fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // RichText(
+                        //   textAlign: TextAlign.center,
+                        //   text: TextSpan(
+                        //       text: ' ${documentData['具材']}',
+                        //       style: const TextStyle(color: Colors.black)),
+                        // ),
+                        // RichText(
+                        //   text: TextSpan(
+                        //     text: ' ${documentData["手順"]}',
+                        //     style: const TextStyle(color: Colors.black),
+                        //   ),
+                        // ),
                       ],
                     ),
                   );

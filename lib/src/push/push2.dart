@@ -130,7 +130,8 @@ class AddBookPage extends StatelessWidget {
 
                         const SizedBox(height: 30),
 
-                        re(),
+                        reee(),
+
                         const SizedBox(
                           height: 20,
                         ),
@@ -144,8 +145,7 @@ class AddBookPage extends StatelessWidget {
                               model.timestamp =
                                   now.toString(); // タイムスタンプを文字列として設定
                               model.startLoading();
-                              // model.addTextField();
-                              // model.rere();
+
                               await model.addBook();
 
                               //投稿が成功したら、ホーム画面に遷移

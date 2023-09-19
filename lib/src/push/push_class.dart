@@ -28,7 +28,10 @@ class AddBookModel extends ChangeNotifier {
   List<File> imageFiles = []; // 複数の画像ファイルのパスを格納するリスト
   List<Widget> textFields = []; //テキストフィールドを追加していくリスト
   List<Widget> ingredients = []; //具材を登録
+  //-----------------------------------------------------
   List<TextEditingController> textControllers = []; // テキストフィールド用のコントローラーリスト
+  List<TextEditingController> ingredientsControllers =
+      []; // 具材のテキストフィールド用のコントローラーリスト
   String? timestamp;
   bool isLoading = false;
   final picker = ImagePicker();
@@ -61,30 +64,37 @@ class AddBookModel extends ChangeNotifier {
   }
 
   void rere() {
+    final ingredientController = TextEditingController();
+    ingredientsControllers.add(ingredientController); // コントローラーをリストに追加
+
     ingredients.add(
-      const TextField(
+      TextField(
         maxLength: 10,
         maxLines: 1,
         decoration: InputDecoration(border: OutlineInputBorder()),
+        controller: ingredientController, // コントローラーをテキストフィールドに設定
       ),
     );
     notifyListeners();
   }
 
   Future addBook() async {
+    final doc = FirebaseFirestore.instance.collection('user_post').doc();
+    List<String> textFieldsValues = [];
+    for (var controller in textControllers) {
+      textFieldsValues.add(controller.text); // 各コントローラーから入力値を取得しリストに追加
+    }
+
+    List<String> ingredientsValues = [];
+    for (var controller in ingredientsControllers) {
+      ingredientsValues.add(controller.text); // 各コントローラーから入力値を取得しリストに追加
+    }
     if (title == null || title == "") {
       throw 'タイトルが入力されていません';
     }
 
     if (author == null || author!.isEmpty) {
       throw '説明文が入力されていません';
-    }
-
-    final doc = FirebaseFirestore.instance.collection('user_post').doc();
-
-    List<String> textFieldsValues = [];
-    for (var controller in textControllers) {
-      textFieldsValues.add(controller.text); // 各コントローラーから入力値を取得しリストに追加
     }
 
     for (var imageFile in imageFiles) {
@@ -106,10 +116,9 @@ class AddBookModel extends ChangeNotifier {
       'author': author,
       'imgURL': imgURLs,
       'time': timestamp,
-      "textFields": textFieldsValues, // 各テキストフィールドの入力値を Firestore に追加
       'name': userName, // ユーザー名を Firestore フィールドに追加
-      //"textFields": textFields, //作り方手順のリスト
-      "ingredients": ingredients, //材料
+      "具材": ingredientsValues, //材料
+      "手順": textFieldsValues, // 各具材のテキストフィールドの入力値を Firestore に追加
     });
   }
 
@@ -168,8 +177,7 @@ class textbotton extends StatelessWidget {
 }
 
 //テキストフィールドをつかするクラス
-
-class re extends StatelessWidget {
+class reee extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myModel = Provider.of<AddBookModel>(context);

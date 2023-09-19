@@ -25,9 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
     YourScreen(),
     BookmarkScreen(),
     //NotificationScreen(),
-
     AddBookPage(),
-
     search(),
     //Login(user: null),
     MyPage(user: currentUser),
