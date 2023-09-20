@@ -2,6 +2,8 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:test3/src/push/push_class.dart';
+import 'Home.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -195,26 +197,31 @@ class _YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
-                        const Divider(
-                          height: 10,
-                          thickness: 0,
-                          indent: 70,
-                          endIndent: 70,
-                          color: Colors.black,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
 
-                        OutlinedButton(
-                            onPressed: () {},
-                            child: Text("クリック可"),
-                            style: TextButton.styleFrom(
-                              textStyle: const TextStyle(fontSize: 30),
-                              foregroundColor: Colors.blue, // foreground
-                              //fixedSize: Size(220, 80),
-                              alignment: Alignment.topCenter,
-                            )),
+                        Center(
+                            child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.teal,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 30),
+                          ),
+                          onPressed: () {},
+                          child: const Text(
+                            'サンプル',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        )),
+
+                        // const Divider(
+                        //   height: 10,
+                        //   thickness: 0,
+                        //   indent: 70,
+                        //   endIndent: 70,
+                        //   color: Colors.black,
+                        // ),
 
                         // RichText(
                         //   textAlign: TextAlign.center,
@@ -252,9 +259,7 @@ class _YourScreenState extends State<YourScreen> {
                         //   endIndent: 70,
                         //   color: Colors.black,
                         // ),
-                        const SizedBox(
-                          height: 40,
-                        ),
+
                         // RichText(
                         //   textAlign: TextAlign.center,
                         //   text: TextSpan(

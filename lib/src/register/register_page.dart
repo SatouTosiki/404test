@@ -1,146 +1,152 @@
 import 'package:flutter/material.dart';
-import 'package:test3/src/screens/login_page.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import '../screens/login_page.dart';
+
 import 'package:lottie/lottie.dart';
-import 'package:test3/src/main2.dart';
+
+import '../screens/login_page.dart';
 
 class Registe extends StatefulWidget {
   @override
-  _Registe createState() => _Registe();
+  _RegisteState createState() => _RegisteState();
 }
 
-class _Registe extends State<Registe> {
+class _RegisteState extends State<Registe> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   // メッセージ表示用
+
   String infoText = '';
+
   // 入力したメールアドレス・パスワード
+
   String email = '';
+
   String password = '';
-  String name = "";
+
+  String name = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("新規登録画面"),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.center, //中央に配置
-              child: Lottie.asset('assets/re.json'),
-            ),
-            const SizedBox(
-              height: 39,
-            ),
-            Container(
-              child: Container(
-                padding: EdgeInsets.all(35),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, //画面中央に寄せる
-                  children: [
-                    // メールアドレス入力
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'メールアドレス'),
-                      onChanged: (String value) {
-                        setState(() {
-                          email = value;
-                        });
-                      },
-                    ),
-                    // パスワード入力
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'パスワード'),
-                      obscureText: true, //パスワード見えないようにする
-                      onChanged: (String value) {
-                        setState(() {
-                          password = value;
-                        });
-                      },
-                    ),
+      body: Stack(
+        children: [
+          Lottie.asset(
+            'assets/haikei.json',
+            repeat: true,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 100), // 中央より少し上に配置
 
-                    TextField(
-                      decoration: InputDecoration(labelText: "ユーザー名"),
-                      onChanged: (String value) {
-                        setState(() {
-                          name = value;
-                        });
-                      },
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(9),
-                      // メッセージ表示
-                      child: Text(infoText),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      // ユーザー登録ボタン
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20) //角丸める
-                              ),
-                        ),
-                        child: const Text(
-                          'ユーザー登録',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        onPressed: () async {
-                          try {
-                            // メール/パスワードでユーザー登録
-                            final FirebaseAuth auth = FirebaseAuth.instance;
-                            final UserCredential userCredential =
-                                await auth.createUserWithEmailAndPassword(
-                              email: email,
-                              password: password,
-                            );
+                Text(
+                  '新規登録',
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
 
-                            await userCredential.user?.updateDisplayName(name);
-                          } catch (e) {
-                            // ユーザー登録に失敗した場合
-                            setState(() {
-                              infoText = "登録に失敗しました："; //${e.toString()};
-                            });
-                          }
+                Container(
+                  padding: EdgeInsets.all(35),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'メールアドレス'),
+                        onChanged: (String value) {
+                          setState(() {
+                            email = value;
+                          });
                         },
                       ),
-                    ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'パスワード'),
+                        obscureText: true,
+                        onChanged: (String value) {
+                          setState(() {
+                            password = value;
+                          });
+                        },
+                      ),
+                      TextField(
+                        decoration: InputDecoration(labelText: 'ユーザー名'),
+                        onChanged: (String value) {
+                          setState(() {
+                            name = value;
+                          });
+                        },
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(9),
+                        child: Text(infoText),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: const Text(
+                            '新規登録',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          onPressed: () async {
+                            try {
+                              final UserCredential userCredential =
+                                  await _auth.createUserWithEmailAndPassword(
+                                email: email,
+                                password: password,
+                              );
 
-                    const SizedBox(
-                      height: 40,
-                    ),
+                              await userCredential.user
+                                  ?.updateDisplayName(name);
+                            } catch (e) {
+                              setState(() {
+                                infoText = '登録に失敗しました：$e';
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 40),
+                      Container(
+                        width: double.infinity,
 
-                    // Container(
-                    //   width: double.infinity,
-                    //   child: TextButton(
-                    //     child: Text(
-                    //       "ログインはこちら",
-                    //       style: TextStyle(
-                    //         color: Colors.blue,
-                    //         fontSize: 18,
-                    //       ),
-                    //     ),
-                    //     style: ElevatedButton.styleFrom(
-                    //       onPrimary: Colors.black, //押したときの色！！
-                    //       shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(20) //角丸めてる
-                    //           ),
-                    //     ),
-                    //     onPressed: () {
-                    //       Navigator.push(
-                    //         context,
-                    //         MaterialPageRoute(builder: (context) => Login()),
-                    //       );
-                    //     },
-                    //   ),
-                    // )
-                  ],
+                        // 新規登録ボタン
+
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Login(user: null), // Login クラスのコンストラクタを呼び出し
+                              ),
+                            );
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(30.0),
+                            child: Text(
+                              'ログインに戻る',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
-        ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
