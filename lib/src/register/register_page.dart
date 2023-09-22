@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:lottie/lottie.dart';
-
 import '../screens/login_page.dart';
 
 class Registe extends StatefulWidget {
@@ -13,19 +10,12 @@ class Registe extends StatefulWidget {
 
 class _RegisteState extends State<Registe> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   // メッセージ表示用
-
   String infoText = '';
-
   // 入力したメールアドレス・パスワード
-
   String email = '';
-
   String password = '';
-
   String name = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

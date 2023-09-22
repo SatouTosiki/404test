@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_icons/line_icons.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -118,43 +119,65 @@ class _YourScreenState extends State<YourScreen> {
                                     ],
                                   ),
                                 ),
+                                const SizedBox(
+                                  width: 200,
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    LineIcons
+                                        .download, // Line Icons パッケージのアイコンを指定
+                                    size: 30, // アイコンのサイズを設定
+                                  ),
+                                  onPressed: () {
+                                    // アイコンボタンがタップされたときに実行するアクションをここに追加
+                                    print('IconButton tapped');
+                                  },
+                                ),
                               ],
                             ),
                           ],
                         ),
-                        Center(
-                          child: Column(
-                            children: [
-                              RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: 'title\n',
-                                      style: GoogleFonts.happyMonkey(
-                                        textStyle: const TextStyle(
-                                          fontSize: 25,
-                                          color: Colors.black,
-                                          //fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: ' ${documentData['title']}',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
+                        // Center(
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceBetween, // テキストを中央に配置するために余白を均等に配置
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  "tile",
+                                  style: GoogleFonts.happyMonkey(
+                                    color: Colors.black,
+                                    fontSize: 30,
+                                  ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceBetween, // テキストを中央に配置するために余白を均等に配置
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  "  ${documentData['title']}",
+                                  style: GoogleFonts.happyMonkey(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 10,
                         ),
+
                         if (documentData['imgURL'] is List)
                           Column(
                             children:
@@ -195,26 +218,17 @@ class _YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
-                        const Divider(
-                          height: 10,
-                          thickness: 0,
-                          indent: 70,
-                          endIndent: 70,
-                          color: Colors.black,
-                        ),
+
                         const SizedBox(
                           height: 20,
                         ),
 
-                        OutlinedButton(
-                            onPressed: () {},
-                            child: Text("クリック可"),
-                            style: TextButton.styleFrom(
-                              textStyle: const TextStyle(fontSize: 30),
-                              foregroundColor: Colors.blue, // foreground
-                              //fixedSize: Size(220, 80),
-                              alignment: Alignment.topCenter,
-                            )),
+                        TextButton(
+                          onPressed: () {
+                            // ボタンが押されたときに発動される処理
+                          },
+                          child: Text('詳細'),
+                        ),
 
                         // RichText(
                         //   textAlign: TextAlign.center,

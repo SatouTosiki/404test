@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'screens/search.dart';
 import 'screens/bookmark.dart';
@@ -23,11 +24,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> widgelist = [
     //HomeScreen(),
     YourScreen(),
-
-    BookmarkScreen(),
+    SearchScreen(),
+    //BookmarkScreen(),
     //NotificationScreen(),
     AddBookPage(),
-    search(),
+    BookmarkScreen(),
+    //search(),
     //Login(user: null),
     MyPage(user: currentUser),
   ];
@@ -56,11 +58,36 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "ホーム"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.search), label: "探す"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.camera), label: "投稿"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.heart), label: "検索"),
-          BottomNavigationBarItem(icon: Icon(LineIcons.home), label: "アカウント"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                LineIcons.home, // Line Icons パッケージのアイコンを指定
+                size: 30, // アイコンのサイズを設定
+              ),
+              label: "ホーム"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                LineIcons.search, // Line Icons パッケージのアイコンを指定
+                size: 30, // アイコンのサイズを設定
+              ),
+              label: "探す"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                LineIcons.camera, // Line Icons パッケージのアイコンを指定
+                size: 30, // アイコンのサイズを設定
+              ),
+              label: "投稿"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                LineIcons.heart, // Line Icons パッケージのアイコンを指定
+                size: 30, // アイコンのサイズを設定
+              ),
+              label: "検索"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                LineIcons.user, // Line Icons パッケージのアイコンを指定
+                size: 30, // アイコンのサイズを設定
+              ),
+              label: "アカウント"),
         ],
         currentIndex: selectedindex,
         onTap: (index) {

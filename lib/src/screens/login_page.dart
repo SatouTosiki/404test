@@ -49,11 +49,11 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center, // 中央に寄せる
 
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 100, // 中央より少し上に配置
                 ),
-                Text(
-                  'ログイン',
+                const Text(
+                  'login',
                   style: TextStyle(
                     fontSize: 50,
                     fontWeight: FontWeight.bold,
