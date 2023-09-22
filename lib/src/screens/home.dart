@@ -90,43 +90,44 @@ class _YourScreenState extends State<YourScreen> {
                         Column(
                           children: [
                             Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween, // 要素を左右に均等に配置
                               children: [
-                                ClipOval(
-                                  child: Image.asset(
-                                    'lib/src/img/rika.jpg',
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: documentData['name'] != null
-                                            ? ' ${documentData['name']}'
-                                            : '名無しさん',
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.black,
-                                          //fontWeight: FontWeight.bold,
-                                        ),
+                                Row(
+                                  children: [
+                                    ClipOval(
+                                      child: Image.asset(
+                                        'lib/src/img/rika.jpg',
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.fill,
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 200,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: documentData['name'] != null
+                                                ? ' ${documentData['name']}'
+                                                : '名無しさん',
+                                            style: const TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 IconButton(
                                   icon: const Icon(
-                                    LineIcons
-                                        .download, // Line Icons パッケージのアイコンを指定
-                                    size: 30, // アイコンのサイズを設定
+                                    LineIcons.download,
+                                    size: 30,
                                   ),
                                   onPressed: () {
                                     // アイコンボタンがタップされたときに実行するアクションをここに追加
@@ -137,25 +138,24 @@ class _YourScreenState extends State<YourScreen> {
                             ),
                           ],
                         ),
-                        // Center(
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceBetween, // テキストを中央に配置するために余白を均等に配置
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "tile",
-                                  style: GoogleFonts.happyMonkey(
-                                    color: Colors.black,
-                                    fontSize: 30,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment
+                        //       .spaceBetween, // テキストを中央に配置するために余白を均等に配置
+                        //   children: [
+                        //     Expanded(
+                        //       child: Center(
+                        //         child: Text(
+                        //           "tile",
+                        //           style: GoogleFonts.happyMonkey(
+                        //             color: Colors.black,
+                        //             fontSize: 30,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment

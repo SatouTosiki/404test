@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'screens/search.dart';
 import 'screens/bookmark.dart';
 import 'screens/Home.dart';
