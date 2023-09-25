@@ -57,9 +57,13 @@ class MyPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${user?.displayName ?? ''} is room',
+              '${user?.displayName ?? ''}   is room',
               style: GoogleFonts.happyMonkey(
-                textStyle: const TextStyle(fontSize: 25, color: Colors.black),
+                textStyle: const TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             IconButton(

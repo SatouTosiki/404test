@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AddBookPage extends StatelessWidget {
   final picker = ImagePicker();
@@ -17,6 +18,18 @@ class AddBookPage extends StatelessWidget {
     return ChangeNotifierProvider<AddBookModel>(
         create: (_) => AddBookModel(),
         child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "push",
+              style: GoogleFonts.happyMonkey(
+                  textStyle: const TextStyle(
+                color: Colors.black,
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+              )),
+            ),
+            backgroundColor: Colors.white,
+          ),
           body: SingleChildScrollView(
             child: Consumer<AddBookModel>(builder: (context, model, child) {
               return Stack(

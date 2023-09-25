@@ -161,6 +161,7 @@ class textbotton extends StatelessWidget {
                 },
           child: const Text(
             '➕ 作る手順の追加 ➕',
+            style: TextStyle(fontSize: 20),
           ),
         ),
 
@@ -193,6 +194,7 @@ class reee extends StatelessWidget {
                 },
           child: const Text(
             '➕ 具材を記入 ➕',
+            style: TextStyle(fontSize: 20),
           ),
         ),
 

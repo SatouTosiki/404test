@@ -38,22 +38,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 10), // パディングの値を調整
-        ),
-        title: Text(
-          "chefGourmet",
-          style: GoogleFonts.happyMonkey(
-            textStyle: const TextStyle(
-              fontSize: 35,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.white,
-      ),
+      // appBar: AppBar(
+      //   leading: const Padding(
+      //     padding: EdgeInsets.only(left: 10), // パディングの値を調整
+      //   ),
+      //   title: Text(
+      //     "chefGourmet",
+      //     style: GoogleFonts.happyMonkey(
+      //       textStyle: const TextStyle(
+      //         fontSize: 35,
+      //         color: Colors.black,
+      //         fontWeight: FontWeight.bold,
+      //       ),
+      //     ),
+      //   ),
+      //   backgroundColor: Colors.white,
+      // ),
 
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.black,

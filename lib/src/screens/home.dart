@@ -57,6 +57,22 @@ class _YourScreenState extends State<YourScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 10), // パディングの値を調整
+        ),
+        title: Text(
+          "chefGourmet",
+          style: GoogleFonts.happyMonkey(
+            textStyle: const TextStyle(
+              fontSize: 35,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        backgroundColor: Colors.white,
+      ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: SingleChildScrollView(
@@ -64,7 +80,6 @@ class _YourScreenState extends State<YourScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-
               // ドキュメントのリストを表示
               Column(
                 children: documentList.map<Widget>((documentData) {
