@@ -13,7 +13,10 @@ import 'package:provider/provider.dart';
 // ユーザーがログインしていることを確認する関数
 
 User? user = FirebaseAuth.instance.currentUser;
+final auth = FirebaseAuth.instance;
 String? userName = user?.displayName; // ユーザー名を取得
+final uid = auth.currentUser?.uid.toString(); //UIDの取得
+
 List<File> images = []; // 選択された複数の画像を格納するリスト
 
 final picker = ImagePicker();
@@ -101,7 +104,8 @@ class AddBookModel extends ChangeNotifier {
       // storageにアップロード
 
       final task = await FirebaseStorage.instance
-          .ref('user_post/${doc.id}/${imageFile.path}')
+          //.ref('user_post/${doc.id}/${imageFile.path}')
+          .ref('user_post/${imageFile}')
           .putFile(imageFile);
 
       final imgURL = await task.ref.getDownloadURL();
@@ -116,9 +120,10 @@ class AddBookModel extends ChangeNotifier {
       'author': author,
       'imgURL': imgURLs,
       'time': timestamp,
-      'name': userName, // ユーザー名を Firestore フィールドに追加
+      'name': userName, // ユーザー名を Firestore フィールドに追加displayName
       "具材": ingredientsValues, //材料
-      "手順": textFieldsValues, // 各具材のテキストフィールドの入力値を Firestore に追加
+      "手順": textFieldsValues, // 各具材のテキストフィールドの入力値を Firestore に追加[]
+      "user_id": uid,
     });
   }
 

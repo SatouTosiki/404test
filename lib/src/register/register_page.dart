@@ -1,7 +1,10 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
 import '../screens/login_page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Registe extends StatefulWidget {
   @override
@@ -10,12 +13,16 @@ class Registe extends StatefulWidget {
 
 class _RegisteState extends State<Registe> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final ImagePicker imagePicker = ImagePicker();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   // メッセージ表示用
   String infoText = '';
   // 入力したメールアドレス・パスワード
   String email = '';
   String password = '';
   String name = '';
+  File? _selectedImage; // 選択された画像を保持する変数
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,12 +40,43 @@ class _RegisteState extends State<Registe> {
               children: [
                 SizedBox(height: 100), // 中央より少し上に配置
 
-                Text(
+                // プロフィール画像を選択するボタ
+
+                Container(
+                  padding: EdgeInsets.all(9),
+                  child: Text(infoText),
+                ),
+
+                const Text(
                   '新規登録',
                   style: TextStyle(
                     fontSize: 50,
                     fontWeight: FontWeight.bold,
                   ),
+                ),
+
+                // プロフィール画像を表示
+                CircleAvatar(
+                  radius: 75,
+                  backgroundImage: _selectedImage != null
+                      ? FileImage(_selectedImage!) // 選択された画像を表示
+                      : null, // 選択された画像がない場合はnull
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+
+                ElevatedButton(
+                  onPressed: () async {
+                    final pickedImage = await imagePicker.pickImage(
+                        source: ImageSource.gallery);
+                    if (pickedImage != null) {
+                      setState(() {
+                        _selectedImage = File(pickedImage.path);
+                      });
+                    }
+                  },
+                  child: Text('プロフィール画像を選択'),
                 ),
 
                 Container(
@@ -97,9 +135,22 @@ class _RegisteState extends State<Registe> {
 
                               await userCredential.user
                                   ?.updateDisplayName(name);
+
+                              // プロフィール画像をアップロード
+
+                              if (_selectedImage != null) {
+                                final user = _auth.currentUser;
+                                final storageRef = FirebaseStorage.instance
+                                    .ref('profile_images/${user?.uid}.jpg');
+                                await storageRef.putFile(_selectedImage!);
+                                final imageUrl =
+                                    await storageRef.getDownloadURL();
+                                await user?.updatePhotoURL(imageUrl);
+                              }
                             } catch (e) {
                               setState(() {
-                                infoText = '登録に失敗しました：$e';
+                                infoText = '画像登録に失敗しました：$e';
+                                print(infoText);
                               });
                             }
                           },
