@@ -29,6 +29,7 @@ dependencies:
   cached_network_image: ^3.2.3
   provider: ^5.0.0
   printing: ^5.10.4
+
   
 
  

@@ -79,6 +79,7 @@ class MyPage extends StatelessWidget {
                 ),
 
                 GridView.builder(
+                  shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3, //カラム数
                   ),
@@ -89,7 +90,6 @@ class MyPage extends StatelessWidget {
                       color: index.isEven ? Colors.blue : Colors.yellow,
                     );
                   },
-                  shrinkWrap: true,
                 ),
               ],
             ),

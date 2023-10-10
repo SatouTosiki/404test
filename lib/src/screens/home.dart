@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 
+import '../user_page/user_page.dart';
+import 'home_ detail.dart';
+
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 class YourScreen extends StatefulWidget {
@@ -107,36 +110,46 @@ class _YourScreenState extends State<YourScreen> {
                               mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween, // 要素を左右に均等に配置
                               children: [
-                                Row(
-                                  children: [
-                                    ClipOval(
-                                      child: Image.asset(
-                                        'lib/src/img/rika.jpg',
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.fill,
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            // （2） 実際に表示するページ(ウィジェット)を指定する
+                                            builder: (context) => userpage()));
+                                    // クリック時の処理をここに追加
+                                  },
+                                  child: Row(
+                                    children: [
+                                      ClipOval(
+                                        child: Image.asset(
+                                          'lib/src/img/rika.jpg',
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: documentData['name'] != null
-                                                ? ' ${documentData['name']}'
-                                                : '名無しさん',
-                                            style: const TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.black,
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: documentData['name'] != null
+                                                  ? ' ${documentData['name']}'
+                                                  : '名無しさん',
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -152,25 +165,6 @@ class _YourScreenState extends State<YourScreen> {
                             ),
                           ],
                         ),
-
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment
-                        //       .spaceBetween, // テキストを中央に配置するために余白を均等に配置
-                        //   children: [
-                        //     Expanded(
-                        //       child: Center(
-                        //         child: Text(
-                        //           "tile",
-                        //           style: GoogleFonts.happyMonkey(
-                        //             color: Colors.black,
-                        //             fontSize: 30,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment
                               .spaceBetween, // テキストを中央に配置するために余白を均等に配置
@@ -179,10 +173,8 @@ class _YourScreenState extends State<YourScreen> {
                               child: Center(
                                 child: Text(
                                   "  ${documentData['title']}",
-                                  style: GoogleFonts.happyMonkey(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                  ),
+                                  style: const TextStyle(
+                                      fontSize: 20, color: Colors.black),
                                 ),
                               ),
                             ),
@@ -191,7 +183,6 @@ class _YourScreenState extends State<YourScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-
                         if (documentData['imgURL'] is List)
                           Column(
                             children:
@@ -232,86 +223,23 @@ class _YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
-
                         const SizedBox(
                           height: 20,
                         ),
-
                         TextButton(
                           onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    // （2） 実際に表示するページ(ウィジェット)を指定する
+                                    builder: (context) => userpage2()));
                             // ボタンが押されたときに発動される処理
                           },
                           child: Text('詳細'),
                         ),
-
-                        // RichText(
-                        //   textAlign: TextAlign.center,
-                        //   text: TextSpan(
-                        //     children: [
-                        //       TextSpan(
-                        //         text: '食材\n',
-                        //         style: GoogleFonts.happyMonkey(
-                        //           textStyle: const TextStyle(
-                        //             fontSize: 25,
-                        //             color: Colors.black,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       TextSpan(
-                        //         children: [
-                        //           for (var item in documentData['具材'])
-                        //             TextSpan(
-                        //               text: '$item\n',
-                        //               style: const TextStyle(
-                        //                 fontSize: 20,
-                        //                 color: Colors.black,
-                        //                 //fontWeight: FontWeight.bold,
-                        //               ),
-                        //             ),
-                        //         ],
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        // const Divider(
-                        //   height: 10,
-                        //   thickness: 0,
-                        //   indent: 70,
-                        //   endIndent: 70,
-                        //   color: Colors.black,
-                        // ),
                         const SizedBox(
                           height: 40,
                         ),
-                        // RichText(
-                        //   textAlign: TextAlign.center,
-                        //   text: TextSpan(
-                        //     children: [
-                        //       TextSpan(
-                        //         text: '作り方手順\n',
-                        //         style: GoogleFonts.happyMonkey(
-                        //           textStyle: const TextStyle(
-                        //             fontSize: 25,
-                        //             color: Colors.black,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       TextSpan(
-                        //         children: [
-                        //           for (var item in documentData['手順'])
-                        //             TextSpan(
-                        //               text: '$item\n',
-                        //               style: const TextStyle(
-                        //                 fontSize: 20,
-                        //                 color: Colors.black,
-                        //                 //fontWeight: FontWeight.bold,
-                        //               ),
-                        //             ),
-                        //         ],
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
                       ],
                     ),
                   );
