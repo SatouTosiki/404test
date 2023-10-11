@@ -1,5 +1,4 @@
 import 'package:test3/src/mypage/mypage.dart';
-import 'push.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
@@ -16,6 +15,7 @@ User? user = FirebaseAuth.instance.currentUser;
 final auth = FirebaseAuth.instance;
 String? userName = user?.displayName; // ユーザー名を取得
 final uid = auth.currentUser?.uid.toString(); //UIDの取得
+final userimage = user?.photoURL;
 
 List<File> images = []; // 選択された複数の画像を格納するリスト
 
@@ -124,6 +124,7 @@ class AddBookModel extends ChangeNotifier {
       "具材": ingredientsValues, //材料
       "手順": textFieldsValues, // 各具材のテキストフィールドの入力値を Firestore に追加[]
       "user_id": uid,
+      "user_image": userimage,
     });
   }
 

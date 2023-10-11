@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'push.dart';
 
 class AddDocumentScreen extends StatelessWidget {
   final TextEditingController titleController = TextEditingController();

@@ -2,20 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
-
 import '../user_page/user_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'home_ detail.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
+final auth = FirebaseAuth.instance;
+final uid = auth.currentUser?.uid.toString();
 
 class YourScreen extends StatefulWidget {
   @override
-  _YourScreenState createState() => _YourScreenState();
+  YourScreenState createState() => YourScreenState(user: null);
 }
 
-class _YourScreenState extends State<YourScreen> {
+class YourScreenState extends State<YourScreen> {
   List<Map<String, dynamic>> documentList = [];
   bool isTextVisible = false; // ウィジェットの表示/非表示を管理
+  final User? user;
+  YourScreenState({required this.user});
 
   void toggleVisibility() {
     setState(() {
@@ -26,6 +30,7 @@ class _YourScreenState extends State<YourScreen> {
   @override
   void initState() {
     super.initState();
+
     fetchDocumentData(); // 初期データの取得
   }
 
@@ -111,46 +116,67 @@ class _YourScreenState extends State<YourScreen> {
                                   MainAxisAlignment.spaceBetween, // 要素を左右に均等に配置
                               children: [
                                 InkWell(
-                                  onTap: () {
-                                    Navigator.push(
+                                    onTap: () {
+                                      Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            // （2） 実際に表示するページ(ウィジェット)を指定する
-                                            builder: (context) => userpage()));
-                                    // クリック時の処理をここに追加
-                                  },
-                                  child: Row(
-                                    children: [
-                                      ClipOval(
-                                        child: Image.asset(
-                                          'lib/src/img/rika.jpg',
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.fill,
+                                          builder: (context) => userpage(
+                                            userUid: documentData['user_id'],
+                                            user: null, // ユーザーのUIDを渡す
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      RichText(
-                                        textAlign: TextAlign.center,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: documentData['name'] != null
-                                                  ? ' ${documentData['name']}'
-                                                  : '名無しさん',
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black,
-                                              ),
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        if (documentData['user_image'] is List)
+                                          Column(
+                                            children: documentData['user_image']
+                                                .map<Widget>((imageUrl) {
+                                              return ClipOval(
+                                                child: Image.network(
+                                                  imageUrl,
+                                                  width: 50, // 丸いアイコンの幅
+                                                  height: 50, // 丸いアイコンの高さ
+                                                  fit: BoxFit
+                                                      .cover, // 画像をクリップして丸く表示
+                                                ),
+                                              );
+                                            }).toList(),
+                                          )
+                                        else if (documentData['user_image']
+                                            is String)
+                                          ClipOval(
+                                            child: Image.network(
+                                              documentData['user_image'],
+                                              width: 50, // 丸いアイコンの幅
+                                              height: 50, // 丸いアイコンの高さ
+                                              fit:
+                                                  BoxFit.cover, // 画像をクリップして丸く表示
                                             ),
-                                          ],
+                                          ),
+                                        const SizedBox(
+                                          width: 10,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                        RichText(
+                                          textAlign: TextAlign.center,
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: documentData['name'] !=
+                                                        null
+                                                    ? ' ${documentData['name']}'
+                                                    : '名無しさん',
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )),
                                 IconButton(
                                   icon: const Icon(
                                     LineIcons.download,

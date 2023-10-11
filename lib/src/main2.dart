@@ -8,7 +8,6 @@ import 'screens/bookmark.dart';
 import 'screens/Home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'mypage/mypage.dart';
-import 'push/push.dart';
 import 'push/push2.dart';
 //aa
 
