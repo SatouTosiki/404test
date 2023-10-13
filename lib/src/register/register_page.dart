@@ -147,6 +147,14 @@ class _RegisteState extends State<Registe> {
                                     await storageRef.getDownloadURL();
                                 await user?.updatePhotoURL(imageUrl);
                               }
+
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => Login(
+                                    user: null,
+                                  ),
+                                ),
+                              );
                             } catch (e) {
                               setState(() {
                                 infoText = '画像登録に失敗しました：$e';

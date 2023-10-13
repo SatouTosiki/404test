@@ -3,6 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test3/src/push/push_class.dart';
 
+import '../screens/login_page.dart';
+
+User? user = FirebaseAuth.instance.currentUser; //ログインしているユーザーを取得suerに
+
 class MyPage extends StatelessWidget {
   final User? user;
 
@@ -30,7 +34,13 @@ class MyPage extends StatelessWidget {
                 color: Colors.black,
                 onPressed: () {
                   FirebaseAuth.instance.signOut();
-                  Navigator.pop(context);
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => Login(
+                        user: null,
+                      ),
+                    ),
+                  );
                 },
               ),
             ],

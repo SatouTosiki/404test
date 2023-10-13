@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
 final auth = FirebaseAuth.instance;
+
 String? userName = user?.displayName; // ユーザー名を取得
 final uid = auth.currentUser?.uid.toString(); //UIDの取得
 final userimage = user?.photoURL;
@@ -104,7 +105,6 @@ class AddBookModel extends ChangeNotifier {
       // storageにアップロード
 
       final task = await FirebaseStorage.instance
-          //.ref('user_post/${doc.id}/${imageFile.path}')
           .ref('user_post/${imageFile}')
           .putFile(imageFile);
 

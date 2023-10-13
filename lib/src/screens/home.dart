@@ -30,7 +30,6 @@ class YourScreenState extends State<YourScreen> {
   @override
   void initState() {
     super.initState();
-
     fetchDocumentData(); // 初期データの取得
   }
 
@@ -121,8 +120,10 @@ class YourScreenState extends State<YourScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => userpage(
-                                            userUid: documentData['user_id'],
-                                            user: null, // ユーザーのUIDを渡す
+                                            uid: documentData['user_id'],
+                                            user: null,
+                                            // name: documentData["name"],
+                                            // user: null, name: '', // ユーザーのUIDを渡す
                                           ),
                                         ),
                                       );

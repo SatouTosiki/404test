@@ -1,37 +1,25 @@
 import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:lottie/lottie.dart';
-
 import 'package:test3/src/main2.dart';
-
 import "package:test3/src/register/register_page.dart";
-
 import 'package:test3/src/mypage/mypage.dart';
+import '';
 
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
-
   final User? user;
-
   Login({required this.user});
 }
 
 class _LoginState extends State<Login> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   // メッセージ表示用
-
   String infoText = '';
-
   // 入力したメールアドレス・パスワード
-
   String email = '';
-
   String password = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
