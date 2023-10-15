@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -84,16 +85,11 @@ class YourScreenState extends State<YourScreen> {
                   },
                   enableInfiniteScroll: false, // 無限スクロールを無効にする
                 ),
-
                 itemCount: imageUrls.length,
                 itemBuilder: (context, index, realIndex) {
                   final path = imageUrls[index];
                   return buildImage(path, index);
                 },
-
-                // items: imageUrls.map<Widget>((imageUrl) {
-                //   return Image.network(imageUrl);
-                // }).toList(),
               ),
               const SizedBox(
                 height: 20,
@@ -101,8 +97,7 @@ class YourScreenState extends State<YourScreen> {
               AnimatedSmoothIndicator(
                 activeIndex: imagecount,
                 count: imageUrls.length,
-                effect: JumpingDotEffect(
-                  // your prefer
+                effect: const JumpingDotEffect(
                   dotHeight: 10,
                   dotWidth: 10,
                   activeDotColor: Colors.blue,
@@ -118,10 +113,10 @@ class YourScreenState extends State<YourScreen> {
       }
     }
 
-    // その他の型の場合の処理
+    // 画像がない場合の処理
     return Container(
       child: Text("画像がありません"),
-    ); // デフォルトでは空のコンテナを返すか、適切なエラーウィジェットを返すことができます
+    );
   }
 
   Widget buildImage(path, index) => Container(
@@ -273,26 +268,21 @@ class YourScreenState extends State<YourScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        abuildImageWidget(documentData),
+                        abuildImageWidget(documentData), //userの投稿画像を表示
 
-                        // if (documentData['imgURL'] != null)
-                        //   if (documentData['imgURL'] is List)
-                        //     CarouselSlider(
-                        //       options: CarouselOptions(
-                        //         height: 200, // スライダーの高さを設定
-                        //       ),
-                        //       items: documentData['imgURL']
-                        //           .map<Widget>((imageUrl) {
-                        //         return Image.network(imageUrl);
-                        //       }).toList(),
-                        //     )
-                        //   else if (documentData['imgURL'] is String)
-                        //     Image.network(
-                        //       documentData['imgURL'],
-                        //     ),
-                        const SizedBox(
-                          height: 20,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            icon: const Icon(
+                              LineIcons.heart,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              print('IconButton tapped');
+                            },
+                          ),
                         ),
+
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
@@ -316,6 +306,7 @@ class YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
+
                         const SizedBox(
                           height: 20,
                         ),
