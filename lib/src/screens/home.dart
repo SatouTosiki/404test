@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'home_ detail.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
@@ -16,28 +17,30 @@ class YourScreen extends StatefulWidget {
 }
 
 class YourScreenState extends State<YourScreen> {
+  int imagecount = 0; // ここで初期化
   List<Map<String, dynamic>> documentList = [];
-  bool isTextVisible = false; // ウィジェットの表示/非表示を管理
+  bool isTextVisible = false;
   final User? user;
+
   YourScreenState({required this.user});
 
   void toggleVisibility() {
     setState(() {
-      isTextVisible = !isTextVisible; // ボタンを押すたびに表示/非表示を切り替え
+      isTextVisible = !isTextVisible;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    fetchDocumentData(); // 初期データの取得
+    fetchDocumentData();
   }
 
   Future<void> fetchDocumentData() async {
     try {
       QuerySnapshot querySnapshot = await firestore
           .collection('user_post')
-          .orderBy('time', descending: true) // 'time' フィールドで降順ソート（新しい順）
+          .orderBy('time', descending: true)
           .get();
       List<Map<String, dynamic>> dataList = [];
 
@@ -60,13 +63,83 @@ class YourScreenState extends State<YourScreen> {
     await fetchDocumentData();
   }
 
-//
+  Widget abuildImageWidget(dynamic documentData) {
+    if (documentData['imgURL'] != null) {
+      if (documentData['imgURL'] is List) {
+        List<String> imageUrls = List<String>.from(documentData['imgURL']);
+
+        if (imageUrls.isNotEmpty) {
+          return Column(
+            children: [
+              CarouselSlider.builder(
+                options: CarouselOptions(
+                  height: 200,
+                  initialPage: 0,
+                  viewportFraction: 1,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      imagecount = index;
+                    });
+                  },
+                  enableInfiniteScroll: false, // 無限スクロールを無効にする
+                ),
+
+                itemCount: imageUrls.length,
+                itemBuilder: (context, index, realIndex) {
+                  final path = imageUrls[index];
+                  return buildImage(path, index);
+                },
+
+                // items: imageUrls.map<Widget>((imageUrl) {
+                //   return Image.network(imageUrl);
+                // }).toList(),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              AnimatedSmoothIndicator(
+                activeIndex: imagecount,
+                count: imageUrls.length,
+                effect: JumpingDotEffect(
+                  // your prefer
+                  dotHeight: 10,
+                  dotWidth: 10,
+                  activeDotColor: Colors.blue,
+                  dotColor: Colors.grey,
+                ),
+              ),
+            ],
+          );
+        }
+      } else if (documentData['imgURL'] is String) {
+        // 単一の画像を表示
+        return Image.network(documentData['imgURL']);
+      }
+    }
+
+    // その他の型の場合の処理
+    return Container(
+      child: Text("画像がありません"),
+    ); // デフォルトでは空のコンテナを返すか、適切なエラーウィジェットを返すことができます
+  }
+
+  Widget buildImage(path, index) => Container(
+        //画像間の隙間
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        color: Colors.grey,
+        child: Image.network(
+          path,
+          fit: BoxFit.cover,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const Padding(
-          padding: EdgeInsets.only(left: 10), // パディングの値を調整
+          padding: EdgeInsets.only(left: 10),
         ),
         title: Text(
           "chefGourmet",
@@ -87,105 +160,93 @@ class YourScreenState extends State<YourScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              // ドキュメントのリストを表示
               Column(
                 children: documentList.map<Widget>((documentData) {
                   return Container(
-                    margin: EdgeInsets.all(5), // 枠の余白を追加
-                    padding: EdgeInsets.all(5), // 内容の余白を追加
-
+                    margin: EdgeInsets.all(5),
+                    padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      // 枠のスタイルを設定
                       border: Border.all(
-                        // 黒い枠線を追加
                         color: Colors.black,
                         width: 1,
                       ),
                       borderRadius: BorderRadius.all(
-                        // 角を丸くする
                         Radius.circular(20),
                       ),
                     ),
-
                     child: Column(
                       children: [
                         Column(
                           children: [
                             Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween, // 要素を左右に均等に配置
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => userpage(
-                                            uid: documentData['user_id'],
-                                            user: null,
-                                            // name: documentData["name"],
-                                            // user: null, name: '', // ユーザーのUIDを渡す
-                                          ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => userpage(
+                                          uid: documentData['user_id'],
+                                          user: null,
                                         ),
-                                      );
-                                    },
-                                    child: Row(
-                                      children: [
-                                        if (documentData['user_image'] is List)
-                                          Column(
-                                            children: documentData['user_image']
-                                                .map<Widget>((imageUrl) {
-                                              return ClipOval(
-                                                child: Image.network(
-                                                  imageUrl,
-                                                  width: 50, // 丸いアイコンの幅
-                                                  height: 50, // 丸いアイコンの高さ
-                                                  fit: BoxFit
-                                                      .cover, // 画像をクリップして丸く表示
-                                                ),
-                                              );
-                                            }).toList(),
-                                          )
-                                        else if (documentData['user_image']
-                                            is String)
-                                          ClipOval(
-                                            child: Image.network(
-                                              documentData['user_image'],
-                                              width: 50, // 丸いアイコンの幅
-                                              height: 50, // 丸いアイコンの高さ
-                                              fit:
-                                                  BoxFit.cover, // 画像をクリップして丸く表示
-                                            ),
-                                          ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        RichText(
-                                          textAlign: TextAlign.center,
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: documentData['name'] !=
-                                                        null
-                                                    ? ' ${documentData['name']}'
-                                                    : '名無しさん',
-                                                style: const TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.black,
-                                                ),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      if (documentData['user_image'] is List)
+                                        Column(
+                                          children: documentData['user_image']
+                                              .map<Widget>((imageUrl) {
+                                            return ClipOval(
+                                              child: Image.network(
+                                                imageUrl,
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
                                               ),
-                                            ],
+                                            );
+                                          }).toList(),
+                                        )
+                                      else if (documentData['user_image']
+                                          is String)
+                                        ClipOval(
+                                          child: Image.network(
+                                            documentData['user_image'],
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                      ],
-                                    )),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: documentData['name'] != null
+                                                  ? ' ${documentData['name']}'
+                                                  : '名無しさん',
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 IconButton(
                                   icon: const Icon(
                                     LineIcons.download,
                                     size: 30,
                                   ),
                                   onPressed: () {
-                                    // アイコンボタンがタップされたときに実行するアクションをここに追加
                                     print('IconButton tapped');
                                   },
                                 ),
@@ -194,15 +255,16 @@ class YourScreenState extends State<YourScreen> {
                           ],
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceBetween, // テキストを中央に配置するために余白を均等に配置
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                               child: Center(
                                 child: Text(
                                   "  ${documentData['title']}",
                                   style: const TextStyle(
-                                      fontSize: 20, color: Colors.black),
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
@@ -211,19 +273,23 @@ class YourScreenState extends State<YourScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        if (documentData['imgURL'] is List)
-                          Column(
-                            children:
-                                documentData['imgURL'].map<Widget>((imageUrl) {
-                              return Image.network(
-                                imageUrl,
-                              );
-                            }).toList(),
-                          )
-                        else if (documentData['imgURL'] is String)
-                          Image.network(
-                            documentData['imgURL'],
-                          ),
+                        abuildImageWidget(documentData),
+
+                        // if (documentData['imgURL'] != null)
+                        //   if (documentData['imgURL'] is List)
+                        //     CarouselSlider(
+                        //       options: CarouselOptions(
+                        //         height: 200, // スライダーの高さを設定
+                        //       ),
+                        //       items: documentData['imgURL']
+                        //           .map<Widget>((imageUrl) {
+                        //         return Image.network(imageUrl);
+                        //       }).toList(),
+                        //     )
+                        //   else if (documentData['imgURL'] is String)
+                        //     Image.network(
+                        //       documentData['imgURL'],
+                        //     ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -245,7 +311,6 @@ class YourScreenState extends State<YourScreen> {
                                 style: const TextStyle(
                                   fontSize: 20,
                                   color: Colors.black,
-                                  //fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
@@ -257,11 +322,11 @@ class YourScreenState extends State<YourScreen> {
                         TextButton(
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    // （2） 実際に表示するページ(ウィジェット)を指定する
-                                    builder: (context) => userpage2()));
-                            // ボタンが押されたときに発動される処理
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => userpage2(),
+                              ),
+                            );
                           },
                           child: Text('詳細'),
                         ),
