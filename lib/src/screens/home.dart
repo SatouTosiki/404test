@@ -269,18 +269,33 @@ class YourScreenState extends State<YourScreen> {
                           height: 10,
                         ),
                         abuildImageWidget(documentData), //userの投稿画像を表示
-
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: IconButton(
-                            icon: const Icon(
-                              LineIcons.heart,
-                              size: 30,
+                        Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                icon: const Icon(
+                                  LineIcons.heart,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  print('IconButton tapped');
+                                },
+                              ),
                             ),
-                            onPressed: () {
-                              print('IconButton tapped');
-                            },
-                          ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                icon: const Icon(
+                                  LineIcons.comment,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  print('IconButton tapped');
+                                },
+                              ),
+                            ),
+                          ],
                         ),
 
                         RichText(
