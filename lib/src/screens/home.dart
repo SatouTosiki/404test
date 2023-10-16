@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -68,13 +67,12 @@ class YourScreenState extends State<YourScreen> {
     if (documentData['imgURL'] != null) {
       if (documentData['imgURL'] is List) {
         List<String> imageUrls = List<String>.from(documentData['imgURL']);
-
         if (imageUrls.isNotEmpty) {
           return Column(
             children: [
               CarouselSlider.builder(
                 options: CarouselOptions(
-                  height: 200,
+                  height: 300,
                   initialPage: 0,
                   viewportFraction: 1,
                   enlargeCenterPage: true,
@@ -291,6 +289,26 @@ class YourScreenState extends State<YourScreen> {
                                   size: 30,
                                 ),
                                 onPressed: () {
+                                  showBottomSheet(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Container(
+                                        child: Text('Bottom Sheet'),
+                                        height: 500,
+                                        alignment: Alignment.center,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              blurRadius: 20,
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
                                   print('IconButton tapped');
                                 },
                               ),
