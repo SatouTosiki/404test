@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'home_ detail.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
@@ -289,27 +292,73 @@ class YourScreenState extends State<YourScreen> {
                                   size: 30,
                                 ),
                                 onPressed: () {
-                                  showBottomSheet(
+                                  showModalBottomSheet(
                                     context: context,
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                        child: Text('Bottom Sheet'),
-                                        height: 500,
-                                        alignment: Alignment.center,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey,
-                                              blurRadius: 20,
-                                            )
-                                          ],
-                                        ),
+                                    builder: (context) {
+                                      return Column(
+                                        children: [
+                                          Expanded(
+                                            child: ListView(
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        '閉じる',
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const Center(
+                                                  child: const Text(
+                                                    "コメント",
+                                                    style:
+                                                        TextStyle(fontSize: 18),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  height: 0.5,
+                                                  width: 1000,
+                                                  color: Colors.grey,
+                                                ),
+                                                CommentWidget(
+                                                    "このウィジェットは素晴らしいです！"),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(25),
+                                            child: Column(
+                                              children: [
+                                                TextField(
+                                                  decoration: InputDecoration(
+                                                    enabledBorder:
+                                                        OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        30),
+                                                            borderSide:
+                                                                BorderSide(
+                                                              color:
+                                                                  Colors.blue,
+                                                            )),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       );
                                     },
                                   );
-                                  print('IconButton tapped');
                                 },
                               ),
                             ),
@@ -352,7 +401,10 @@ class YourScreenState extends State<YourScreen> {
                               ),
                             );
                           },
-                          child: Text('詳細'),
+                          child: Text(
+                            'レシピを見る',
+                            style: TextStyle(fontSize: 15),
+                          ),
                         ),
                         const SizedBox(
                           height: 40,
