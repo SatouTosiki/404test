@@ -13,9 +13,6 @@ class userpage extends StatelessWidget {
   String userEmail = '';
   final User? user;
   final String uid;
-  // final String name;
-
-  //final String name;
 
   userpage({
     required this.user,
@@ -83,23 +80,6 @@ class userpage extends StatelessWidget {
             Text('User Name: $userName', style: TextStyle(fontSize: 20)),
             Text('User Email: $userEmail', style: TextStyle(fontSize: 20)),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class userpage2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("2"),
-      ),
-      body: Center(
-        child: TextButton(
-          child: Text("1ページ目に遷移する"),
-          onPressed: () {},
         ),
       ),
     );
