@@ -28,7 +28,7 @@ Future<User?> getCurrentUser() async {
 
 class AddBookModel extends ChangeNotifier {
   String? title;
-  String? author;
+  String? comment;
   List<File> imageFiles = []; // 複数の画像ファイルのパスを格納するリスト
   List<Widget> textFields = []; //テキストフィールドを追加していくリスト
   List<Widget> ingredients = []; //具材を登録
@@ -97,7 +97,7 @@ class AddBookModel extends ChangeNotifier {
       throw 'タイトルが入力されていません';
     }
 
-    if (author == null || author!.isEmpty) {
+    if (comment == null || comment!.isEmpty) {
       throw '説明文が入力されていません';
     }
 
@@ -117,12 +117,12 @@ class AddBookModel extends ChangeNotifier {
 
     await doc.set({
       'title': title,
-      'author': author,
+      'comment': comment,
       'imgURL': imgURLs,
       'time': timestamp,
       'name': userName, // ユーザー名を Firestore フィールドに追加displayName
-      "具材": ingredientsValues, //材料
-      "手順": textFieldsValues, // 各具材のテキストフィールドの入力値を Firestore に追加[]
+      "Ingredients": ingredientsValues, //材料
+      "procedure": textFieldsValues, // 各具材のテキストフィールドの入力値を Firestore に追加[]
       "user_id": uid,
       "user_image": userimage,
     });

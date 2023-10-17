@@ -9,30 +9,44 @@ import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class recipe extends StatelessWidget {
+  final String title;
+  final String comment;
+  final List<String>? imgURL;
+  final List<String>? Ingredients;
+  final List<String>? procedure;
+
+  recipe({
+    required this.title,
+    required this.imgURL,
+    required this.comment,
+    required this.Ingredients,
+    required this.procedure,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 10),
+        iconTheme: IconThemeData(
+          color: Colors.black,
         ),
         title: Text(
-          "recipe",
-          style: GoogleFonts.happyMonkey(
-            textStyle: const TextStyle(
-              fontSize: 35,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
+          'Recipe Page',
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.black,
           ),
         ),
         backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Center(
-        child: TextButton(
-          child: Text("1adfasdページ目に遷移する"),
-          onPressed: () {},
-        ),
+        child: Text('Recipe Details'),
       ),
     );
   }

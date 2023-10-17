@@ -131,7 +131,7 @@ class AddBookPage extends StatelessWidget {
                             hintText: 'コメント',
                           ),
                           onChanged: (text) {
-                            model.author = text;
+                            model.comment = text;
                           },
                         ),
 

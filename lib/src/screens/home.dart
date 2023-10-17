@@ -183,8 +183,12 @@ class YourScreenState extends State<YourScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => userpage(
-                                          uid: documentData['user_id'],
-                                          user: null,
+                                          name: documentData['name'],
+                                          user_image:
+                                              documentData["user_image"],
+                                          time: documentData["time"],
+                                          user_id: documentData["user_id"],
+                                          //user: null,
                                         ),
                                       ),
                                     );
@@ -379,7 +383,7 @@ class YourScreenState extends State<YourScreen> {
                                 ),
                               ),
                               TextSpan(
-                                text: ' ${documentData['author']}',
+                                text: ' ${documentData['comment']}',
                                 style: const TextStyle(
                                   fontSize: 20,
                                   color: Colors.black,
@@ -397,17 +401,26 @@ class YourScreenState extends State<YourScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => recipe(),
+                                builder: (context) => recipe(
+                                  title: documentData["title"],
+                                  comment: documentData["comment"],
+                                  imgURL:
+                                      List<String>.from(documentData["imgURL"]),
+                                  Ingredients: List<String>.from(
+                                      documentData["Ingredients"]),
+                                  procedure: List<String>.from(
+                                      documentData["procedure"]),
+                                ),
                               ),
                             );
                           },
                           child: Text(
                             'レシピを見る',
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 20),
                           ),
                         ),
                         const SizedBox(
-                          height: 40,
+                          height: 20,
                         ),
                       ],
                     ),
