@@ -86,11 +86,11 @@ class YourScreenState extends State<YourScreen> {
                   },
                   enableInfiniteScroll: false, // 無限スクロールを無効にする
                 ),
-                itemCount: imageUrls.length,
                 itemBuilder: (context, index, realIndex) {
                   final path = imageUrls[index];
                   return buildImage(path, index);
                 },
+                itemCount: imageUrls.length,
               ),
               const SizedBox(
                 height: 20,
@@ -401,7 +401,7 @@ class YourScreenState extends State<YourScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => recipe(
+                                builder: (context) => RecipePage(
                                   title: documentData["title"],
                                   name: documentData["name"],
                                   comment: documentData["comment"],
