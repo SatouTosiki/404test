@@ -403,6 +403,7 @@ class YourScreenState extends State<YourScreen> {
                               MaterialPageRoute(
                                 builder: (context) => recipe(
                                   title: documentData["title"],
+                                  name: documentData["name"],
                                   comment: documentData["comment"],
                                   imgURL:
                                       List<String>.from(documentData["imgURL"]),
@@ -410,6 +411,7 @@ class YourScreenState extends State<YourScreen> {
                                       documentData["Ingredients"]),
                                   procedure: List<String>.from(
                                       documentData["procedure"]),
+                                  user_image: documentData["user_image"],
                                 ),
                               ),
                             );

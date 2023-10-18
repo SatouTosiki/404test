@@ -11,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 class recipe extends StatelessWidget {
   final String title;
   final String comment;
+  final String user_image;
+  final String name;
   final List<String>? imgURL;
   final List<String>? Ingredients;
   final List<String>? procedure;
@@ -19,6 +21,8 @@ class recipe extends StatelessWidget {
     required this.title,
     required this.imgURL,
     required this.comment,
+    required this.name,
+    required this.user_image,
     required this.Ingredients,
     required this.procedure,
   });
@@ -45,9 +49,28 @@ class recipe extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Text('Recipe Details'),
-      ),
+      body: SingleChildScrollView(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              ClipOval(
+                child: Image.network(
+                  '$user_image',
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Text("$name"),
+            ],
+          ),
+        ],
+      )),
     );
   }
 }

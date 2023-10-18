@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -13,9 +8,7 @@ final uid = auth.currentUser?.uid.toString();
 
 class CommentWidget extends StatelessWidget {
   //コメントボタン内のtext表示部分
-
   final String commentText;
-
   CommentWidget(this.commentText);
 
   @override
