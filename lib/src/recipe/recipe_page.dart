@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:test3/src/recipe/recipe_model.dart';
 
 class RecipePage extends StatefulWidget {
   final String title;
@@ -31,10 +33,10 @@ class RecipePageState extends State<RecipePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        title: Text(
+        title: const Text(
           'Recipe Page',
           style: TextStyle(
             fontSize: 30,
@@ -43,7 +45,7 @@ class RecipePageState extends State<RecipePage> {
         ),
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -64,28 +66,23 @@ class RecipePageState extends State<RecipePage> {
                       fit: BoxFit.fill,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Text(
                     widget.name,
-                    style: TextStyle(color: Colors.black, fontSize: 20),
+                    style: const TextStyle(color: Colors.black, fontSize: 20),
                   ),
                 ],
               ),
             ),
             Column(
               children: [
-                Container(
-                  height: 0.5,
-                  width: 1000,
-                  color: Colors.grey,
-                ),
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
                     widget.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
                     ),
@@ -100,9 +97,6 @@ class RecipePageState extends State<RecipePage> {
             ),
             Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
                 if (widget.imgURL != null && widget.imgURL!.isNotEmpty)
                   CarouselSlider.builder(
                     itemCount: widget.imgURL!.length,
@@ -128,7 +122,7 @@ class RecipePageState extends State<RecipePage> {
                     },
                   ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 AnimatedSmoothIndicator(
                   activeIndex: imgcount,
@@ -142,22 +136,69 @@ class RecipePageState extends State<RecipePage> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
-            Text(
-              "具材一覧",
-              style: TextStyle(fontSize: 15),
+            Row(
+              children: const [
+                SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "具材",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.Ingredients!.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(widget.Ingredients![index]),
-                );
-              },
-            )
+            Container(
+              height: 0.5,
+              width: 1000,
+              color: Colors.grey,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            if (widget.Ingredients != null)
+              for (String g in widget.Ingredients!)
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(2),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey, // 線の色を設定
+                            width: 0.5, // 線の幅を設定
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        "🟢$g",
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                ),
+            Row(
+              children: const [
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "作り方手順",
+                  style: TextStyle(fontSize: 20),
+                )
+              ],
+            ),
+            Container(
+              height: 0.5,
+              width: 1000,
+              color: Colors.grey,
+            ),
+            ProcedureList(procedures: widget.procedure), //レシピモデルから引き注いだクラス
+            Column(
+              children: [],
+            ),
           ],
         ),
       ),
