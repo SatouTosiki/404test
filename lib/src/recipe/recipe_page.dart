@@ -109,7 +109,7 @@ class RecipePageState extends State<RecipePage> {
                       enableInfiniteScroll: false,
                       autoPlayInterval: Duration(seconds: 3),
                       autoPlayAnimationDuration:
-                          Duration(milliseconds: 800), //スクロールの時間
+                          Duration(milliseconds: 1800), //スクロールの時間
                       scrollDirection: Axis.horizontal,
                       onPageChanged: (index, reason) {
                         setState(() {
