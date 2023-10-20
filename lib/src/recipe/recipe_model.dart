@@ -12,7 +12,7 @@ class ProcedureList extends StatelessWidget {
       children: procedures != null
           ? List.generate(procedures!.length, (index) {
               String procedureText = procedures![index];
-              String inde = "${index}";
+              String inde = "${index + 1}";
               String numberedText = "$inde$procedureText";
               return Padding(
                 padding: const EdgeInsets.all(2),
