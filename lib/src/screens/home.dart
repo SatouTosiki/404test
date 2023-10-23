@@ -331,8 +331,9 @@ class YourScreenState extends State<YourScreen> {
                                                 const Center(
                                                   child: const Text(
                                                     "コメント",
-                                                    style:
-                                                        TextStyle(fontSize: 18),
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                            18), //fsadkfhasjfh
                                                   ),
                                                 ),
                                                 Container(
