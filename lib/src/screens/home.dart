@@ -24,6 +24,7 @@ class YourScreenState extends State<YourScreen> {
   List<Map<String, dynamic>> documentList = [];
   bool isTextVisible = false;
   final User? user;
+  bool isLiked = false;
 
   YourScreenState({required this.user});
 
@@ -279,12 +280,19 @@ class YourScreenState extends State<YourScreen> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: IconButton(
-                                icon: const Icon(
-                                  LineIcons.heart,
+                                icon: Icon(
+                                  isLiked
+                                      ? LineIcons.heartAlt
+                                      : LineIcons.heart, // ハートボタンのアイコンを切り替え
+
                                   size: 30,
+
+                                  color: isLiked ? Colors.pink : Colors.black,
                                 ),
                                 onPressed: () {
-                                  print('IconButton tapped');
+                                  setState(() {
+                                    isLiked = !isLiked; // 状態を切り替える
+                                  });
                                 },
                               ),
                             ),
@@ -416,7 +424,7 @@ class YourScreenState extends State<YourScreen> {
                               ),
                             );
                           },
-                          child: Text(
+                          child: const Text(
                             'レシピを見る',
                             style: TextStyle(fontSize: 20),
                           ),

@@ -109,7 +109,7 @@ class RecipePageState extends State<RecipePage> {
                       enableInfiniteScroll: false,
                       autoPlayInterval: Duration(seconds: 3),
                       autoPlayAnimationDuration:
-                          Duration(milliseconds: 1800), //スクロールの時間
+                          Duration(milliseconds: 1300), //スクロールの時間
                       scrollDirection: Axis.horizontal,
                       onPageChanged: (index, reason) {
                         setState(() {
@@ -155,30 +155,11 @@ class RecipePageState extends State<RecipePage> {
               width: 1000,
               color: Colors.grey,
             ),
-            const SizedBox(
-              height: 10,
+
+            Container(
+              child: g(Ingredients: widget.Ingredients),
             ),
-            if (widget.Ingredients != null)
-              for (String g in widget.Ingredients!)
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(2),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey, // 線の色を設定
-                            width: 0.5, // 線の幅を設定
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        "🟢$g",
-                        style: const TextStyle(fontSize: 15),
-                      ),
-                    ),
-                  ),
-                ),
+
             Row(
               children: const [
                 SizedBox(
@@ -195,10 +176,17 @@ class RecipePageState extends State<RecipePage> {
               width: 1000,
               color: Colors.grey,
             ),
-            ProcedureList(procedures: widget.procedure), //レシピモデルから引き注いだクラス
-            Column(
-              children: [],
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: ProcedureList(procedures: widget.procedure),
+            ), //レシピモデルから引き注いだクラス
+            Container(
+              height: 0.5,
+              width: 1000,
+              color: Colors.grey,
             ),
+
+            CommentInputWidget(), //コメントの関数
           ],
         ),
       ),
