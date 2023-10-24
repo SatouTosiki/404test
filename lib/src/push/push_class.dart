@@ -32,6 +32,7 @@ class AddBookModel extends ChangeNotifier {
   List<File> imageFiles = []; // 複数の画像ファイルのパスを格納するリスト
   List<Widget> textFields = []; //テキストフィールドを追加していくリスト
   List<Widget> ingredients = []; //具材を登録
+  int? heart;
   //-----------------------------------------------------
   List<TextEditingController> textControllers = []; // テキストフィールド用のコントローラーリスト
   List<TextEditingController> ingredientsControllers =
@@ -125,6 +126,7 @@ class AddBookModel extends ChangeNotifier {
       "procedure": textFieldsValues, // 各具材のテキストフィールドの入力値を Firestore に追加[]
       "user_id": uid,
       "user_image": userimage,
+      "heart": heart,
     });
   }
 

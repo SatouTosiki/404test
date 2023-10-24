@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:line_icons/line_icon.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:test3/src/recipe/recipe_model.dart';
 
@@ -45,7 +46,7 @@ class RecipePageState extends State<RecipePage> {
         ),
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(LineIcons.arrowLeft),
           onPressed: () {
             Navigator.pop(context);
           },

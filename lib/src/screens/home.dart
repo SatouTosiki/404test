@@ -5,11 +5,14 @@ import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../models/model.dart';
 import '../recipe/recipe_page.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_ detail.dart';
 
+final CollectionReference users =
+    FirebaseFirestore.instance.collection('user_post');
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 final uid = auth.currentUser?.uid.toString();
@@ -20,11 +23,13 @@ class YourScreen extends StatefulWidget {
 }
 
 class YourScreenState extends State<YourScreen> {
+  bool isLiked = false;
+  int likeCount = 0;
   int imagecount = 0; // ここで初期化
   List<Map<String, dynamic>> documentList = [];
   bool isTextVisible = false;
   final User? user;
-  bool isLiked = false;
+  // bool isLiked = false;
 
   YourScreenState({required this.user});
 
@@ -38,6 +43,19 @@ class YourScreenState extends State<YourScreen> {
   void initState() {
     super.initState();
     fetchDocumentData();
+  }
+
+  Future<void> toggleLike() async {
+    setState(() {
+      isLiked = !isLiked;
+      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+    });
+
+    // Firestoreにいいね情報を保存
+    final DocumentReference postReference = FirebaseFirestore.instance
+        .collection('user_post')
+        .doc('ff7dhRuV1ds6s01L16g7');
+    await postReference.update({'heart': likeCount});
   }
 
   Future<void> fetchDocumentData() async {
@@ -275,6 +293,7 @@ class YourScreenState extends State<YourScreen> {
                           height: 10,
                         ),
                         abuildImageWidget(documentData), //userの投稿画像を表示
+
                         Row(
                           children: [
                             Align(
@@ -283,17 +302,11 @@ class YourScreenState extends State<YourScreen> {
                                 icon: Icon(
                                   isLiked
                                       ? LineIcons.heartAlt
-                                      : LineIcons.heart, // ハートボタンのアイコンを切り替え
-
+                                      : LineIcons.heart,
                                   size: 30,
-
                                   color: isLiked ? Colors.pink : Colors.black,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    isLiked = !isLiked; // 状態を切り替える
-                                  });
-                                },
+                                onPressed: toggleLike,
                               ),
                             ),
                             Align(
@@ -331,9 +344,8 @@ class YourScreenState extends State<YourScreen> {
                                                 const Center(
                                                   child: const Text(
                                                     "コメント",
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                            18), //fsadkfhasjfh
+                                                    style:
+                                                        TextStyle(fontSize: 18),
                                                   ),
                                                 ),
                                                 Container(
@@ -443,5 +455,42 @@ class YourScreenState extends State<YourScreen> {
         ),
       ),
     );
+  }
+}
+
+Future<void> getUserData() async {
+  try {
+    DocumentSnapshot document = await users.doc('6avraWwuqq5CNBOffVIF').get();
+    if (document.exists) {
+      // ドキュメントが存在する場合、データを取得
+      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+      print(data);
+    } else {
+      print('ドキュメントが存在しません');
+    }
+  } catch (e) {
+    print('エラー: $e');
+  }
+}
+
+class FirestoreService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // 投稿にいいねを追加
+  Future<void> addLikeToPost(String postId) async {
+    final postRef = _firestore.collection('posts').doc(postId);
+
+    // トランザクションを使用してハート数をインクリメント
+    await _firestore.runTransaction((transaction) async {
+      final postSnapshot = await transaction.get(postRef);
+
+      if (postSnapshot.exists) {
+        final currentLikes = postSnapshot.get('likes') ?? 0;
+        transaction.update(
+          postRef,
+          {'likes': currentLikes + 1}, // ハート数をインクリメント
+        );
+      }
+    });
   }
 }

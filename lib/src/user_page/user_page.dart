@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:line_icons/line_icons.dart';
 import '../push/push_class.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -53,8 +54,12 @@ class userpage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(
+          leading: IconButton(
+            icon: const Icon(LineIcons.arrowLeft),
             color: Colors.black,
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
           title: Row(
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
