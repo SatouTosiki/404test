@@ -45,18 +45,34 @@ class YourScreenState extends State<YourScreen> {
     fetchDocumentData();
   }
 
-  Future<void> toggleLike() async {
-    setState(() {
-      isLiked = !isLiked;
-      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
-    });
-
-    // Firestoreにいいね情報を保存
+  Future<void> incrementLikeCount() async {
     final DocumentReference postReference = FirebaseFirestore.instance
         .collection('user_post')
         .doc('ff7dhRuV1ds6s01L16g7');
-    await postReference.update({'heart': likeCount});
+
+    // Firestoreフィールドをインクリメント
+    postReference.update({
+      'heart': FieldValue.increment(1),
+    });
+
+    // ウィジェット内のいいね数を更新
+    setState(() {
+      likeCount++;
+    });
   }
+
+  // Future<void> toggleLike() async {
+  //   setState(() {
+  //     isLiked = !isLiked;
+  //     likeCount = isLiked ? likeCount += 1 : likeCount -= 1;
+  //   });
+
+  //   // Firestoreにいいね情報を保存
+  //   final DocumentReference postReference = FirebaseFirestore.instance
+  //       .collection('user_post')
+  //       .doc('ff7dhRuV1ds6s01L16g7');
+  //   await postReference.update({'heart': likeCount});
+  // }
 
   Future<void> fetchDocumentData() async {
     try {
@@ -306,7 +322,7 @@ class YourScreenState extends State<YourScreen> {
                                   size: 30,
                                   color: isLiked ? Colors.pink : Colors.black,
                                 ),
-                                onPressed: toggleLike,
+                                onPressed: incrementLikeCount,
                               ),
                             ),
                             Align(
