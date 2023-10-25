@@ -11,3 +11,5 @@ Future<void> addUserToFirestore(
     // 他のユーザー情報もここに追加
   });
 }
+
+class commetn {}

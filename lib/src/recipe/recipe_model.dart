@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icon.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:test3/src/push/push_class.dart';
 
 class ProcedureList extends StatelessWidget {
   //作り方手順を表示させるクラス
@@ -121,29 +120,40 @@ class CommentInputWidget extends StatefulWidget {
 }
 
 class _CommentInputWidgetState extends State<CommentInputWidget> {
-  // TextEditingController _commentController = TextEditingController();
+  TextEditingController _commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(15),
-      child: Column(
-        children: const [
-          Text(
-            "コメント",
-            style: TextStyle(fontSize: 20),
-          ),
-          TextField(
-            //controller: _commentController, // コントローラーを設定
+      padding: EdgeInsets.all(8.0),
+      child: Row(children: [
+        Expanded(
+          child: TextField(
+            controller: _commentController, // コントローラーを設定
             decoration: InputDecoration(
-              suffixIcon: Icon(
-                LineIcons.check,
-              ),
               hintText: 'コメントを入力してください',
             ),
           ),
-        ],
-      ),
+        ),
+        Column(
+          children: [
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 30),
+              ),
+              onPressed: () {},
+              child: const Text(
+                '投稿',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        )
+      ]),
     );
   }
 }

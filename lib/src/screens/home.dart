@@ -29,7 +29,6 @@ class YourScreenState extends State<YourScreen> {
   List<Map<String, dynamic>> documentList = [];
   bool isTextVisible = false;
   final User? user;
-  // bool isLiked = false;
 
   YourScreenState({required this.user});
 
@@ -44,35 +43,6 @@ class YourScreenState extends State<YourScreen> {
     super.initState();
     fetchDocumentData();
   }
-
-  Future<void> incrementLikeCount() async {
-    final DocumentReference postReference = FirebaseFirestore.instance
-        .collection('user_post')
-        .doc('ff7dhRuV1ds6s01L16g7');
-
-    // Firestoreフィールドをインクリメント
-    postReference.update({
-      'heart': FieldValue.increment(1),
-    });
-
-    // ウィジェット内のいいね数を更新
-    setState(() {
-      likeCount++;
-    });
-  }
-
-  // Future<void> toggleLike() async {
-  //   setState(() {
-  //     isLiked = !isLiked;
-  //     likeCount = isLiked ? likeCount += 1 : likeCount -= 1;
-  //   });
-
-  //   // Firestoreにいいね情報を保存
-  //   final DocumentReference postReference = FirebaseFirestore.instance
-  //       .collection('user_post')
-  //       .doc('ff7dhRuV1ds6s01L16g7');
-  //   await postReference.update({'heart': likeCount});
-  // }
 
   Future<void> fetchDocumentData() async {
     try {
@@ -282,7 +252,8 @@ class YourScreenState extends State<YourScreen> {
                                     size: 30,
                                   ),
                                   onPressed: () {
-                                    print('IconButton tapped');
+                                    UserService();
+                                    //print('IconButton tapped');
                                   },
                                 ),
                               ],
@@ -315,15 +286,17 @@ class YourScreenState extends State<YourScreen> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: IconButton(
-                                icon: Icon(
-                                  isLiked
-                                      ? LineIcons.heartAlt
-                                      : LineIcons.heart,
-                                  size: 30,
-                                  color: isLiked ? Colors.pink : Colors.black,
-                                ),
-                                onPressed: incrementLikeCount,
-                              ),
+                                  icon: Icon(
+                                    isLiked
+                                        ? LineIcons.heartAlt
+                                        : LineIcons.heart,
+                                    size: 30,
+                                    color: isLiked ? Colors.pink : Colors.black,
+                                  ),
+                                  onPressed: () {
+                                    // LikeButton();
+                                    //isLiked;
+                                  }),
                             ),
                             Align(
                               alignment: Alignment.centerLeft,
@@ -471,42 +444,5 @@ class YourScreenState extends State<YourScreen> {
         ),
       ),
     );
-  }
-}
-
-Future<void> getUserData() async {
-  try {
-    DocumentSnapshot document = await users.doc('6avraWwuqq5CNBOffVIF').get();
-    if (document.exists) {
-      // ドキュメントが存在する場合、データを取得
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      print(data);
-    } else {
-      print('ドキュメントが存在しません');
-    }
-  } catch (e) {
-    print('エラー: $e');
-  }
-}
-
-class FirestoreService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // 投稿にいいねを追加
-  Future<void> addLikeToPost(String postId) async {
-    final postRef = _firestore.collection('posts').doc(postId);
-
-    // トランザクションを使用してハート数をインクリメント
-    await _firestore.runTransaction((transaction) async {
-      final postSnapshot = await transaction.get(postRef);
-
-      if (postSnapshot.exists) {
-        final currentLikes = postSnapshot.get('likes') ?? 0;
-        transaction.update(
-          postRef,
-          {'likes': currentLikes + 1}, // ハート数をインクリメント
-        );
-      }
-    });
   }
 }

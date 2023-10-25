@@ -22,9 +22,9 @@ List<File> images = []; // 選択された複数の画像を格納するリス�
 
 final picker = ImagePicker();
 
-Future<User?> getCurrentUser() async {
-  return FirebaseAuth.instance.currentUser;
-}
+// Future<User?> getCurrentUser() async {
+//   return FirebaseAuth.instance.currentUser;
+// }
 
 class AddBookModel extends ChangeNotifier {
   String? title;

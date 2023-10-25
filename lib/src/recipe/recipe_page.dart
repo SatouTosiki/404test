@@ -186,6 +186,13 @@ class RecipePageState extends State<RecipePage> {
               width: 1000,
               color: Colors.grey,
             ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                "コメント",
+                style: TextStyle(fontSize: 15),
+              ),
+            ),
 
             CommentInputWidget(), //コメントの関数
           ],
