@@ -55,6 +55,7 @@ class YourScreenState extends State<YourScreen> {
       querySnapshot.docs.forEach((doc) {
         if (doc.exists) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          data['documentId'] = doc.id; // ドキュメントIDをデータに追加
           dataList.add(data);
         }
       });
@@ -422,6 +423,7 @@ class YourScreenState extends State<YourScreen> {
                                   procedure: List<String>.from(
                                       documentData["procedure"]),
                                   user_image: documentData["user_image"],
+                                  documentId: documentData["documentId"],
                                 ),
                               ),
                             );
@@ -434,6 +436,14 @@ class YourScreenState extends State<YourScreen> {
                         const SizedBox(
                           height: 20,
                         ),
+
+                        Text(
+                          'ドキュメント ID: ${documentData['documentId']}',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                          ),
+                        )
                       ],
                     ),
                   );

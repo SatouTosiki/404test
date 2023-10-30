@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:line_icons/line_icon.dart';
@@ -13,21 +14,50 @@ class RecipePage extends StatefulWidget {
   final List<String>? imgURL;
   final List<String>? Ingredients;
   final List<String>? procedure;
+  final String documentId;
+  //final String documentId; // ドキュメントIDを受け取るプロパティ
 
-  RecipePage(
-      {required this.title,
-      required this.imgURL,
-      required this.comment,
-      required this.name,
-      required this.user_image,
-      required this.Ingredients,
-      required this.procedure});
+  RecipePage({
+    required this.title,
+    required this.imgURL,
+    required this.comment,
+    required this.name,
+    required this.user_image,
+    required this.Ingredients,
+    required this.procedure,
+    required this.documentId,
+  });
 
   @override
   RecipePageState createState() => RecipePageState();
 }
 
 class RecipePageState extends State<RecipePage> {
+  TextEditingController CommentText = TextEditingController();
+  Future<void> commentpush() async {
+    final comment = CommentText.text;
+    final co = widget.documentId;
+
+    if (comment.isNotEmpty) {
+      final Cdoc = FirebaseFirestore.instance.collection('user_post').doc(co);
+
+      // コメント用のコレクションを作成
+      final commentCollection = Cdoc.collection('comment');
+
+      // コメントをFirestoreに追加
+      await commentCollection.add({
+        'comment': comment,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // コメントを追加したらテキストフィールドをクリア
+      CommentText.clear();
+    } else {
+      // コメントが空の場合のエラーハンドリング
+      print('コメントが入力されていません');
+    }
+  }
+
   int imgcount = 0;
 
   @override
@@ -193,8 +223,43 @@ class RecipePageState extends State<RecipePage> {
                 style: TextStyle(fontSize: 15),
               ),
             ),
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  controller: CommentText, // コントローラーを設定
+                  decoration: InputDecoration(
+                    hintText: 'コメントを入力してください',
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                    ),
+                    onPressed: () {
+                      commentpush();
+                      print("確認");
+                      //commentpush();
+                    },
+                    child: const Text(
+                      '投稿',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ]),
 
-            CommentInputWidget(), //コメントの関数
+            Text(
+              widget.documentId,
+              style: const TextStyle(color: Colors.black, fontSize: 20),
+            ),
           ],
         ),
       ),

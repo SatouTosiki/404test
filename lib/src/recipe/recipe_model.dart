@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:test3/src/push/push_class.dart';
+import 'package:test3/src/register/register_model.dart';
 
 class ProcedureList extends StatelessWidget {
   //作り方手順を表示させるクラス
@@ -114,46 +115,153 @@ class g extends StatelessWidget {
   }
 }
 
-class CommentInputWidget extends StatefulWidget {
-  @override
-  _CommentInputWidgetState createState() => _CommentInputWidgetState();
-}
+// FirebaseFirestore firestore = FirebaseFirestore.instance;
+// CollectionReference commentsCollection = firestore
+//     .collection('user_post')
+//     .doc('uA0yUEyvscYL3olSWyvl')
+//     .collection('comment');
 
-class _CommentInputWidgetState extends State<CommentInputWidget> {
-  TextEditingController _commentController = TextEditingController();
+// class CommentInputWidget extends StatefulWidget {
+//   @override
+//   CommentInputWidgetState createState() => CommentInputWidgetState();
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      child: Row(children: [
-        Expanded(
-          child: TextField(
-            controller: _commentController, // コントローラーを設定
-            decoration: InputDecoration(
-              hintText: 'コメントを入力してください',
-            ),
-          ),
-        ),
-        Column(
-          children: [
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blue,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 30),
-              ),
-              onPressed: () {},
-              child: const Text(
-                '投稿',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        )
-      ]),
-    );
-  }
-}
+// class CommentInputWidgetState extends State<CommentInputWidget> {
+//   TextEditingController CommentText = TextEditingController();
+
+//   // Future come() async {
+//   //   final Cdoc = FirebaseFirestore.instance
+//   //       .collection('user_post')
+//   //       .doc('uA0yUEyvscYL3olSWyvl')
+//   //       .collection("commetn");
+
+//   //   // await Cdoc.set({
+//   //   //   'commet':CommentText,
+//   //   // });
+//   // }
+
+//   // Future<void> getAllComments() async {
+//   //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+//   //       .collection('user_post')
+//   //       .doc('uA0yUEyvscYL3olSWyvl')
+//   //       .collection('comment')
+//   //       .get();
+//   //   List<Map<String, dynamic>> commentList = [];
+
+//   //   for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+//   //     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+//   //     // data を使って何か処理
+//   //   }
+//   // }
+
+//   // Future<void> commentpush() async {
+//   //   final comment = CommentText.text;
+//   //   final co = "uA0yUEyvscYL3olSWyvl";
+//   //   if (comment.isNotEmpty) {
+//   //     final Cdoc = FirebaseFirestore.instance
+//   //         .collection('user_post')
+//   //         .doc(co)
+//   //         .collection('comment');
+
+//   //     // コメントをFirestoreに追加
+//   //     await Cdoc.add({
+//   //       'comment': comment,
+//   //       'timestamp': FieldValue.serverTimestamp(),
+//   //     });
+
+//   //     // コメントを追加したらテキストフィールドをクリア
+//   //     CommentText.clear();
+//   //   } else {
+//   //     // コメントが空の場合のエラーハンドリング
+//   //     print('コメントが入力されていません');
+//   //   }
+//   // }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: EdgeInsets.all(8.0),
+//       child: Row(children: [
+//         Expanded(
+//           child: TextField(
+//             controller: CommentText, // コントローラーを設定
+//             decoration: InputDecoration(
+//               hintText: 'コメントを入力してください',
+//             ),
+//           ),
+//         ),
+//         Column(
+//           children: [
+//             TextButton(
+//               style: TextButton.styleFrom(
+//                 backgroundColor: Colors.blue,
+//                 shape: const RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.all(Radius.circular(100)),
+//                 ),
+//                 padding: EdgeInsets.symmetric(horizontal: 30),
+//               ),
+//               onPressed: () {
+//                 //commentpush();
+//                 print("確認");
+//                 //commentpush();
+//               },
+//               child: const Text(
+//                 '投稿',
+//                 style: TextStyle(color: Colors.white),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ]),
+//     );
+//   }
+// }
+
+// class CommentListWidget extends StatefulWidget {
+//   @override
+//   _CommentListWidgetState createState() => _CommentListWidgetState();
+// }
+
+// class _CommentListWidgetState extends State<CommentListWidget> {
+//   List<Map<String, dynamic>> comments = [];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     getAllComments();
+//   }
+
+//   Future<void> getAllComments() async {
+//     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+//         .collection('user_post')
+//         .doc('uA0yUEyvscYL3olSWyvl')
+//         .collection('comment')
+//         .get();
+
+//     List<Map<String, dynamic>> commentList = [];
+
+//     for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+//       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+//       commentList.add(data);
+//     }
+
+//     setState(() {
+//       comments = commentList;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView.builder(
+//       itemCount: comments.length,
+//       itemBuilder: (context, index) {
+//         Map<String, dynamic> commentData = comments[index];
+//         return ListTile(
+//           title: Text(commentData['comment']),
+
+//           // 他のコメントデータを表示するウィジェットを追加できます
+//         );
+//       },
+//     );
+//   }
+// }

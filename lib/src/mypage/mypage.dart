@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:test3/src/push/push_class.dart';
 
 import '../screens/login_page.dart';
@@ -30,8 +31,11 @@ class MyPage extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.favorite),
-                color: Colors.black,
+                icon: Icon(
+                  LineIcons.running,
+                  size: 45,
+                ),
+                color: Colors.green,
                 onPressed: () {
                   FirebaseAuth.instance.signOut();
                   Navigator.of(context).pushReplacement(
