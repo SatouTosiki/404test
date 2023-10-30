@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:test3/src/push/push_class.dart';
 import 'package:test3/src/register/register_model.dart';
 
+final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 class ProcedureList extends StatelessWidget {
   //作り方手順を表示させるクラス
   final List<String>? procedures;
@@ -114,6 +116,9 @@ class g extends StatelessWidget {
     );
   }
 }
+
+Future<void> commentlist() async {}
+
 
 // FirebaseFirestore firestore = FirebaseFirestore.instance;
 // CollectionReference commentsCollection = firestore

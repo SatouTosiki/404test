@@ -15,6 +15,7 @@ class RecipePage extends StatefulWidget {
   final List<String>? Ingredients;
   final List<String>? procedure;
   final String documentId;
+
   //final String documentId; // ドキュメントIDを受け取るプロパティ
 
   RecipePage({
@@ -34,29 +35,76 @@ class RecipePage extends StatefulWidget {
 
 class RecipePageState extends State<RecipePage> {
   TextEditingController CommentText = TextEditingController();
+  List<String> comments = []; // コメントデータを保持するリスト
+
   Future<void> commentpush() async {
     final comment = CommentText.text;
     final co = widget.documentId;
 
     if (comment.isNotEmpty) {
-      final Cdoc = FirebaseFirestore.instance.collection('user_post').doc(co);
-
-      // コメント用のコレクションを作成
-      final commentCollection = Cdoc.collection('comment');
+      final Cdoc = FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(co)
+          .collection('comment');
 
       // コメントをFirestoreに追加
-      await commentCollection.add({
+      await Cdoc.add({
         'comment': comment,
         'timestamp': FieldValue.serverTimestamp(),
       });
 
       // コメントを追加したらテキストフィールドをクリア
       CommentText.clear();
+      print("投稿完了");
+      showDialog(
+        context: context, // BuildContextが必要
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('投稿完了'),
+            content: Text('コメントが投稿されました。'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // ダイアログを閉じる
+                },
+                child: Text('閉じる'),
+              ),
+            ],
+          );
+        },
+      );
     } else {
       // コメントが空の場合のエラーハンドリング
       print('コメントが入力されていません');
     }
   }
+
+  Future<void> commentview() async {
+    final co = widget.documentId;
+
+    final QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
+        .collection('user_post')
+        .doc(co) // ドキュメントIDを指定
+        .collection('comment')
+        .get();
+
+    List<String> commentList = [];
+
+    for (QueryDocumentSnapshot commentDoc in commentSnapshot.docs) {
+      Map<String, dynamic> commentData =
+          commentDoc.data() as Map<String, dynamic>;
+      String commentText = commentData['comment'];
+      commentList.add(commentText);
+    }
+
+    setState(() {
+      comments = commentList; // コメントリストを更新
+    });
+  }
+
+  // Future<void> commentview() async {
+
+  // }
 
   int imgcount = 0;
 
@@ -255,10 +303,33 @@ class RecipePageState extends State<RecipePage> {
                 ],
               ),
             ]),
+            //CommentInputWidget(), //コメントの関数
 
             Text(
               widget.documentId,
               style: const TextStyle(color: Colors.black, fontSize: 20),
+            ),
+
+            TextButton(
+              onPressed: () {
+                commentview();
+                print("確認");
+                //commentpush();
+              },
+              child: const Text(
+                '投稿',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+            Column(
+              children: [
+                Text(
+                  'コメント',
+                  style: TextStyle(fontSize: 15, color: Colors.black),
+                ),
+                // コメントデータを表示
+                for (String comment in comments) Text(comment),
+              ],
             ),
           ],
         ),

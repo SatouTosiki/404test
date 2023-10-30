@@ -11,8 +11,8 @@ import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_ detail.dart';
 
-final CollectionReference users =
-    FirebaseFirestore.instance.collection('user_post');
+// final CollectionReference users =
+//     FirebaseFirestore.instance.collection('user_post');
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 final uid = auth.currentUser?.uid.toString();
