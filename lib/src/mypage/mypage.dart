@@ -75,7 +75,7 @@ class MyPage extends StatelessWidget {
                               "フォロワー",
                               style: TextStyle(fontSize: 18),
                             ),
-                            Text("3"),
+                            Text("実装予定"),
                           ],
                         ),
                         Column(
@@ -84,7 +84,7 @@ class MyPage extends StatelessWidget {
                               "フォロー中",
                               style: TextStyle(fontSize: 18),
                             ),
-                            Text("ad"),
+                            Text("実装予定"),
                           ],
                         ),
                       ],

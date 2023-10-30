@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 LineIcons.heart, // Line Icons パッケージのアイコンを指定
                 size: 30, // アイコンのサイズを設定
               ),
-              label: "検索"),
+              label: "お気に入り"),
           BottomNavigationBarItem(
               icon: Icon(
                 LineIcons.user, // Line Icons パッケージのアイコンを指定

@@ -7,8 +7,7 @@ class BookmarkScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Center(
-          child: Text('お気に入り画面', style: TextStyle(fontSize: 32.0))),
+      body: const Center(child: Text('実装予定', style: TextStyle(fontSize: 32.0))),
     );
   }
 }
