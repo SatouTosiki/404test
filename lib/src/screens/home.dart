@@ -6,6 +6,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../models/model.dart';
+import '../recipe/recipe_model.dart';
 import '../recipe/recipe_page.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -343,30 +344,7 @@ class YourScreenState extends State<YourScreen> {
                                                   width: 1000,
                                                   color: Colors.grey,
                                                 ),
-                                                CommentWidget(
-                                                    "このウィジェットは素晴らしいです！"),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(25),
-                                            child: Column(
-                                              children: [
-                                                TextField(
-                                                  decoration: InputDecoration(
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        30),
-                                                            borderSide:
-                                                                BorderSide(
-                                                              color:
-                                                                  Colors.blue,
-                                                            )),
-                                                  ),
-                                                ),
+                                                Commentstyle("a"),
                                               ],
                                             ),
                                           ),

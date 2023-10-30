@@ -34,6 +34,13 @@ class RecipePage extends StatefulWidget {
 }
 
 class RecipePageState extends State<RecipePage> {
+  @override
+  void initState() {
+    super.initState();
+    // ページが開かれたらコメントを読み込む
+    commentview();
+  }
+
   TextEditingController CommentText = TextEditingController();
   List<String> comments = []; // コメントデータを保持するリスト
 
@@ -101,10 +108,6 @@ class RecipePageState extends State<RecipePage> {
       comments = commentList; // コメントリストを更新
     });
   }
-
-  // Future<void> commentview() async {
-
-  // }
 
   int imgcount = 0;
 
@@ -303,34 +306,8 @@ class RecipePageState extends State<RecipePage> {
                 ],
               ),
             ]),
-            //CommentInputWidget(), //コメントの関数
 
-            Text(
-              widget.documentId,
-              style: const TextStyle(color: Colors.black, fontSize: 20),
-            ),
-
-            TextButton(
-              onPressed: () {
-                commentview();
-                print("確認");
-                //commentpush();
-              },
-              child: const Text(
-                '投稿',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            Column(
-              children: [
-                Text(
-                  'コメント',
-                  style: TextStyle(fontSize: 15, color: Colors.black),
-                ),
-                // コメントデータを表示
-                for (String comment in comments) Text(comment),
-              ],
-            ),
+            for (String comment in comments) Commentstyle(comment),
           ],
         ),
       ),
