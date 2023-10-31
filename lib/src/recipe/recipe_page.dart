@@ -6,8 +6,6 @@ import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:test3/src/recipe/recipe_model.dart';
 
-import '../screens/home_ detail.dart';
-
 class RecipePage extends StatefulWidget {
   final String title;
   final String comment;
@@ -30,7 +28,6 @@ class RecipePage extends StatefulWidget {
     required this.procedure,
     required this.documentId,
   });
-
   @override
   RecipePageState createState() => RecipePageState();
 }
@@ -96,7 +93,7 @@ class RecipePageState extends State<RecipePage> {
         .collection('user_post')
         .doc(co) // ドキュメントIDを指定
         .collection('comment')
-        .orderBy('timestamp', descending: true)
+        .orderBy('timestamp', descending: true) //最新順
         .get();
 
     List<String> commentList = [];
@@ -266,13 +263,13 @@ class RecipePageState extends State<RecipePage> {
               width: 1000,
               color: Colors.grey,
             ),
+
             Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                "コメント",
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  'コメント ${comments.length}',
+                  style: TextStyle(fontSize: 20),
+                )),
 
             Row(children: [
               Expanded(
@@ -306,6 +303,9 @@ class RecipePageState extends State<RecipePage> {
                 ],
               ),
             ]),
+            SizedBox(
+              height: 20,
+            ),
 
             for (String comment in comments) //画像
               Commentstyle(comment), //homeモデルのクラスを使用

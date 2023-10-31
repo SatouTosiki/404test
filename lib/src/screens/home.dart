@@ -415,7 +415,7 @@ class YourScreenState extends State<YourScreen> {
                         ),
 
                         Text(
-                          'ドキュメント ID: ${documentData['documentId']}',
+                          '投稿 ID: ${documentData['documentId']}',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.grey,
