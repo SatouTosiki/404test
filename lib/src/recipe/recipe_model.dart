@@ -130,12 +130,12 @@ class Commentstyle extends StatelessWidget {
           padding: EdgeInsets.all(10),
           margin: EdgeInsets.symmetric(vertical: 5),
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: Colors.grey[200],
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
             commentText,
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 16),
           ),
         ),
       ],

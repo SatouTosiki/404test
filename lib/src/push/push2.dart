@@ -10,6 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AddBookPage extends StatelessWidget {
   final picker = ImagePicker();
+  bool isProcessing = false;
+
   //List<Widget> textFields = []; // テキストフィールドのリスト
 
   AddBookModel model = AddBookModel();
@@ -151,6 +153,10 @@ class AddBookPage extends StatelessWidget {
 
                         ElevatedButton(
                           onPressed: () async {
+                            model.startLoading();
+                            setState(() {
+                              isProcessing = true;
+                            });
                             // 追加の処理
                             try {
                               // timestampを現在の日時に設定

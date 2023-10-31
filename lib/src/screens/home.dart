@@ -6,6 +6,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../models/model.dart';
+import '../recipe/recipe_model.dart';
 import '../recipe/recipe_page.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,7 @@ import 'home_ detail.dart';
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 final uid = auth.currentUser?.uid.toString();
+// コメントを取得
 
 class YourScreen extends StatefulWidget {
   @override
@@ -343,7 +345,6 @@ class YourScreenState extends State<YourScreen> {
                                                   width: 1000,
                                                   color: Colors.grey,
                                                 ),
-                                                //CommentWidget(),
                                               ],
                                             ),
                                           ),

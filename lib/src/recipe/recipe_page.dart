@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:printing/printing.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:test3/src/recipe/recipe_model.dart';
 
@@ -309,6 +310,10 @@ class RecipePageState extends State<RecipePage> {
 
             for (String comment in comments) //画像
               Commentstyle(comment), //homeモデルのクラスを使用
+
+            SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),
