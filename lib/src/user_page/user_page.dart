@@ -105,7 +105,7 @@ class userpage extends StatelessWidget {
                               "フォロワー",
                               style: TextStyle(fontSize: 18),
                             ),
-                            Text("3"),
+                            Text("実装予定"),
                           ],
                         ),
                         Column(
@@ -114,7 +114,7 @@ class userpage extends StatelessWidget {
                               "フォロー中",
                               style: TextStyle(fontSize: 18),
                             ),
-                            Text("ad"),
+                            Text("実装予定"),
                           ],
                         ),
                       ],
@@ -127,11 +127,12 @@ class userpage extends StatelessWidget {
                     //Text('User UID: $name'),
                     Text('ID:$name'),
                     Text('id: $user_id'),
-                    Text('User Name: $userName',
-                        style: TextStyle(fontSize: 20)),
-                    Text('User Email: $userEmail',
-                        style: TextStyle(fontSize: 20)),
                   ],
+                ),
+
+                Text(
+                  "実装予定",
+                  style: TextStyle(fontSize: 20),
                 ),
 
                 GridView.builder(

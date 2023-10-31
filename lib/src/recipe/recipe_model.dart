@@ -135,7 +135,7 @@ class Commentstyle extends StatelessWidget {
           ),
           child: Text(
             commentText,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 20),
           ),
         ),
       ],

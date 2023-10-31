@@ -6,6 +6,8 @@ import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:test3/src/recipe/recipe_model.dart';
 
+import '../screens/home_ detail.dart';
+
 class RecipePage extends StatefulWidget {
   final String title;
   final String comment;
@@ -268,18 +270,19 @@ class RecipePageState extends State<RecipePage> {
               color: Colors.grey,
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               child: Text(
                 "コメント",
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 20),
               ),
             ),
+
             Row(children: [
               Expanded(
                 child: TextField(
                   controller: CommentText, // コントローラーを設定
                   decoration: InputDecoration(
-                    hintText: 'コメントを入力してください',
+                    hintText: 'コメントを入力',
                   ),
                 ),
               ),
@@ -307,7 +310,9 @@ class RecipePageState extends State<RecipePage> {
               ),
             ]),
 
-            for (String comment in comments) Commentstyle(comment),
+            for (String comment in comments) //画像
+
+              Commentstyle(comment), //homeモデルのクラスを使用
           ],
         ),
       ),
