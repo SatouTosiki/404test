@@ -64,6 +64,7 @@ class RecipePageState extends State<RecipePage> {
 
       // コメントを追加したらテキストフィールドをクリア
       CommentText.clear();
+      await commentview();
       print("投稿完了");
       showDialog(
         context: context, // BuildContextが必要
@@ -95,6 +96,7 @@ class RecipePageState extends State<RecipePage> {
         .collection('user_post')
         .doc(co) // ドキュメントIDを指定
         .collection('comment')
+        .orderBy('timestamp', descending: true)
         .get();
 
     List<String> commentList = [];
@@ -171,11 +173,6 @@ class RecipePageState extends State<RecipePage> {
                       fontSize: 20,
                     ),
                   ),
-                ),
-                Container(
-                  height: 0.5,
-                  width: 1000,
-                  color: Colors.grey,
                 ),
               ],
             ),
@@ -311,7 +308,6 @@ class RecipePageState extends State<RecipePage> {
             ]),
 
             for (String comment in comments) //画像
-
               Commentstyle(comment), //homeモデルのクラスを使用
           ],
         ),
