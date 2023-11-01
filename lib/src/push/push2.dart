@@ -11,6 +11,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
 class AddBookPage extends StatelessWidget {
   final picker = ImagePicker();
   bool isProcessing = false;
@@ -156,22 +159,31 @@ class AddBookPage extends StatelessWidget {
 
                         ElevatedButton(
                           onPressed: () async {
-                            // ボタンを無効にする
                             setState(() {
-                              isProcessing = true;
+                              isProcessing =
+                                  true; // ボタンを無効にするためにローディング状態を true に設定
                             });
 
-                            // ローディング画面を表示
-                            LoadingAnimationWidget.inkDrop(
-                              color: Colors.white,
-                              size: 300,
-                            );
-
                             try {
-                              // ボタンを無効にする前に LoadingAnimationWidget.inkDrop を実行
+                              // ローディング画面を表示
+                              showDialog(
+                                context: context,
+                                barrierDismissible:
+                                    false, // ユーザーがダイアログを閉じられないようにする
+                                builder: (context) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              );
+
+                              // ここで必要な非同期処理を実行
                               final DateTime now = DateTime.now();
                               model.timestamp = now.toString();
                               await model.addBook();
+
+                              // ローディング画面を閉じる
+                              Navigator.of(context).pop();
 
                               //投稿が成功したら、ホーム画面に遷移
                               Navigator.of(context).pushReplacement(
@@ -187,9 +199,9 @@ class AddBookPage extends StatelessWidget {
                               );
                               // ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             } finally {
-                              // ボタンを有効に戻す
                               setState(() {
-                                isProcessing = false;
+                                isProcessing =
+                                    false; // ローディング状態を false に設定してボタンを有効に戻す
                               });
                             }
                           },
