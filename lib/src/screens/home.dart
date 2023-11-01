@@ -155,8 +155,13 @@ class YourScreenState extends State<YourScreen> {
             ),
           ),
         ),
-        backgroundColor: Colors.white,
+        bottom: TabBar(tabs: [
+          Icon(Icons.calendar_today),
+          Icon(Icons.note),
+          Icon(Icons.settings)
+        ]),
       ),
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: SingleChildScrollView(
