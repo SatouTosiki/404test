@@ -26,6 +26,7 @@ class YourScreen extends StatefulWidget {
 
 class YourScreenState extends State<YourScreen> {
   bool isLiked = false;
+  List<String> comments = []; // コメントデータを保持するリスト
   int likeCount = 0;
   int imagecount = 0; // ここで初期化
   List<Map<String, dynamic>> documentList = [];
@@ -45,6 +46,30 @@ class YourScreenState extends State<YourScreen> {
     super.initState();
     fetchDocumentData();
   }
+
+  //  Future<void> commentview() async {
+  //   final co = widget.documentId;
+
+  //   final QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
+  //       .collection('user_post')
+  //       .doc(co) // ドキュメントIDを指定
+  //       .collection('comment')
+  //       .orderBy('timestamp', descending: true) //最新順
+  //       .get();
+
+  //   List<String> commentList = [];
+
+  //   for (QueryDocumentSnapshot commentDoc in commentSnapshot.docs) {
+  //     Map<String, dynamic> commentData =
+  //         commentDoc.data() as Map<String, dynamic>;
+  //     String commentText = commentData['comment'];
+  //     commentList.add(commentText);
+  //   }
+
+  //   setState(() {
+  //     comments = commentList; // コメントリストを更新
+  //   });
+  // }
 
   Future<void> fetchDocumentData() async {
     try {
@@ -155,13 +180,8 @@ class YourScreenState extends State<YourScreen> {
             ),
           ),
         ),
-        bottom: TabBar(tabs: [
-          Icon(Icons.calendar_today),
-          Icon(Icons.note),
-          Icon(Icons.settings)
-        ]),
+        backgroundColor: Colors.white,
       ),
-      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: SingleChildScrollView(
