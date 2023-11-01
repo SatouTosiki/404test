@@ -5,6 +5,7 @@ import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:printing/printing.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:test3/src/models/model.dart';
 import 'package:test3/src/recipe/recipe_model.dart';
 
 class RecipePage extends StatefulWidget {
@@ -259,11 +260,6 @@ class RecipePageState extends State<RecipePage> {
               padding: const EdgeInsets.all(8),
               child: ProcedureList(procedures: widget.procedure),
             ), //レシピモデルから引き注いだクラス
-            Container(
-              height: 0.5,
-              width: 1000,
-              color: Colors.grey,
-            ),
 
             Padding(
                 padding: EdgeInsets.all(10),

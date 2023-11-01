@@ -1,4 +1,7 @@
 import 'dart:ffi';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:test3/src/models/model.dart';
+
 import '../main2.dart';
 import 'push_class.dart';
 import 'package:flutter/material.dart';
@@ -153,18 +156,21 @@ class AddBookPage extends StatelessWidget {
 
                         ElevatedButton(
                           onPressed: () async {
-                            model.startLoading();
+                            // ボタンを無効にする
                             setState(() {
                               isProcessing = true;
                             });
-                            // 追加の処理
-                            try {
-                              // timestampを現在の日時に設定
-                              final DateTime now = DateTime.now();
-                              model.timestamp =
-                                  now.toString(); // タイムスタンプを文字列として設定
-                              model.startLoading();
 
+                            // ローディング画面を表示
+                            LoadingAnimationWidget.inkDrop(
+                              color: Colors.white,
+                              size: 300,
+                            );
+
+                            try {
+                              // ボタンを無効にする前に LoadingAnimationWidget.inkDrop を実行
+                              final DateTime now = DateTime.now();
+                              model.timestamp = now.toString();
                               await model.addBook();
 
                               //投稿が成功したら、ホーム画面に遷移
@@ -181,11 +187,14 @@ class AddBookPage extends StatelessWidget {
                               );
                               // ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             } finally {
-                              model.endLoading();
+                              // ボタンを有効に戻す
+                              setState(() {
+                                isProcessing = false;
+                              });
                             }
                           },
                           child: Text('投稿'),
-                        ),
+                        )
                       ],
                     ),
                   ),

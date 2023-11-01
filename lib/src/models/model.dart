@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -82,5 +83,27 @@ class _LikeButtonState extends State<LikeButton> {
         onPressed: toggleLike,
       ),
     );
+  }
+}
+
+class ro extends StatelessWidget {
+  const ro({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.blue,
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: Center(
+          child: LoadingAnimationWidget.inkDrop(
+            //この部分
+            color: Colors.white,
+            size: 100,
+          ),
+        ));
   }
 }

@@ -40,7 +40,7 @@ class ProcedureList extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 30, // 数字のフォントサイズ
                                 fontWeight: FontWeight.bold, // 数字の太さ
-                                color: Colors.green, // 数字の色
+                                color: Colors.blue, // 数字の色
                               ),
                             ),
                             TextSpan(
@@ -96,7 +96,7 @@ class g extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 30, // 数字のフォントサイズ
                                 fontWeight: FontWeight.bold, // 数字の太さ
-                                color: Colors.green, // 数字の色
+                                color: Colors.blue, // 数字の色
                               ),
                             ),
                             TextSpan(
@@ -135,7 +135,7 @@ class Commentstyle extends StatelessWidget {
           ),
           child: Text(
             commentText,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 15),
           ),
         ),
       ],
