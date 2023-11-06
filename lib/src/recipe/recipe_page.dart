@@ -84,7 +84,23 @@ class RecipePageState extends State<RecipePage> {
       );
     } else {
       // コメントが空の場合のエラーハンドリング
-      print('コメントが入力されていません');
+      showDialog(
+        context: context, // BuildContextが必要
+        builder: (BuildContext context) {
+          return AlertDialog(
+            // title: Text('エラー'),
+            content: Text('コメント入力されていません'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // ダイアログを閉じる
+                },
+                child: Text('閉じる'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -156,7 +172,7 @@ class RecipePageState extends State<RecipePage> {
                   ),
                   Text(
                     widget.name,
-                    style: const TextStyle(color: Colors.black, fontSize: 20),
+                    style: const TextStyle(color: Colors.black, fontSize: 17),
                   ),
                 ],
               ),
@@ -169,7 +185,7 @@ class RecipePageState extends State<RecipePage> {
                     widget.title,
                     style: const TextStyle(
                       color: Colors.black,
-                      fontSize: 20,
+                      fontSize: 17,
                     ),
                   ),
                 ),
@@ -226,7 +242,7 @@ class RecipePageState extends State<RecipePage> {
                 ),
                 Text(
                   "具材",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 17),
                 ),
               ],
             ),
@@ -247,7 +263,7 @@ class RecipePageState extends State<RecipePage> {
                 ),
                 Text(
                   "作り方手順",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 17),
                 )
               ],
             ),
@@ -265,7 +281,7 @@ class RecipePageState extends State<RecipePage> {
                 padding: EdgeInsets.all(10),
                 child: Text(
                   'コメント ${comments.length}',
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 17),
                 )),
 
             Row(children: [

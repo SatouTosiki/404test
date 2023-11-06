@@ -188,7 +188,7 @@ class YourScreenState extends State<YourScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 0),
               Column(
                 children: documentList.map<Widget>((documentData) {
                   return Container(
@@ -264,7 +264,7 @@ class YourScreenState extends State<YourScreen> {
                                                   ? ' ${documentData['name']}'
                                                   : '名無しさん',
                                               style: const TextStyle(
-                                                fontSize: 20,
+                                                fontSize: 17,
                                                 color: Colors.black,
                                               ),
                                             ),
@@ -295,7 +295,7 @@ class YourScreenState extends State<YourScreen> {
                                 child: Text(
                                   "  ${documentData['title']}",
                                   style: const TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 17,
                                     color: Colors.black,
                                   ),
                                 ),
@@ -311,20 +311,24 @@ class YourScreenState extends State<YourScreen> {
                         Row(
                           children: [
                             Align(
-                              alignment: Alignment.centerLeft,
-                              child: IconButton(
+                                alignment: Alignment.centerLeft,
+                                child: IconButton(
                                   icon: Icon(
                                     isLiked
                                         ? LineIcons.heartAlt
                                         : LineIcons.heart,
                                     size: 30,
-                                    color: isLiked ? Colors.pink : Colors.black,
+                                    color: isLiked
+                                        ? Colors.red
+                                        : Colors.black, // isLiked の状態に応じて色を変更
                                   ),
                                   onPressed: () {
-                                    // LikeButton();
-                                    //isLiked;
-                                  }),
-                            ),
+                                    // ボタンを押したときに isLiked の状態を切り替えるコードを追加
+                                    setState(() {
+                                      isLiked = !isLiked;
+                                    });
+                                  },
+                                )),
                             Align(
                               alignment: Alignment.centerLeft,
                               child: IconButton(
@@ -390,7 +394,7 @@ class YourScreenState extends State<YourScreen> {
                                 text: 'comment\n',
                                 style: GoogleFonts.happyMonkey(
                                   textStyle: const TextStyle(
-                                    fontSize: 25,
+                                    fontSize: 20,
                                     color: Colors.black,
                                   ),
                                 ),
@@ -398,7 +402,7 @@ class YourScreenState extends State<YourScreen> {
                               TextSpan(
                                 text: ' ${documentData['comment']}',
                                 style: const TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 17,
                                   color: Colors.black,
                                 ),
                               ),
@@ -407,7 +411,7 @@ class YourScreenState extends State<YourScreen> {
                         ),
 
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         TextButton(
                           onPressed: () {
@@ -432,17 +436,17 @@ class YourScreenState extends State<YourScreen> {
                           },
                           child: const Text(
                             'レシピを見る',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 17),
                           ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 8,
                         ),
 
                         Text(
                           '投稿 ID: ${documentData['documentId']}',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 17,
                             color: Colors.grey,
                           ),
                         )

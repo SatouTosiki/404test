@@ -4,7 +4,6 @@ import 'package:lottie/lottie.dart';
 import 'package:test3/src/main2.dart';
 import "package:test3/src/register/register_page.dart";
 import 'package:test3/src/mypage/mypage.dart';
-import '';
 
 class Login extends StatefulWidget {
   @override
