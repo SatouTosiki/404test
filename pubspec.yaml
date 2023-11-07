@@ -63,4 +63,4 @@ flutter_native_splash:
 flutter_icons:       
   android: true
   ios: true
-  image_path: "lib/src/img/bro.jpeg"
+  image_path: "lib/src/img/ui.jpg"

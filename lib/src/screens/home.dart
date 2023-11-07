@@ -17,6 +17,8 @@ import 'home_ detail.dart';
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 final uid = auth.currentUser?.uid.toString();
+User? user = FirebaseAuth.instance.currentUser;
+
 // コメントを取得
 
 class YourScreen extends StatefulWidget {
@@ -29,6 +31,7 @@ class YourScreenState extends State<YourScreen> {
   List<String> comments = []; // コメントデータを保持するリスト
   int likeCount = 0;
   int imagecount = 0; // ここで初期化
+
   List<Map<String, dynamic>> documentList = [];
   bool isTextVisible = false;
   final User? user;
@@ -47,30 +50,6 @@ class YourScreenState extends State<YourScreen> {
     fetchDocumentData();
   }
 
-  //  Future<void> commentview() async {
-  //   final co = widget.documentId;
-
-  //   final QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
-  //       .collection('user_post')
-  //       .doc(co) // ドキュメントIDを指定
-  //       .collection('comment')
-  //       .orderBy('timestamp', descending: true) //最新順
-  //       .get();
-
-  //   List<String> commentList = [];
-
-  //   for (QueryDocumentSnapshot commentDoc in commentSnapshot.docs) {
-  //     Map<String, dynamic> commentData =
-  //         commentDoc.data() as Map<String, dynamic>;
-  //     String commentText = commentData['comment'];
-  //     commentList.add(commentText);
-  //   }
-
-  //   setState(() {
-  //     comments = commentList; // コメントリストを更新
-  //   });
-  // }
-
   Future<void> fetchDocumentData() async {
     try {
       QuerySnapshot querySnapshot = await firestore
@@ -84,6 +63,8 @@ class YourScreenState extends State<YourScreen> {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           data['documentId'] = doc.id; // ドキュメントIDをデータに追加
           dataList.add(data);
+          // ドキュメントIDを変数に格納
+          //documentId = doc.id;
         }
       });
 
@@ -94,6 +75,8 @@ class YourScreenState extends State<YourScreen> {
       print('Error fetching documents: $e');
     }
   }
+
+  //
 
   Future<void> _refreshData() async {
     await fetchDocumentData();
@@ -311,24 +294,42 @@ class YourScreenState extends State<YourScreen> {
                         Row(
                           children: [
                             Align(
-                                alignment: Alignment.centerLeft,
-                                child: IconButton(
-                                  icon: Icon(
-                                    isLiked
-                                        ? LineIcons.heartAlt
-                                        : LineIcons.heart,
-                                    size: 30,
-                                    color: isLiked
-                                        ? Colors.red
-                                        : Colors.black, // isLiked の状態に応じて色を変更
-                                  ),
-                                  onPressed: () {
-                                    // ボタンを押したときに isLiked の状態を切り替えるコードを追加
-                                    setState(() {
-                                      isLiked = !isLiked;
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                icon: Icon(
+                                  isLiked
+                                      ? LineIcons.heartAlt
+                                      : LineIcons.heart,
+                                  size: 30,
+                                  color: isLiked ? Colors.red : Colors.black,
+                                ),
+                                onPressed: () async {
+                                  // ボタンを押したときにログインしているユーザーIDを取得
+
+                                  final User? user =
+                                      FirebaseAuth.instance.currentUser;
+                                  if (user != null) {
+                                    final String userId = user.uid;
+                                    final udo = FirebaseFirestore.instance
+                                        .collection("user_post")
+                                        .doc(documentData['documentId'])
+                                        .collection("heart")
+                                        .doc(uid); // ドキュメントIDを指定
+
+                                    await udo.set({
+                                      'ID': userId,
                                     });
-                                  },
-                                )),
+
+                                    // print('ログインしているユーザーのID: $userId');
+                                  } else {}
+
+                                  // ボタンを押したときに isLiked の状態を切り替えるコードを追加
+                                  setState(() {
+                                    isLiked = !isLiked;
+                                  });
+                                },
+                              ),
+                            ),
                             Align(
                               alignment: Alignment.centerLeft,
                               child: IconButton(

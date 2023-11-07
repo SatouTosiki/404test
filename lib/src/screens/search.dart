@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,10 +7,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:test3/src/user_page/user_page.dart';
 
+final CollectionReference users =
+    FirebaseFirestore.instance.collection('user_post');
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
+final auth = FirebaseAuth.instance;
+final uid = auth.currentUser?.uid.toString();
 
 class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SearchScreenState createState() => _SearchScreenState();
 }
 
@@ -18,6 +26,11 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController searchController = TextEditingController();
 
   List<Map<String, dynamic>> searchResults = [];
+  bool isLiked = false;
+  int likeCount = 0;
+  List<Map<String, dynamic>> documentList = [];
+  bool isTextVisible = false;
+  late final User? user;
 
   @override
   Widget build(BuildContext context) {
@@ -52,15 +65,18 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Text('検索'),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: searchResults.length,
-                itemBuilder: (context, index) {
-                  final documentData = searchResults[index];
-
-                  return buildPostUI(documentData);
-                },
-              ),
-            ),
+              child: searchResults.isEmpty
+                  ? Center(
+                      child: Text('お探しのものはありません'),
+                    )
+                  : ListView.builder(
+                      itemCount: searchResults.length,
+                      itemBuilder: (context, index) {
+                        final documentData = searchResults[index];
+                        return buildPostUI(documentData);
+                      },
+                    ),
+            )
           ],
         ),
       ),
@@ -69,6 +85,31 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> performSearch() async {
     final keyword = searchController.text.toLowerCase();
+
+    if (keyword.isEmpty) {
+      // Display a message when the search input is empty
+      setState(() {
+        searchResults = [];
+      });
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('エラー'),
+            content: Text('検索キーワードを入力してください。'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
 
     try {
       QuerySnapshot querySnapshot =
@@ -83,11 +124,11 @@ class _SearchScreenState extends State<SearchScreen> {
           // 検索キーワードと一致するものを検索
 
           if (data['author'].toString().toLowerCase().contains(keyword) ||
-              //data['name'].toString().toLowerCase().contains(keyword) ||
+              data['name'].toString().toLowerCase().contains(keyword) ||
               data['time'].toString().toLowerCase().contains(keyword) ||
               data['title'].toString().toLowerCase().contains(keyword) ||
               data['具材'].toString().toLowerCase().contains(keyword) ||
-              //data['user_id'].toString().toLowerCase().contains(keyword) ||
+              data['user_id'].toString().toLowerCase().contains(keyword) ||
               data['手順'].toString().toLowerCase().contains(keyword)) {
             results.add(data);
           }
@@ -183,20 +224,18 @@ class _SearchScreenState extends State<SearchScreen> {
             children: [
               InkWell(
                 onTap: () {
-                  // Navigator.push(
-                  //   //context,
-                  //   // MaterialPageRoute(
-                  //   //   builder: (context) => userpage(
-                  //   //     uid: documentData['user_id'],
-                  //   //     username: documentData['name'] != null
-                  //   //         ? documentData['name']
-                  //   //         : '名無しさん',
-                  //   //     userIconUrl: documentData['user_image'] != null
-                  //   //         ? documentData['user_image']
-                  //   //         : 'デフォルトのアイコンURL',
-                  //   //   ),
-                  //   // ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => userpage(
+                        name: documentData['name'],
+                        user_image: documentData["user_image"],
+                        time: documentData["time"],
+                        user_id: documentData["user_id"],
+                        //user: null,
+                      ),
+                    ),
+                  );
                 },
                 child: Row(
                   children: [

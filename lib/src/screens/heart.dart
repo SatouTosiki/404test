@@ -45,11 +45,6 @@ class RecipePageState extends State<RecipePage> {
   TextEditingController CommentText = TextEditingController();
   List<String> comments = []; // コメントデータを保持するリスト
 
-  // comewiget() {
-  //   comments = []; // または他の初期値を設定
-  //   int commentsu = comments.length;
-  // }
-
   Future<void> commentpush() async {
     final comment = CommentText.text;
     final co = widget.documentId;
@@ -58,7 +53,7 @@ class RecipePageState extends State<RecipePage> {
       final Cdoc = FirebaseFirestore.instance
           .collection('user_post')
           .doc(co)
-          .collection('comment');
+          .collection('heart');
 
       // コメントをFirestoreに追加
       await Cdoc.add({
