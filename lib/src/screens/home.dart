@@ -12,6 +12,8 @@ import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_ detail.dart';
 
+//documentData['documentId']
+
 // final CollectionReference users =
 //     FirebaseFirestore.instance.collection('user_post');
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -27,8 +29,9 @@ class YourScreen extends StatefulWidget {
 }
 
 class YourScreenState extends State<YourScreen> {
+  List<String> heartlist = []; // コメントデータを保持するリスト
+
   bool isLiked = false;
-  List<String> comments = []; // コメントデータを保持するリスト
   int likeCount = 0;
   int imagecount = 0; // ここで初期化
 
@@ -50,6 +53,11 @@ class YourScreenState extends State<YourScreen> {
     fetchDocumentData();
   }
 
+  // void tests() {
+  //   super.initState();
+  //   test();
+  // }
+
   Future<void> fetchDocumentData() async {
     try {
       QuerySnapshot querySnapshot = await firestore
@@ -64,19 +72,34 @@ class YourScreenState extends State<YourScreen> {
           data['documentId'] = doc.id; // ドキュメントIDをデータに追加
           dataList.add(data);
           // ドキュメントIDを変数に格納
-          //documentId = doc.id;
         }
       });
 
       setState(() {
         documentList = dataList;
       });
+
+      // ドキュメント数を印刷
+
+      print('ドキュメント数: ${documentList.length}');
     } catch (e) {
-      print('Error fetching documents: $e');
+      print('エラー画面表示できないなのです☆: $e');
     }
   }
 
-  //
+//   Future<void> test() async {
+//     // Firestoreのコレクションを参照
+//     CollectionReference usersCollection =
+//         FirebaseFirestore.instance.collection('user_post');
+
+// // コレクション内のドキュメント数を取得
+//     usersCollection.get().then((QuerySnapshot querySnapshot) {
+//       int documentCount = querySnapshot.size; // ドキュメント数
+//       print('コレクション内のドキュメント数: $documentCount');
+//     }).catchError((error) {
+//       print('エラー: $error');
+//     });
+//   }
 
   Future<void> _refreshData() async {
     await fetchDocumentData();
@@ -305,7 +328,6 @@ class YourScreenState extends State<YourScreen> {
                                 ),
                                 onPressed: () async {
                                   // ボタンを押したときにログインしているユーザーIDを取得
-
                                   final User? user =
                                       FirebaseAuth.instance.currentUser;
                                   if (user != null) {
@@ -321,7 +343,9 @@ class YourScreenState extends State<YourScreen> {
                                     });
 
                                     // print('ログインしているユーザーのID: $userId');
-                                  } else {}
+                                  } else {
+                                    print("heartがつけれてない");
+                                  }
 
                                   // ボタンを押したときに isLiked の状態を切り替えるコードを追加
                                   setState(() {
@@ -450,7 +474,7 @@ class YourScreenState extends State<YourScreen> {
                             fontSize: 17,
                             color: Colors.grey,
                           ),
-                        )
+                        ),
                       ],
                     ),
                   );

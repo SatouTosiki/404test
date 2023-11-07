@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:line_icons/line_icons.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
@@ -50,3 +51,46 @@ class icon extends StatelessWidget {
     );
   }
 }
+
+// class heartco extends StatefulWidget {
+//   final String documentId;
+
+//   heartco({
+//     required this.documentId,
+//   });
+//   @override
+//   heartcos createState() => heartcos();
+// }
+
+// class heartcos extends State<heartco> {
+//   Future<void> hearttttt() async {
+//     final co = widget.documentId;
+
+//     final QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
+//         .collection('user_post')
+//         .doc(co) // ドキュメントIDを指定
+//         .collection('heart')
+//         .get();
+
+//     List<String> commentList = [];
+
+//     for (QueryDocumentSnapshot commentDoc in commentSnapshot.docs) {
+//       Map<String, dynamic> commentData =
+//           commentDoc.data() as Map<String, dynamic>;
+//       String commentText = commentData['comment'];
+//       commentList.add(commentText);
+//     }
+
+//     setState(() {});
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(widget.documentId), // documentIdをテキストとして表示
+//       ),
+//     );
+//   }
+// }

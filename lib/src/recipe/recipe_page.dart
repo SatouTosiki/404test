@@ -42,8 +42,15 @@ class RecipePageState extends State<RecipePage> {
     commentview();
   }
 
+  // void heartv() {
+  //   super.initState();
+  //   // ページが開かれたらコメントを読み込む
+  //   heartview();
+  // }
+
   TextEditingController CommentText = TextEditingController();
   List<String> comments = []; // コメントデータを保持するリスト
+  List<String> hearts = [];
 
   // comewiget() {
   //   comments = []; // または他の初期値を設定
@@ -130,6 +137,29 @@ class RecipePageState extends State<RecipePage> {
 
     setState(() {
       comments = commentList; // コメントリストを更新
+    });
+  }
+
+  Future<void> heartview() async {
+    final co = widget.documentId;
+
+    final QuerySnapshot commentSnapshot = await FirebaseFirestore.instance
+        .collection('user_post')
+        .doc(co) // ドキュメントIDを指定
+        .collection('heart')
+        .get();
+
+    List<String> heartList = [];
+
+    for (QueryDocumentSnapshot commentDoc in commentSnapshot.docs) {
+      Map<String, dynamic> commentData =
+          commentDoc.data() as Map<String, dynamic>;
+      String commentText = commentData['comment'];
+      heartList.add(commentText);
+    }
+
+    setState(() {
+      hearts = heartList; // コメントリストを更新
     });
   }
 
