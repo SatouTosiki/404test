@@ -142,6 +142,7 @@ class _RegisteState extends State<Registe> {
                                 final user = _auth.currentUser;
                                 final storageRef = FirebaseStorage.instance
                                     .ref('profile_images/${user?.uid}.jpg');
+                                // .ref('profile_images/.jpg');
                                 await storageRef.putFile(_selectedImage!);
                                 final imageUrl =
                                     await storageRef.getDownloadURL();

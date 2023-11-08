@@ -12,10 +12,6 @@ import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_ detail.dart';
 
-//documentData['documentId']
-
-// final CollectionReference users =
-//     FirebaseFirestore.instance.collection('user_post');
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 final uid = auth.currentUser?.uid.toString();
@@ -29,13 +25,13 @@ class YourScreen extends StatefulWidget {
 }
 
 class YourScreenState extends State<YourScreen> {
-  List<String> heartlist = []; // コメントデータを保持するリスト
-
   bool isLiked = false;
   int likeCount = 0;
   int imagecount = 0; // ここで初期化
+  int heartz = 0; // heartz変数を追加
 
   List<Map<String, dynamic>> documentList = [];
+
   bool isTextVisible = false;
   final User? user;
 
@@ -50,13 +46,9 @@ class YourScreenState extends State<YourScreen> {
   @override
   void initState() {
     super.initState();
+
     fetchDocumentData();
   }
-
-  // void tests() {
-  //   super.initState();
-  //   test();
-  // }
 
   Future<void> fetchDocumentData() async {
     try {
@@ -70,8 +62,8 @@ class YourScreenState extends State<YourScreen> {
         if (doc.exists) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           data['documentId'] = doc.id; // ドキュメントIDをデータに追加
+          heartcount(doc.id, data); // documentData を引数として渡す
           dataList.add(data);
-          // ドキュメントIDを変数に格納
         }
       });
 
@@ -87,19 +79,31 @@ class YourScreenState extends State<YourScreen> {
     }
   }
 
-//   Future<void> test() async {
-//     // Firestoreのコレクションを参照
-//     CollectionReference usersCollection =
-//         FirebaseFirestore.instance.collection('user_post');
+  //投稿のハートの数を数えるクラス
+  Future<void> heartcount(
+      String postId, Map<String, dynamic> documentData) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentData['documentId'])
+          .collection('heart')
+          .get();
 
-// // コレクション内のドキュメント数を取得
-//     usersCollection.get().then((QuerySnapshot querySnapshot) {
-//       int documentCount = querySnapshot.size; // ドキュメント数
-//       print('コレクション内のドキュメント数: $documentCount');
-//     }).catchError((error) {
-//       print('エラー: $error');
-//     });
-//   }
+      List<String> heartDocumentIDs = [];
+
+      querySnapshot.docs.forEach((doc) {
+        heartDocumentIDs.add(doc.id);
+      });
+
+      int numHeartDocuments = heartDocumentIDs.length; // ドキュメントIDの数
+
+      print('投稿ID: $postId のheartコレクション内のドキュメントIDの数: $numHeartDocuments');
+      // heartz変数にnumHeartDocumentsの値を入れる
+      int heartz = numHeartDocuments;
+    } catch (e) {
+      print('エラー: $e');
+    }
+  }
 
   Future<void> _refreshData() async {
     await fetchDocumentData();
@@ -341,15 +345,35 @@ class YourScreenState extends State<YourScreen> {
                                     await udo.set({
                                       'ID': userId,
                                     });
-
-                                    // print('ログインしているユーザーのID: $userId');
-                                  } else {
-                                    print("heartがつけれてない");
                                   }
 
-                                  // ボタンを押したときに isLiked の状態を切り替えるコードを追加
+                                  QuerySnapshot querySnapshot =
+                                      await FirebaseFirestore.instance
+                                          .collection('user_post')
+                                          .doc(documentData['documentId'])
+                                          .collection('heart')
+                                          .get();
+
+                                  List<String> heartDocumentIDs = [];
+
+                                  querySnapshot.docs.forEach((doc) {
+                                    heartDocumentIDs.add(doc.id);
+                                  });
+
+                                  int numHeartDocuments =
+                                      heartDocumentIDs.length; // ドキュメントIDの数
+
+                                  String heartzText =
+                                      'ドsfafの数: $numHeartDocuments';
+
+                                  print('ドsfafの数: $numHeartDocuments');
+                                  // heartz変数にnumHeartDocumentsの値を入れる
+                                  int heartz = numHeartDocuments;
+
                                   setState(() {
                                     isLiked = !isLiked;
+                                    final ttta =
+                                        Text(heartzText); // tttに新しいテキストを代入
                                   });
                                 },
                               ),
