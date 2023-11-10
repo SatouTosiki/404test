@@ -11,13 +11,12 @@ import '../recipe/recipe_page.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_ detail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
-final uid = auth.currentUser?.uid.toString();
+final uid = auth.currentUser?.uid;
 User? user = FirebaseAuth.instance.currentUser;
-
-// コメントを取得
 
 class YourScreen extends StatefulWidget {
   @override
@@ -26,26 +25,42 @@ class YourScreen extends StatefulWidget {
 
 class YourScreenState extends State<YourScreen> {
   bool isLiked = false;
-  int likeCount = 0;
-  int imagecount = 0; // ここで初期化
-
+  int imagecount = 0;
   List<Map<String, dynamic>> documentList = [];
-
   bool isTextVisible = false;
   final User? user;
+  Map<String, bool> isLikedMap = {};
 
   YourScreenState({required this.user});
+
+  // SharedPreferences インスタンスを作成
+  late SharedPreferences prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  void _initialize() {
+    try {
+      initSharedPreferences();
+      fetchDocumentData();
+    } catch (e) {
+      print('エラーが発生しました: $e');
+      // エラーの対処を行うか、適切なエラーメッセージを表示します。
+    }
+  }
+
+  // SharedPreferences を初期化するメソッド
+  void initSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   void toggleVisibility() {
     setState(() {
       isTextVisible = !isTextVisible;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchDocumentData();
   }
 
   Future<int> fetchHeartCount(String documentId) async {
@@ -63,6 +78,22 @@ class YourScreenState extends State<YourScreen> {
     }
   }
 
+  // SharedPreferences を使ってハートの状態を読み込むメソッド
+  void loadLikedStates() {
+    documentList.forEach((documentData) {
+      bool isLiked =
+          prefs.getBool(documentData['documentId'].toString()) ?? false;
+      setState(() {
+        isLikedMap[documentData['documentId']] = isLiked;
+      });
+    });
+  }
+
+  // SharedPreferences を使ってハートの状態を保存するメソッド
+  void saveLikedState(String documentId, bool isLiked) {
+    prefs.setBool(documentId, isLiked);
+  }
+
   Future<void> fetchDocumentData() async {
     try {
       QuerySnapshot querySnapshot = await firestore
@@ -74,58 +105,21 @@ class YourScreenState extends State<YourScreen> {
       querySnapshot.docs.forEach((doc) {
         if (doc.exists) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          data['documentId'] = doc.id; // ドキュメントIDをデータに追加
-          heartcount(doc.id, data); // documentData を引数として渡す
+          data['documentId'] = doc.id;
           dataList.add(data);
         }
       });
-
-      // dataListの中身をコンソールに出力
-      for (int i = 0; i < dataList.length; i++) {
-        print('dataList[$i]: ${dataList[i]}');
-      }
 
       setState(() {
         documentList = dataList;
       });
 
-      // ドキュメント数を印刷
       print('ドキュメント数: ${documentList.length}');
+
+      // ハートの状態を読み込む
+      loadLikedStates();
     } catch (e) {
       print('エラー画面表示できないなのです☆: $e');
-    }
-  }
-
-  //投稿のハートの数を数えるクラス
-  Future<void> heartcount(
-      String postId, Map<String, dynamic> documentData) async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('user_post')
-          .doc(documentData['documentId'])
-          .collection('heart')
-          .get();
-
-      List<String> heartDocumentIDs = [];
-
-      querySnapshot.docs.forEach((doc) {
-        heartDocumentIDs.add(doc.id);
-      });
-
-      int numHeartDocuments = heartDocumentIDs.length; // ドキュメントIDの数
-
-      print('$postIdの投稿のハート: $numHeartDocuments');
-
-      await FirebaseFirestore.instance
-          .collection('user_post')
-          .doc(documentData['documentId'])
-          .set({'heart': numHeartDocuments}, SetOptions(merge: true));
-
-      setState(() {
-        isLiked = !isLiked;
-      });
-    } catch (e) {
-      print('エラー: $e');
     }
   }
 
@@ -151,7 +145,7 @@ class YourScreenState extends State<YourScreen> {
                       imagecount = index;
                     });
                   },
-                  enableInfiniteScroll: false, // 無限スクロールを無効にする
+                  enableInfiniteScroll: false,
                 ),
                 itemBuilder: (context, index, realIndex) {
                   final path = imageUrls[index];
@@ -176,19 +170,16 @@ class YourScreenState extends State<YourScreen> {
           );
         }
       } else if (documentData['imgURL'] is String) {
-        // 単一の画像を表示
         return Image.network(documentData['imgURL']);
       }
     }
 
-    // 画像がない場合の処理
     return Container(
       child: Text("画像がありません"),
     );
   }
 
-  Widget buildImage(path, index) => Container(
-        //画像間の隙間
+  Widget buildImage(String path, int index) => Container(
         margin: EdgeInsets.symmetric(horizontal: 10),
         color: Colors.grey,
         child: Image.network(
@@ -225,6 +216,8 @@ class YourScreenState extends State<YourScreen> {
               const SizedBox(height: 0),
               Column(
                 children: documentList.map<Widget>((documentData) {
+                  isLikedMap.putIfAbsent(
+                      documentData['documentId'], () => false);
                   return Container(
                     margin: EdgeInsets.all(5),
                     padding: EdgeInsets.all(5),
@@ -255,7 +248,6 @@ class YourScreenState extends State<YourScreen> {
                                               documentData["user_image"],
                                           time: documentData["time"],
                                           user_id: documentData["user_id"],
-                                          //user: null,
                                         ),
                                       ),
                                     );
@@ -314,7 +306,7 @@ class YourScreenState extends State<YourScreen> {
                                     size: 30,
                                   ),
                                   onPressed: () {
-                                    UserService();
+                                    // Add your download logic here
                                   },
                                 ),
                               ],
@@ -340,8 +332,7 @@ class YourScreenState extends State<YourScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        abuildImageWidget(documentData), //userの投稿画像を表示
-
+                        abuildImageWidget(documentData),
                         Row(
                           children: [
                             Row(
@@ -354,23 +345,24 @@ class YourScreenState extends State<YourScreen> {
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
-                                        // データ取得中の表示
                                         return CircularProgressIndicator();
                                       } else if (snapshot.hasError) {
-                                        // エラー時の表示
                                         return Text('エラー: ${snapshot.error}');
                                       } else {
-                                        // データが取得できた場合の表示
                                         int heartCount = snapshot.data ?? 0;
                                         return Row(
                                           children: [
                                             IconButton(
                                               icon: Icon(
-                                                isLiked
+                                                isLikedMap[documentData[
+                                                            'documentId']] ??
+                                                        false
                                                     ? LineIcons.heartAlt
                                                     : LineIcons.heart,
                                                 size: 30,
-                                                color: isLiked
+                                                color: isLikedMap[documentData[
+                                                            'documentId']] ??
+                                                        false
                                                     ? Colors.red
                                                     : Colors.black,
                                               ),
@@ -393,8 +385,9 @@ class YourScreenState extends State<YourScreen> {
                                                   });
                                                 }
 
-                                                if (isLiked) {
-                                                  // すでにいいねしている場合、ドキュメントを削除
+                                                if (isLikedMap[documentData[
+                                                        'documentId']] ??
+                                                    false) {
                                                   await FirebaseFirestore
                                                       .instance
                                                       .collection('user_post')
@@ -403,7 +396,19 @@ class YourScreenState extends State<YourScreen> {
                                                       .collection('heart')
                                                       .doc(uid)
                                                       .delete();
+                                                } else {
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('user_post')
+                                                      .doc(documentData[
+                                                          'documentId'])
+                                                      .collection('heart')
+                                                      .doc(uid)
+                                                      .set({
+                                                    'ID': uid,
+                                                  });
                                                 }
+
                                                 QuerySnapshot querySnapshot =
                                                     await FirebaseFirestore
                                                         .instance
@@ -424,16 +429,31 @@ class YourScreenState extends State<YourScreen> {
                                                 int numHeartDocuments =
                                                     heartDocumentIDs.length;
 
+                                                print(
+                                                    'ハートの数: $numHeartDocuments');
+
+                                                // 特定の投稿のisLikedの状態だけを変更
                                                 setState(() {
-                                                  isLiked = !isLiked;
+                                                  isLikedMap[documentData[
+                                                          'documentId']] =
+                                                      !(isLikedMap[documentData[
+                                                              'documentId']] ??
+                                                          false);
                                                 });
+
+                                                // ハートの状態を保存
+                                                saveLikedState(
+                                                    documentData['documentId'],
+                                                    isLikedMap[documentData[
+                                                            'documentId']] ??
+                                                        false);
                                               },
                                             ),
                                             Text(
                                               '$heartCount',
                                               style: TextStyle(
                                                 fontSize: 17,
-                                                color: Colors.black,
+                                                color: Colors.grey,
                                               ),
                                             ),
                                           ],
@@ -500,7 +520,6 @@ class YourScreenState extends State<YourScreen> {
                             ),
                           ],
                         ),
-
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
@@ -524,7 +543,6 @@ class YourScreenState extends State<YourScreen> {
                             ],
                           ),
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
@@ -557,7 +575,6 @@ class YourScreenState extends State<YourScreen> {
                         const SizedBox(
                           height: 8,
                         ),
-
                         Text(
                           '投稿 ID: ${documentData['documentId']}',
                           style: TextStyle(
