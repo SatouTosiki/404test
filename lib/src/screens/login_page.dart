@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
 import 'package:test3/src/main2.dart';
 import "package:test3/src/register/register_page.dart";
-import 'package:test3/src/mypage/mypage.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -14,11 +13,10 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // メッセージ表示用
   String infoText = '';
-  // 入力したメールアドレス・パスワード
   String email = '';
   String password = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,11 +31,10 @@ class _LoginState extends State<Login> {
           ),
           SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center, // 中央に寄せる
-
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
-                  height: 100, // 中央より少し上に配置
+                  height: 100,
                 ),
                 const Text(
                   'login',
@@ -50,8 +47,6 @@ class _LoginState extends State<Login> {
                   padding: EdgeInsets.all(25),
                   child: Column(
                     children: [
-                      // メールアドレス入力
-
                       TextFormField(
                         decoration: InputDecoration(labelText: 'メールアドレス'),
                         onChanged: (String value) {
@@ -60,9 +55,6 @@ class _LoginState extends State<Login> {
                           });
                         },
                       ),
-
-                      // パスワード入力
-
                       TextFormField(
                         decoration: InputDecoration(labelText: 'パスワード'),
                         obscureText: true,
@@ -72,20 +64,12 @@ class _LoginState extends State<Login> {
                           });
                         },
                       ),
-
                       Container(
                         padding: EdgeInsets.all(9),
-
-                        // メッセージ表示
-
                         child: Text(infoText),
                       ),
-
                       Container(
                         width: double.infinity,
-
-                        // ログインボタン
-
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
@@ -97,40 +81,37 @@ class _LoginState extends State<Login> {
                             style: TextStyle(fontSize: 18),
                           ),
                           onPressed: () async {
-                            try {
-                              UserCredential userCredential =
-                                  await _auth.signInWithEmailAndPassword(
-                                email: email,
-                                password: password,
-                              );
-
-                              // ログイン成功時の処理
-
-                              User? user = userCredential.user;
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MyHomePage(),
-                                ),
-                              );
-                            } catch (e) {
-                              // ログイン失敗時の処理
-
-                              Text:
-                              print('ログイン失敗：$e');
+                            if (email.isEmpty || password.isEmpty) {
+                              setState(() {
+                                infoText = 'エラー：メールアドレスもしくはパスワードを入力してください';
+                              });
+                            } else {
+                              try {
+                                UserCredential userCredential =
+                                    await _auth.signInWithEmailAndPassword(
+                                  email: email,
+                                  password: password,
+                                );
+                                User? user = userCredential.user;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyHomePage(),
+                                  ),
+                                );
+                              } catch (e) {
+                                print('ログイン失敗：$e');
+                                setState(() {
+                                  infoText = 'エラー：ログインに失敗しました';
+                                });
+                              }
                             }
                           },
                         ),
                       ),
-
                       SizedBox(height: 16),
-
                       Container(
                         width: double.infinity,
-
-                        // 新規登録ボタン
-
                         child: TextButton(
                           onPressed: () {
                             Navigator.push(

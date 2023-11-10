@@ -28,7 +28,6 @@ class YourScreenState extends State<YourScreen> {
   bool isLiked = false;
   int likeCount = 0;
   int imagecount = 0; // ここで初期化
-  int heartz = 0; // heartz変数を追加
 
   List<Map<String, dynamic>> documentList = [];
 
@@ -50,6 +49,21 @@ class YourScreenState extends State<YourScreen> {
     fetchDocumentData();
   }
 
+  Future<int> fetchHeartCount(String documentId) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentId)
+          .collection('heart')
+          .get();
+
+      return querySnapshot.docs.length;
+    } catch (e) {
+      print('ハートの数を取得できませんでした: $e');
+      return 0;
+    }
+  }
+
   Future<void> fetchDocumentData() async {
     try {
       QuerySnapshot querySnapshot = await firestore
@@ -67,12 +81,16 @@ class YourScreenState extends State<YourScreen> {
         }
       });
 
+      // dataListの中身をコンソールに出力
+      for (int i = 0; i < dataList.length; i++) {
+        print('dataList[$i]: ${dataList[i]}');
+      }
+
       setState(() {
         documentList = dataList;
       });
 
       // ドキュメント数を印刷
-
       print('ドキュメント数: ${documentList.length}');
     } catch (e) {
       print('エラー画面表示できないなのです☆: $e');
@@ -97,9 +115,16 @@ class YourScreenState extends State<YourScreen> {
 
       int numHeartDocuments = heartDocumentIDs.length; // ドキュメントIDの数
 
-      print('投稿ID: $postId のheartコレクション内のドキュメントIDの数: $numHeartDocuments');
-      // heartz変数にnumHeartDocumentsの値を入れる
-      int heartz = numHeartDocuments;
+      print('$postIdの投稿のハート: $numHeartDocuments');
+
+      await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentData['documentId'])
+          .set({'heart': numHeartDocuments}, SetOptions(merge: true));
+
+      setState(() {
+        isLiked = !isLiked;
+      });
     } catch (e) {
       print('エラー: $e');
     }
@@ -320,63 +345,105 @@ class YourScreenState extends State<YourScreen> {
 
                         Row(
                           children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: IconButton(
-                                icon: Icon(
-                                  isLiked
-                                      ? LineIcons.heartAlt
-                                      : LineIcons.heart,
-                                  size: 30,
-                                  color: isLiked ? Colors.red : Colors.black,
+                            Row(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: FutureBuilder<int>(
+                                    future: fetchHeartCount(
+                                        documentData['documentId']),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        // データ取得中の表示
+                                        return CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        // エラー時の表示
+                                        return Text('エラー: ${snapshot.error}');
+                                      } else {
+                                        // データが取得できた場合の表示
+                                        int heartCount = snapshot.data ?? 0;
+                                        return Row(
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(
+                                                isLiked
+                                                    ? LineIcons.heartAlt
+                                                    : LineIcons.heart,
+                                                size: 30,
+                                                color: isLiked
+                                                    ? Colors.red
+                                                    : Colors.black,
+                                              ),
+                                              onPressed: () async {
+                                                final User? user = FirebaseAuth
+                                                    .instance.currentUser;
+                                                if (user != null) {
+                                                  final String userId =
+                                                      user.uid;
+                                                  final udo = FirebaseFirestore
+                                                      .instance
+                                                      .collection("user_post")
+                                                      .doc(documentData[
+                                                          'documentId'])
+                                                      .collection("heart")
+                                                      .doc(uid);
+
+                                                  await udo.set({
+                                                    'ID': userId,
+                                                  });
+                                                }
+
+                                                if (isLiked) {
+                                                  // すでにいいねしている場合、ドキュメントを削除
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('user_post')
+                                                      .doc(documentData[
+                                                          'documentId'])
+                                                      .collection('heart')
+                                                      .doc(uid)
+                                                      .delete();
+                                                }
+                                                QuerySnapshot querySnapshot =
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('user_post')
+                                                        .doc(documentData[
+                                                            'documentId'])
+                                                        .collection('heart')
+                                                        .get();
+
+                                                List<String> heartDocumentIDs =
+                                                    [];
+
+                                                querySnapshot.docs
+                                                    .forEach((doc) {
+                                                  heartDocumentIDs.add(doc.id);
+                                                });
+
+                                                int numHeartDocuments =
+                                                    heartDocumentIDs.length;
+
+                                                setState(() {
+                                                  isLiked = !isLiked;
+                                                });
+                                              },
+                                            ),
+                                            Text(
+                                              '$heartCount',
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    },
+                                  ),
                                 ),
-                                onPressed: () async {
-                                  // ボタンを押したときにログインしているユーザーIDを取得
-                                  final User? user =
-                                      FirebaseAuth.instance.currentUser;
-                                  if (user != null) {
-                                    final String userId = user.uid;
-                                    final udo = FirebaseFirestore.instance
-                                        .collection("user_post")
-                                        .doc(documentData['documentId'])
-                                        .collection("heart")
-                                        .doc(uid); // ドキュメントIDを指定
-
-                                    await udo.set({
-                                      'ID': userId,
-                                    });
-                                  }
-
-                                  QuerySnapshot querySnapshot =
-                                      await FirebaseFirestore.instance
-                                          .collection('user_post')
-                                          .doc(documentData['documentId'])
-                                          .collection('heart')
-                                          .get();
-
-                                  List<String> heartDocumentIDs = [];
-
-                                  querySnapshot.docs.forEach((doc) {
-                                    heartDocumentIDs.add(doc.id);
-                                  });
-
-                                  int numHeartDocuments =
-                                      heartDocumentIDs.length; // ドキュメントIDの数
-
-                                  String heartzText =
-                                      'ドsfafの数: $numHeartDocuments';
-
-                                  print('ドsfafの数: $numHeartDocuments');
-                                  // heartz変数にnumHeartDocumentsの値を入れる
-                                  int heartz = numHeartDocuments;
-
-                                  setState(() {
-                                    isLiked = !isLiked;
-                                    final ttta =
-                                        Text(heartzText); // tttに新しいテキストを代入
-                                  });
-                                },
-                              ),
+                              ],
                             ),
                             Align(
                               alignment: Alignment.centerLeft,
