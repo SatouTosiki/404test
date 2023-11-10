@@ -45,7 +45,6 @@ class YourScreenState extends State<YourScreen> {
   @override
   void initState() {
     super.initState();
-
     fetchDocumentData();
   }
 
