@@ -42,20 +42,9 @@ class RecipePageState extends State<RecipePage> {
     commentview();
   }
 
-  // void heartv() {
-  //   super.initState();
-  //   // ページが開かれたらコメントを読み込む
-  //   heartview();
-  // }
-
   TextEditingController CommentText = TextEditingController();
   List<String> comments = []; // コメントデータを保持するリスト
   List<String> hearts = [];
-
-  // comewiget() {
-  //   comments = []; // または他の初期値を設定
-  //   int commentsu = comments.length;
-  // }
 
   Future<void> commentpush() async {
     final comment = CommentText.text;

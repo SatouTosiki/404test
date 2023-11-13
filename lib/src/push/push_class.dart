@@ -1,3 +1,4 @@
+import 'package:line_icons/line_icons.dart';
 import 'package:test3/src/mypage/mypage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -160,16 +161,22 @@ class textbotton extends StatelessWidget {
 
     return Column(
       children: [
-        TextButton(
-          style: ButtonStyle(),
+        TextButton.icon(
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.blue,
+          ),
           onPressed: myModel.textFields.length >= 10
               ? null
               : () {
                   myModel.addTextField(); // モデルのメソッドを呼び出し
                 },
-          child: const Text(
-            '➕ 作る手順の追加 ➕',
-            style: TextStyle(fontSize: 20),
+          icon: Icon(
+            LineIcons.plus,
+            color: Colors.white,
+          ),
+          label: const Text(
+            ' 作る手順の追加 ',
+            style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
 
@@ -193,16 +200,22 @@ class reee extends StatelessWidget {
 
     return Column(
       children: [
-        TextButton(
-          style: ButtonStyle(),
+        TextButton.icon(
+          icon: Icon(
+            LineIcons.plus,
+            color: Colors.white,
+          ),
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.blue,
+          ),
           onPressed: myModel.ingredients.length >= 10
               ? null
               : () {
                   myModel.rere(); // モデルのメソッドを呼び出し
                 },
-          child: const Text(
-            '➕ 具材を記入 ➕',
-            style: TextStyle(fontSize: 20),
+          label: const Text(
+            ' 材料を記入 ',
+            style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
 

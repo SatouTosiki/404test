@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -13,7 +14,17 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _imagePicker = ImagePicker();
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   File? _selectedImage;
+  bool _loading = false;
+
+  TextEditingController _nameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = _auth.currentUser?.displayName ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +36,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // プロフィール画像の表示
-            CircleAvatar(
-              radius: 75,
-            ),
-            const SizedBox(height: 20),
+            // プロフィール画像の選択
             ElevatedButton(
               onPressed: () async {
                 final pickedImage =
@@ -42,23 +49,99 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
               },
               child: Text('プロフィール画像を選択'),
             ),
+
+            // 選択した画像を表示
+            _selectedImage != null
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Image.file(
+                      _selectedImage!,
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Container(),
+
+            // ユーザーネームの変更
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'ユーザーネーム'),
+              ),
+            ),
+
             const SizedBox(height: 20),
+
+            // アップロードボタン
             ElevatedButton(
               onPressed: () async {
-                // プロフィール画像をアップロードまたは上書き
-                if (_selectedImage != null) {
+                setState(() {
+                  _loading = true;
+                });
+
+                try {
+                  // プロフィール画像をアップロードまたは上書き
+                  if (_selectedImage != null) {
+                    final user = _auth.currentUser;
+                    if (user != null) {
+                      final storageRef =
+                          _storage.ref('profile_images/${user.uid}.jpg');
+                      await storageRef.putFile(_selectedImage!);
+                      final imageUrl = await storageRef.getDownloadURL();
+                      await user.updatePhotoURL(imageUrl);
+                    }
+                  }
+
+                  // ユーザーネームのアップデート
                   final user = _auth.currentUser;
                   if (user != null) {
-                    final storageRef =
-                        _storage.ref('profile_images/${user.uid}.jpg');
-                    await storageRef.putFile(_selectedImage!);
-                    final imageUrl = await storageRef.getDownloadURL();
-                    await user.updatePhotoURL(imageUrl);
+                    await user.updateDisplayName(_nameController.text);
                   }
+
+                  // Update Firestore document with the new name
+                  await _firestore.collection('users').doc(user?.uid).update({
+                    'name': _nameController.text,
+                  });
+
+                  setState(() {
+                    _loading = false;
+                    _selectedImage = null;
+                  });
+
+                  // Show a SnackBar after the save operation
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('変更の保存ができました'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                } catch (e) {
+                  print('Error saving data: $e');
+                  setState(() {
+                    _loading = false;
+                  });
+
+                  // Show a SnackBar if an error occurs
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('変更できませんでした'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
                 }
               },
               child: Text('保存'),
             ),
+
+            // ローディングインジケータ
+            _loading
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(),
           ],
         ),
       ),

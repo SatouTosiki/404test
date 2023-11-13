@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +13,7 @@ class Registe extends StatefulWidget {
 }
 
 class _RegisteState extends State<Registe> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
   final ImagePicker imagePicker = ImagePicker();
   final FirebaseStorage _storage = FirebaseStorage.instance;
   // メッセージ表示用
@@ -128,7 +129,7 @@ class _RegisteState extends State<Registe> {
                           onPressed: () async {
                             try {
                               final UserCredential userCredential =
-                                  await _auth.createUserWithEmailAndPassword(
+                                  await auth.createUserWithEmailAndPassword(
                                 email: email,
                                 password: password,
                               );
@@ -139,7 +140,7 @@ class _RegisteState extends State<Registe> {
                               // プロフィール画像をアップロード
 
                               if (_selectedImage != null) {
-                                final user = _auth.currentUser;
+                                final user = auth.currentUser;
                                 final storageRef = FirebaseStorage.instance
                                     .ref('profile_images/${user?.uid}.jpg');
                                 // .ref('profile_images/.jpg');
@@ -148,6 +149,18 @@ class _RegisteState extends State<Registe> {
                                     await storageRef.getDownloadURL();
                                 await user?.updatePhotoURL(imageUrl);
                               }
+                              final user = FirebaseAuth.instance.currentUser;
+                              final uuid = user?.uid;
+
+                              final users = FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(uuid)
+                                  .set({
+                                'uid': uuid,
+                                'name': name,
+                                'email': email,
+                                // 'imgurl':imageUrl,
+                              });
 
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
