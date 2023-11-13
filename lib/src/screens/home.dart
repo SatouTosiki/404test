@@ -24,6 +24,9 @@ class YourScreen extends StatefulWidget {
 }
 
 class YourScreenState extends State<YourScreen> {
+  String? userid_test; // 投稿データからuidを取得し格納している変数
+  String? userName;
+
   bool isLiked = false;
   int imagecount = 0;
   List<Map<String, dynamic>> documentList = [];
@@ -42,7 +45,66 @@ class YourScreenState extends State<YourScreen> {
     _initialize();
   }
 
-  void _initialize() {
+  Future<void> checkUserIdInUsersCollection(
+      String userId, Map<String, dynamic> data) async {
+    try {
+      // users コレクションの参照
+      CollectionReference usersCollection =
+          FirebaseFirestore.instance.collection('users');
+
+      // userid に格納されている値で users コレクションからドキュメントを取得
+      DocumentSnapshot userDocument = await usersCollection.doc(userId).get();
+
+      // ドキュメントが存在するかチェック
+      if (userDocument.exists) {
+        // ドキュメントが存在する場合、nameフィールドの値を取得
+        setState(() {
+          data['userName'] = userDocument['name'];
+        });
+
+        print('ありました。ユーザー名: ${data['userName']} ;userIDは:$userId');
+      } else {
+        print('なし');
+      }
+    } catch (e) {
+      print('エラー: $e');
+    }
+  }
+
+  Future<void> fetchDocumentData() async {
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('user_post')
+          .orderBy('time', descending: true)
+          .get();
+      List<Map<String, dynamic>> dataList = [];
+
+      await Future.forEach(querySnapshot.docs, (doc) async {
+        if (doc.exists) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          data['documentId'] = doc.id;
+
+          // ユーザー名を取得
+          await checkUserIdInUsersCollection(data['user_id'], data);
+
+          dataList.add(data);
+        }
+      });
+
+      setState(() {
+        documentList = dataList;
+      });
+
+      print('ドキュメント数: ${documentList.length}');
+
+      // ハートの状態を読み込む
+      loadLikedStates();
+    } catch (e) {
+      print('エラー画面表示できないなのです☆: $e');
+    }
+  }
+
+  void _initialize() async {
     try {
       initSharedPreferences();
       fetchDocumentData();
@@ -92,35 +154,6 @@ class YourScreenState extends State<YourScreen> {
   // SharedPreferences を使ってハートの状態を保存するメソッド
   void saveLikedState(String documentId, bool isLiked) {
     prefs.setBool(documentId, isLiked);
-  }
-
-  Future<void> fetchDocumentData() async {
-    try {
-      QuerySnapshot querySnapshot = await firestore
-          .collection('user_post')
-          .orderBy('time', descending: true)
-          .get();
-      List<Map<String, dynamic>> dataList = [];
-
-      querySnapshot.docs.forEach((doc) {
-        if (doc.exists) {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          data['documentId'] = doc.id;
-          dataList.add(data);
-        }
-      });
-
-      setState(() {
-        documentList = dataList;
-      });
-
-      print('ドキュメント数: ${documentList.length}');
-
-      // ハートの状態を読み込む
-      loadLikedStates();
-    } catch (e) {
-      print('エラー画面表示できないなのです☆: $e');
-    }
   }
 
   Future<void> _refreshData() async {
@@ -243,7 +276,8 @@ class YourScreenState extends State<YourScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => userpage(
-                                          name: documentData['name'],
+                                          name: userName ??
+                                              '名無しさんa', // userName が null の場合は '名無しさん' を表示
                                           user_image:
                                               documentData["user_image"],
                                           time: documentData["time"],
@@ -254,6 +288,7 @@ class YourScreenState extends State<YourScreen> {
                                   },
                                   child: Row(
                                     children: [
+                                      // Text(userName),
                                       if (documentData['user_image'] is List)
                                         Column(
                                           children: documentData['user_image']
@@ -286,8 +321,9 @@ class YourScreenState extends State<YourScreen> {
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: documentData['name'] != null
-                                                  ? ' ${documentData['name']}'
+                                              text: documentData["userName"] !=
+                                                      null
+                                                  ? ' ${documentData["userName"]}'
                                                   : '名無しさん',
                                               style: const TextStyle(
                                                 fontSize: 17,
@@ -575,6 +611,7 @@ class YourScreenState extends State<YourScreen> {
                         const SizedBox(
                           height: 8,
                         ),
+                        // user_id = documentData['user_id'], // フィールドに値を設定
                         Text(
                           '投稿 ID: ${documentData['documentId']}',
                           style: TextStyle(
@@ -582,6 +619,20 @@ class YourScreenState extends State<YourScreen> {
                             color: Colors.grey,
                           ),
                         ),
+                        Text(
+                          'user ID: ${documentData['user_id']}',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        // Text(
+                        //   'user ID: $userid_test',
+                        //   style: TextStyle(
+                        //     fontSize: 17,
+                        //     color: Colors.grey,
+                        //   ),
+                        // ),
                       ],
                     ),
                   );
