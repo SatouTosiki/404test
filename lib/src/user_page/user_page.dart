@@ -53,13 +53,13 @@ Future<void> unfollowUser(String userId) async {
         .doc(currentUser.uid)
         .delete();
 
-    // 自分のフォロー中のコレクションから削除
-    // await firestore
-    //     .collection('users')
-    //     .doc(currentUser.uid)
-    //     .collection('following')
-    //     .doc(userId)
-    //     .delete();
+    //自分のフォロー中のコレクションから削除
+    await firestore
+        .collection('users')
+        .doc(currentUser.uid)
+        .collection('following')
+        .doc(userId)
+        .delete();
   }
 }
 
@@ -86,6 +86,7 @@ class userpage extends StatelessWidget {
   Widget build(BuildContext context) {
     // ユーザーIDが一致するかどうかの条件
     bool isNotCurrentUser = currentUser?.uid != user_id; //自分のページなら表示しない
+    bool isFollowing = false; // ユーザーがフォローしているかどうかの状態を仮定
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
