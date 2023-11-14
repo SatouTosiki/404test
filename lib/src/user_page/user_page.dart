@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:test3/src/user_page/user_page_model.dart';
 import '../push/push_class.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -86,7 +87,7 @@ class userpage extends StatelessWidget {
   Widget build(BuildContext context) {
     // ユーザーIDが一致するかどうかの条件
     bool isNotCurrentUser = currentUser?.uid != user_id; //自分のページなら表示しない
-    bool isFollowing = false; // ユーザーがフォローしているかどうかの状態を仮定
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -135,21 +136,83 @@ class userpage extends StatelessWidget {
                               NetworkImage(user_image), // プロフィール画像を表示
                         ),
                         Column(
-                          children: const [
-                            Text(
-                              "フォロワー",
-                              style: TextStyle(fontSize: 18),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            FutureBuilder<int>(
+                              future: followers(user_id),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('エラー: ${snapshot.error}');
+                                } else {
+                                  return RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'フォロワー\n',
+                                          style: GoogleFonts.happyMonkey(
+                                            textStyle: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' ${snapshot.data}',
+                                          style: const TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
                             ),
-                            Text("実装予定"),
                           ],
                         ),
                         Column(
-                          children: const [
-                            Text(
-                              "フォロー中",
-                              style: TextStyle(fontSize: 18),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            FutureBuilder<int>(
+                              future: following(user_id),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('エラー: ${snapshot.error}');
+                                } else {
+                                  return RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'フォロー中\n',
+                                          style: GoogleFonts.happyMonkey(
+                                            textStyle: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' ${snapshot.data}',
+                                          style: const TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
                             ),
-                            Text("実装予定"),
                           ],
                         ),
                       ],
@@ -163,7 +226,7 @@ class userpage extends StatelessWidget {
                       Container(
                         width: 300,
                         child: ElevatedButton(
-                          child: const Text('フォロー'), //
+                          child: const Text('フォロー'),
                           onPressed: () {
                             if (isNotCurrentUser) {
                               // フォローの場合
