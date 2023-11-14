@@ -160,6 +160,21 @@ class YourScreenState extends State<YourScreen> {
     await fetchDocumentData();
   }
 
+  Future<int> fetchCommentCount(String documentId) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentId)
+          .collection('comment') // コメントが保存されているコレクションのパスに適宜変更
+          .get();
+
+      return querySnapshot.docs.length;
+    } catch (e) {
+      print('コメント数を取得できませんでした: $e');
+      return 0;
+    }
+  }
+
   Widget abuildImageWidget(dynamic documentData) {
     if (documentData['imgURL'] != null) {
       if (documentData['imgURL'] is List) {
@@ -207,8 +222,11 @@ class YourScreenState extends State<YourScreen> {
       }
     }
 
-    return Container(
-      child: Text("画像がありません"),
+    return Padding(
+      padding: const EdgeInsets.all(60),
+      child: Container(
+        child: Text("画像がないのですよにぱー★"),
+      ),
     );
   }
 
@@ -488,7 +506,7 @@ class YourScreenState extends State<YourScreen> {
                                               '$heartCount',
                                               style: TextStyle(
                                                 fontSize: 17,
-                                                color: Colors.grey,
+                                                color: Colors.black,
                                               ),
                                             ),
                                           ],
@@ -499,59 +517,39 @@ class YourScreenState extends State<YourScreen> {
                                 ),
                               ],
                             ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: IconButton(
-                                icon: const Icon(
-                                  LineIcons.comment,
-                                  size: 30,
-                                ),
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return Column(
-                                        children: [
-                                          Expanded(
-                                            child: ListView(
-                                              children: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        '閉じる',
-                                                        style: TextStyle(
-                                                          color: Colors.blue,
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                const Center(
-                                                  child: const Text(
-                                                    "コメント",
-                                                    style:
-                                                        TextStyle(fontSize: 18),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  height: 0.5,
-                                                  width: 1000,
-                                                  color: Colors.grey,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                            FutureBuilder<int>(
+                              future:
+                                  fetchCommentCount(documentData['documentId']),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('エラー: ${snapshot.error}');
+                                } else {
+                                  int commentCount = snapshot.data ?? 0;
+                                  return Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          LineIcons.comment,
+                                          size: 30,
+                                        ),
+                                        onPressed: () {
+                                          // コメントが押された時の処理を追加
+                                        },
+                                      ),
+                                      Text(
+                                        '$commentCount件',
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   );
-                                },
-                              ),
+                                }
+                              },
                             ),
                           ],
                         ),

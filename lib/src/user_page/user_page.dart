@@ -4,10 +4,64 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:line_icons/line_icons.dart';
 import '../push/push_class.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+final FirebaseAuth auth = FirebaseAuth.instance;
+User? currentUser = auth.currentUser;
 // ユーザーのデータを取得
+// フォロー関数
+Future<void> followUser(String userId) async {
+  User? currentUser = auth.currentUser;
+
+  if (currentUser != null) {
+    // フォロワーのコレクションに追加
+    await firestore
+        .collection('users')
+        .doc(userId)
+        .collection('followers')
+        .doc(currentUser.uid)
+        .set({
+      // ここにフォロー時に保存したいデータがあれば追加できます
+      'timestamp': FieldValue.serverTimestamp(), // タイムスタンプを保存する例
+    });
+
+    // 自分のフォロー中のコレクションに追加
+    await firestore
+        .collection('users')
+        .doc(currentUser.uid)
+        .collection('following')
+        .doc(userId)
+        .set({
+      // ここにフォロー時に保存したいデータがあれば追加できます
+      'timestamp': FieldValue.serverTimestamp(), // タイムスタンプを保存する例
+    });
+  }
+}
+
+// フォロー解除関数
+Future<void> unfollowUser(String userId) async {
+  User? currentUser = auth.currentUser;
+
+  if (currentUser != null) {
+    // フォロワーのコレクションから削除
+    await firestore
+        .collection('users')
+        .doc(userId)
+        .collection('followers')
+        .doc(currentUser.uid)
+        .delete();
+
+    // 自分のフォロー中のコレクションから削除
+    // await firestore
+    //     .collection('users')
+    //     .doc(currentUser.uid)
+    //     .collection('following')
+    //     .doc(userId)
+    //     .delete();
+  }
+}
 
 class userpage extends StatelessWidget {
   String userName = '';
@@ -28,30 +82,10 @@ class userpage extends StatelessWidget {
       //required this.name,
       });
 
-  // void fetchUserData() async {
-  //   try {
-  //     DocumentSnapshot userDocument =
-  //         await firestore.collection('user').doc(uid).get();
-
-  //     if (userDocument.exists) {
-  //       Map<String, dynamic> userData =
-  //           userDocument.data() as Map<String, dynamic>;
-  //       userName = userData['name'];
-  //       userEmail = userData['user_id'];
-  //       print('User Name: $userName');
-  //       print('User Email: $userEmail');
-  //       // データが読み込まれたらsetStateを呼んで再描画
-  //       setState(() {});
-  //     } else {
-  //       print('User document not found');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching user data: $e');
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
+    // ユーザーIDが一致するかどうかの条件
+    bool isNotCurrentUser = currentUser?.uid != user_id; //自分のページなら表示しない
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -121,6 +155,33 @@ class userpage extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (isNotCurrentUser) // ユーザーIDが一致する場合に表示
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 300,
+                        child: ElevatedButton(
+                          child: const Text('フォロー'),
+                          onPressed: () {
+                            if (isNotCurrentUser) {
+                              // フォローの場合
+                              followUser(user_id);
+                            } else {
+                              // アンフォローの場合
+                              unfollowUser(user_id);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
