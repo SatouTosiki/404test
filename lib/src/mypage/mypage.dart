@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 import '../screens/login_page.dart';
 import '../user_page/te.dart';
+import 'mypage_model.dart';
 
 User? user = FirebaseAuth.instance.currentUser; //ログインしているユーザーを取得suerに
 
@@ -102,21 +103,83 @@ class _MyPageState extends State<MyPage> {
                         backgroundImage: NetworkImage(user?.photoURL ?? ''),
                       ),
                       Column(
-                        children: const [
-                          Text(
-                            "フォロワー",
-                            style: TextStyle(fontSize: 18),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FutureBuilder<int>(
+                            future: myfollowing(myuid!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('エラー: ${snapshot.error}');
+                              } else {
+                                return RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'フォロワー\n',
+                                        style: GoogleFonts.happyMonkey(
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: ' ${snapshot.data}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
                           ),
-                          Text("実装予定"),
                         ],
                       ),
                       Column(
-                        children: const [
-                          Text(
-                            "フォロー中",
-                            style: TextStyle(fontSize: 18),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FutureBuilder<int>(
+                            future: myfollowers(myuid!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('エラー: ${snapshot.error}');
+                              } else {
+                                return RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'フォロー中\n',
+                                        style: GoogleFonts.happyMonkey(
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: ' ${snapshot.data}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
                           ),
-                          Text("実装予定"),
                         ],
                       ),
                     ],
