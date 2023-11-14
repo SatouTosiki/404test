@@ -163,7 +163,7 @@ class userpage extends StatelessWidget {
                       Container(
                         width: 300,
                         child: ElevatedButton(
-                          child: const Text('フォロー'),
+                          child: const Text('フォロー'), //
                           onPressed: () {
                             if (isNotCurrentUser) {
                               // フォローの場合
