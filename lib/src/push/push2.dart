@@ -1,20 +1,9 @@
-import 'dart:ffi';
-import 'package:line_icons/line_icon.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:test3/src/models/model.dart';
-
 import '../main2.dart';
 import 'push_class.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class AddBookPage extends StatelessWidget {
   final picker = ImagePicker();
@@ -174,7 +163,17 @@ class AddBookPage extends StatelessWidget {
                                     false, // ユーザーがダイアログを閉じられないようにする
                                 builder: (context) {
                                   return Center(
-                                    child: CircularProgressIndicator(),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset(
+                                          'lib/src/img/卵なしチャーハン.gif', // GIF画像のパスを指定
+                                          width: 100, // サイズを調整
+                                          height: 100,
+                                        ),
+                                        Text('処理中...'), // オプションでテキストメッセージを追加
+                                      ],
+                                    ),
                                   );
                                 },
                               );
@@ -187,7 +186,7 @@ class AddBookPage extends StatelessWidget {
                               // ローディング画面を閉じる
                               Navigator.of(context).pop();
 
-                              //投稿が成功したら、ホーム画面に遷移
+                              // 投稿が成功したら、ホーム画面に遷移
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (context) => MyHomePage(),

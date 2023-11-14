@@ -276,7 +276,7 @@ class YourScreenState extends State<YourScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => userpage(
-                                          name: userName ??
+                                          name: documentData["userName"] ??
                                               '名無しさんa', // userName が null の場合は '名無しさん' を表示
                                           user_image:
                                               documentData["user_image"],
@@ -288,7 +288,6 @@ class YourScreenState extends State<YourScreen> {
                                   },
                                   child: Row(
                                     children: [
-                                      // Text(userName),
                                       if (documentData['user_image'] is List)
                                         Column(
                                           children: documentData['user_image']
@@ -626,13 +625,6 @@ class YourScreenState extends State<YourScreen> {
                             color: Colors.grey,
                           ),
                         ),
-                        // Text(
-                        //   'user ID: $userid_test',
-                        //   style: TextStyle(
-                        //     fontSize: 17,
-                        //     color: Colors.grey,
-                        //   ),
-                        // ),
                       ],
                     ),
                   );
