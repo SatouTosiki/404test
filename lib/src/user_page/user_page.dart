@@ -11,58 +11,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final FirebaseAuth auth = FirebaseAuth.instance;
 User? currentUser = auth.currentUser;
-// ユーザーのデータを取得
-// フォロー関数
-Future<void> followUser(String userId) async {
-  User? currentUser = auth.currentUser;
-
-  if (currentUser != null) {
-    // フォロワーのコレクションに追加
-    await firestore
-        .collection('users')
-        .doc(userId)
-        .collection('followers')
-        .doc(currentUser.uid)
-        .set({
-      // ここにフォロー時に保存したいデータがあれば追加できます
-      'timestamp': FieldValue.serverTimestamp(), // タイムスタンプを保存する例
-    });
-
-    // 自分のフォロー中のコレクションに追加
-    await firestore
-        .collection('users')
-        .doc(currentUser.uid)
-        .collection('following')
-        .doc(userId)
-        .set({
-      // ここにフォロー時に保存したいデータがあれば追加できます
-      'timestamp': FieldValue.serverTimestamp(), // タイムスタンプを保存する例
-    });
-  }
-}
-
-// フォロー解除関数
-Future<void> unfollowUser(String userId) async {
-  User? currentUser = auth.currentUser;
-
-  if (currentUser != null) {
-    // フォロワーのコレクションから削除
-    await firestore
-        .collection('users')
-        .doc(userId)
-        .collection('followers')
-        .doc(currentUser.uid)
-        .delete();
-
-    //自分のフォロー中のコレクションから削除
-    await firestore
-        .collection('users')
-        .doc(currentUser.uid)
-        .collection('following')
-        .doc(userId)
-        .delete();
-  }
-}
 
 class userpage extends StatelessWidget {
   String userName = '';
@@ -73,209 +21,227 @@ class userpage extends StatelessWidget {
   final String time;
   final String user_id;
 
-  userpage(
-      { //required this.user,
-      required this.name,
-      required this.user_image,
-      required this.time,
-      required this.user_id
+  userpage({
+    required this.name,
+    required this.user_image,
+    required this.time,
+    required this.user_id,
+  });
 
-      //required this.name,
-      });
+  Future<bool> checkIfFollowing() async {
+    User? currentUser = auth.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot followingDoc = await firestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .collection('following')
+          .doc(user_id)
+          .get();
+
+      return followingDoc.exists;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // ユーザーIDが一致するかどうかの条件
-    bool isNotCurrentUser = currentUser?.uid != user_id; //自分のページなら表示しない
+    bool isNotCurrentUser = currentUser?.uid != user_id;
+    bool isFollowing = false;
 
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(LineIcons.arrowLeft),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Row(
-            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 20,
-              ),
-              Text(
-                '$name',
-                style: GoogleFonts.happyMonkey(
-                  textStyle: const TextStyle(
-                    fontSize: 30,
-                    color: Colors.black,
-                    // fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(LineIcons.arrowLeft),
+          color: Colors.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        body: Scrollbar(
-          child: SingleChildScrollView(
-            child: Column(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // プロフィール画像を表示
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween, // 要素を左右に均等に配置
-                      children: [
-                        CircleAvatar(
-                          radius: 50, // プロフィール画像の半径
-                          backgroundImage:
-                              NetworkImage(user_image), // プロフィール画像を表示
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            FutureBuilder<int>(
-                              future: followers(user_id),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return Text('エラー: ${snapshot.error}');
-                                } else {
-                                  return RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'フォロワー\n',
-                                          style: GoogleFonts.happyMonkey(
-                                            textStyle: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: ' ${snapshot.data}',
-                                          style: const TextStyle(
-                                            fontSize: 17,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            FutureBuilder<int>(
-                              future: following(user_id),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return Text('エラー: ${snapshot.error}');
-                                } else {
-                                  return RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'フォロー中\n',
-                                          style: GoogleFonts.happyMonkey(
-                                            textStyle: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: ' ${snapshot.data}',
-                                          style: const TextStyle(
-                                            fontSize: 17,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+        title: Row(
+          children: [
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              '$name',
+              style: GoogleFonts.happyMonkey(
+                textStyle: const TextStyle(
+                  fontSize: 30,
+                  color: Colors.black,
                 ),
-                if (isNotCurrentUser) // ユーザーIDが一致する場合に表示
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.white,
+      ),
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        width: 300,
-                        child: ElevatedButton(
-                          child: const Text('フォロー'),
-                          onPressed: () {
-                            if (isNotCurrentUser) {
-                              // フォローの場合
-                              followUser(user_id);
-                            } else {
-                              // アンフォローの場合
-                              unfollowUser(user_id);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(user_image),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FutureBuilder<int>(
+                            future: followers(user_id),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('エラー: ${snapshot.error}');
+                              } else {
+                                return RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'フォロワー\n',
+                                        style: GoogleFonts.happyMonkey(
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: ' ${snapshot.data}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
                           ),
-                        ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FutureBuilder<int>(
+                            future: following(user_id),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('エラー: ${snapshot.error}');
+                              } else {
+                                return RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'フォロー中\n',
+                                        style: GoogleFonts.happyMonkey(
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: ' ${snapshot.data}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
-
-                Column(
+                ),
+              ),
+              if (isNotCurrentUser)
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    //Text('User UID: $name'),
-                    Text('ID:$name'),
-                    Text('id: $user_id'),
+                  children: [
+                    Container(
+                      width: 300,
+                      child: ElevatedButton(
+                          child: FutureBuilder<bool>(
+                            future: checkIfFollowing(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Text('読み込み中...');
+                              } else if (snapshot.hasError) {
+                                return Text('エラー: ${snapshot.error}');
+                              } else {
+                                isFollowing = snapshot.data ?? false;
+                                return Text(
+                                  isFollowing ? 'フォローを解除' : 'フォロー',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          onPressed: () {
+                            if (isFollowing) {
+                              unfollowUser(user_id);
+                            } else {
+                              followUser(user_id);
+                            }
+                            setState(() {});
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(90),
+                            ),
+                          )),
+                    ),
                   ],
                 ),
-
-                Text(
-                  "実装予定",
-                  style: TextStyle(fontSize: 20),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('ID:$name'),
+                  Text('id: $user_id'),
+                ],
+              ),
+              Text(
+                "実装予定",
+                style: TextStyle(fontSize: 20),
+              ),
+              GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
                 ),
-
-                GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, //カラム数
-                  ),
-                  itemCount: 9, //要素数
-                  itemBuilder: (context, index) {
-                    //要素を戻り値で返す
-                    return Container(
-                      color: index.isEven ? Colors.blue : Colors.yellow,
-                    );
-                  },
-                ),
-              ],
-            ),
+                itemCount: 9,
+                itemBuilder: (context, index) {
+                  return Container(
+                    color: index.isEven ? Colors.blue : Colors.yellow,
+                  );
+                },
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
