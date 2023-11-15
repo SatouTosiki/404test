@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,9 +19,46 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  Future<void> _refreshData() async {
-    // Add your Firebase data refresh logic here
-    // For example, you can re-fetch user data or any other data you need from Firebase.
+  @override
+  void initState() {
+    super.initState();
+    // ページが最初に開かれたときに MyPushet を実行する
+    MyPushet();
+  }
+
+  List<Map<String, dynamic>> mydataLists = [];
+  Future<void> MyPushet() async {
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('users')
+          .doc(myuid)
+          .collection('pushs')
+          .orderBy('time', descending: true)
+          .get();
+      List<Map<String, dynamic>> mydataList = [];
+
+      await Future.forEach(querySnapshot.docs, (doc) async {
+        if (doc.exists) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          data['documentId'] = doc.id;
+          mydataList.add(data);
+        }
+      });
+
+      // データが取得できたら、Stateを更新して画面を再構築する
+      setState(() {
+        mydataLists = mydataList;
+      });
+
+      // 取得したデータをコンソールに表示
+      print('投稿リスト: $mydataLists');
+    } catch (e) {
+      print('エラー画面表示できないなのです☆: $e');
+    }
+  }
+
+  Future<void> refreshData() async {
+    MyPushet();
   }
 
   @override
@@ -88,7 +126,7 @@ class _MyPageState extends State<MyPage> {
         backgroundColor: Color.fromARGB(255, 79, 104, 214),
       ),
       body: RefreshIndicator(
-        onRefresh: _refreshData,
+        onRefresh: refreshData,
         child: SingleChildScrollView(
           child: Column(
             children: [

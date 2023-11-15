@@ -83,10 +83,8 @@ class YourScreenState extends State<YourScreen> {
         if (doc.exists) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           data['documentId'] = doc.id;
-
           // ユーザー名を取得
           await checkUserIdInUsersCollection(data['user_id'], data);
-
           dataList.add(data);
         }
       });
@@ -425,81 +423,86 @@ class YourScreenState extends State<YourScreen> {
                                                 if (user != null) {
                                                   final String userId =
                                                       user.uid;
-                                                  final udo = FirebaseFirestore
-                                                      .instance
-                                                      .collection("user_post")
-                                                      .doc(documentData[
-                                                          'documentId'])
-                                                      .collection("heart")
-                                                      .doc(uid);
 
-                                                  await udo.set({
-                                                    'ID': userId,
-                                                  });
-                                                }
+                                                  // user_postのハートに対するサブコレクションへの参照を作成
+                                                  final heartRef =
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              "user_post")
+                                                          .doc(documentData[
+                                                              'documentId'])
+                                                          .collection("heart")
+                                                          .doc(uid);
 
-                                                if (isLikedMap[documentData[
-                                                        'documentId']] ??
-                                                    false) {
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection('user_post')
-                                                      .doc(documentData[
-                                                          'documentId'])
-                                                      .collection('heart')
-                                                      .doc(uid)
-                                                      .delete();
-                                                } else {
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection('user_post')
-                                                      .doc(documentData[
-                                                          'documentId'])
-                                                      .collection('heart')
-                                                      .doc(uid)
-                                                      .set({
-                                                    'ID': uid,
-                                                  });
-                                                }
+                                                  // user_postのハートに対するサブコレクションへの参照を作成
+                                                  final userPostRef =
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              "user_post")
+                                                          .doc(documentData[
+                                                              'documentId']);
 
-                                                QuerySnapshot querySnapshot =
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('user_post')
-                                                        .doc(documentData[
-                                                            'documentId'])
-                                                        .collection('heart')
-                                                        .get();
+                                                  // currentUserのコレクションに新しいコレクション "liked_posts" を作成
+                                                  final userLikedPostsRef =
+                                                      FirebaseFirestore.instance
+                                                          .collection("users")
+                                                          .doc(userId)
+                                                          .collection(
+                                                              "liked_posts");
 
-                                                List<String> heartDocumentIDs =
-                                                    [];
-
-                                                querySnapshot.docs
-                                                    .forEach((doc) {
-                                                  heartDocumentIDs.add(doc.id);
-                                                });
-
-                                                int numHeartDocuments =
-                                                    heartDocumentIDs.length;
-
-                                                print(
-                                                    'ハートの数: $numHeartDocuments');
-
-                                                // 特定の投稿のisLikedの状態だけを変更
-                                                setState(() {
-                                                  isLikedMap[documentData[
-                                                          'documentId']] =
-                                                      !(isLikedMap[documentData[
+                                                  // ハートの状態を反転
+                                                  bool isLiked = isLikedMap[
+                                                          documentData[
                                                               'documentId']] ??
-                                                          false);
-                                                });
+                                                      false;
 
-                                                // ハートの状態を保存
-                                                saveLikedState(
-                                                    documentData['documentId'],
-                                                    isLikedMap[documentData[
-                                                            'documentId']] ??
-                                                        false);
+                                                  try {
+                                                    if (isLiked) {
+                                                      // いいねを取り消す場合
+                                                      await heartRef.delete();
+                                                      await userLikedPostsRef
+                                                          .doc(documentData[
+                                                              'documentId'])
+                                                          .delete();
+                                                    } else {
+                                                      // いいねをつける場合
+                                                      await heartRef.set({
+                                                        'ID': uid,
+                                                      });
+
+                                                      // currentUserのliked_postsコレクションにいいねした投稿IDを追加
+                                                      await userLikedPostsRef
+                                                          .doc(documentData[
+                                                              'documentId'])
+                                                          .set({});
+                                                    }
+
+                                                    // いいねの状態を更新
+                                                    setState(() {
+                                                      isLikedMap[documentData[
+                                                              'documentId']] =
+                                                          !isLiked;
+                                                    });
+
+                                                    // ハートの状態を保存
+                                                    saveLikedState(
+                                                        documentData[
+                                                            'documentId'],
+                                                        !isLiked);
+
+                                                    // user_postのハート数を取得
+                                                    int heartCount =
+                                                        await fetchHeartCount(
+                                                            documentData[
+                                                                'documentId']);
+
+                                                    // ハート数を表示
+                                                    print('ハートの数: $heartCount');
+                                                  } catch (e) {
+                                                    print(
+                                                        'いいねの処理でエラーが発生しました: $e');
+                                                  }
+                                                }
                                               },
                                             ),
                                             Text(
