@@ -106,7 +106,7 @@ class _MyPageState extends State<MyPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           FutureBuilder<int>(
-                            future: myfollowing(myuid!),
+                            future: myfollowers(myuid!),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -146,7 +146,7 @@ class _MyPageState extends State<MyPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           FutureBuilder<int>(
-                            future: myfollowers(myuid!),
+                            future: myfollowing(myuid!),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {

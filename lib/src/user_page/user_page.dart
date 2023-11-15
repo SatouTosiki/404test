@@ -180,38 +180,41 @@ class userpage extends StatelessWidget {
                     Container(
                       width: 300,
                       child: ElevatedButton(
-                          child: FutureBuilder<bool>(
-                            future: checkIfFollowing(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Text('読み込み中...');
-                              } else if (snapshot.hasError) {
-                                return Text('エラー: ${snapshot.error}');
-                              } else {
-                                isFollowing = snapshot.data ?? false;
-                                return Text(
-                                  isFollowing ? 'フォローを解除' : 'フォロー',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                );
-                              }
-                            },
+                        onPressed: () async {
+                          bool isFollowing = await checkIfFollowing();
+                          if (isFollowing) {
+                            unfollowUser(user_id);
+                          } else {
+                            followUser(user_id);
+                          }
+                          setState(() {});
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(90),
                           ),
-                          onPressed: () {
-                            if (isFollowing) {
-                              unfollowUser(user_id);
+                          primary: Colors.blue, // ボタンのデフォルト色
+                        ),
+                        child: FutureBuilder<bool>(
+                          future: checkIfFollowing(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Text('読み込み中...');
+                            } else if (snapshot.hasError) {
+                              return Text('エラー: ${snapshot.error}');
                             } else {
-                              followUser(user_id);
+                              bool isFollowing = snapshot.data ?? false;
+                              return Text(
+                                isFollowing ? 'フォローを解除' : 'フォロー',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              );
                             }
-                            setState(() {});
                           },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(90),
-                            ),
-                          )),
+                        ),
+                      ),
                     ),
                   ],
                 ),
