@@ -256,7 +256,7 @@ class BookmarkScreenState extends State<BookmarkScreen> {
           padding: EdgeInsets.only(left: 10),
         ),
         title: Text(
-          "chefGourmet",
+          "お気に入り",
           style: GoogleFonts.happyMonkey(
             textStyle: const TextStyle(
               fontSize: 35,
