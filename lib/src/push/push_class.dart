@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,6 +13,7 @@ import 'package:provider/provider.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
 final auth = FirebaseAuth.instance;
+final myuid = auth.currentUser?.uid;
 
 String? userName = user?.displayName; // ユーザー名を取得
 final uid = auth.currentUser?.uid.toString(); //UIDの取得
@@ -84,51 +84,82 @@ class AddBookModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future addBook() async {
-    final doc = FirebaseFirestore.instance.collection('user_post').doc();
-    List<String> textFieldsValues = [];
-    for (var controller in textControllers) {
-      textFieldsValues.add(controller.text); // 各コントローラーから入力値を取得しリストに追加
+  Future<void> addBook() async {
+    try {
+      // コレクションへの参照を取得
+      CollectionReference<Map<String, dynamic>> collectionRef =
+          FirebaseFirestore.instance.collection('user_post');
+
+      List<String> textFieldsValues = [];
+      for (var controller in textControllers) {
+        textFieldsValues.add(controller.text);
+      }
+
+      List<String> ingredientsValues = [];
+      for (var controller in ingredientsControllers) {
+        ingredientsValues.add(controller.text);
+      }
+
+      if (title == null || title == "") {
+        throw 'タイトルが入力されていません';
+      }
+
+      if (comment == null || comment!.isEmpty) {
+        throw '説明文が入力されていません';
+      }
+
+      for (var imageFile in imageFiles) {
+        final task = await FirebaseStorage.instance
+            .ref('user_post/${imageFile}')
+            .putFile(imageFile);
+
+        final imgURL = await task.ref.getDownloadURL();
+        imgURLs.add(imgURL);
+      }
+
+      // コレクションに新しいドキュメントを追加し、追加されたドキュメントの参照を取得
+      final DocumentReference<Map<String, dynamic>> documentReference =
+          await collectionRef.add({
+        'title': title,
+        'comment': comment,
+        'imgURL': imgURLs,
+        'time': timestamp,
+        'name': userName,
+        "Ingredients": ingredientsValues,
+        "procedure": textFieldsValues,
+        "user_id": uid,
+        "user_image": userimage,
+        "heart": heart,
+      });
+
+      // 投稿されたドキュメントのIDを取得
+      final String mypushid = documentReference.id;
+
+      print('新しいドキュメントのID: $mypushid');
+      print("ログインID: $myuid");
+
+      // mypush 関数を呼び出す
+      await mypush(myuid!, mypushid);
+    } catch (e) {
+      print('エラー: $e');
     }
+  }
 
-    List<String> ingredientsValues = [];
-    for (var controller in ingredientsControllers) {
-      ingredientsValues.add(controller.text); // 各コントローラーから入力値を取得しリストに追加
+  Future<int> mypush(String myuid, String mypushid) async {
+    try {
+      // ドキュメントIDを指定してドキュメントを作成
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(myuid)
+          .collection('pushs')
+          .doc(mypushid)
+          .set({});
+
+      return 1; // 成功時に1を返す（例として）
+    } catch (e) {
+      print('エラー: $e');
+      return 0; // エラー時に0を返す（例として）
     }
-    if (title == null || title == "") {
-      throw 'タイトルが入力されていません';
-    }
-
-    if (comment == null || comment!.isEmpty) {
-      throw '説明文が入力されていません';
-    }
-
-    for (var imageFile in imageFiles) {
-      // storageにアップロード
-
-      final task = await FirebaseStorage.instance
-          .ref('user_post/${imageFile}')
-          .putFile(imageFile);
-
-      final imgURL = await task.ref.getDownloadURL();
-
-      imgURLs.add(imgURL);
-    }
-
-    // firestoreに追加
-
-    await doc.set({
-      'title': title,
-      'comment': comment,
-      'imgURL': imgURLs,
-      'time': timestamp,
-      'name': userName, // ユーザー名を Firestore フィールドに追加displayName
-      "Ingredients": ingredientsValues, //材料
-      "procedure": textFieldsValues, // 各具材のテキストフィールドの入力値を Firestore に追加[]
-      "user_id": uid,
-      "user_image": userimage,
-      "heart": heart,
-    });
   }
 
   List<String> imgURLs = []; // 画像のダウンロードURLを格納するリスト

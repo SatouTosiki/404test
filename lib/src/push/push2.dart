@@ -171,7 +171,10 @@ class AddBookPage extends StatelessWidget {
                                           width: 100, // サイズを調整
                                           height: 100,
                                         ),
-                                        Text('処理中...'), // オプションでテキストメッセージを追加
+                                        Text(
+                                          '料理中...',
+                                          style: TextStyle(fontSize: 15),
+                                        ), // オプションでテキストメッセージを追加
                                       ],
                                     ),
                                   );
