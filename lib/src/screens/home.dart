@@ -45,32 +45,6 @@ class YourScreenState extends State<YourScreen> {
     _initialize();
   }
 
-  Future<void> checkUserIdInUsersCollection(
-      String userId, Map<String, dynamic> data) async {
-    try {
-      // users コレクションの参照
-      CollectionReference usersCollection =
-          FirebaseFirestore.instance.collection('users');
-
-      // userid に格納されている値で users コレクションからドキュメントを取得
-      DocumentSnapshot userDocument = await usersCollection.doc(userId).get();
-
-      // ドキュメントが存在するかチェック
-      if (userDocument.exists) {
-        // ドキュメントが存在する場合、nameフィールドの値を取得
-        setState(() {
-          data['userName'] = userDocument['name'];
-        });
-
-        print('ありました。ユーザー名: ${data['userName']} ;userIDは:$userId');
-      } else {
-        print('なし');
-      }
-    } catch (e) {
-      print('エラー: $e');
-    }
-  }
-
   Future<void> fetchDocumentData() async {
     try {
       QuerySnapshot querySnapshot = await firestore
@@ -99,6 +73,32 @@ class YourScreenState extends State<YourScreen> {
       loadLikedStates();
     } catch (e) {
       print('エラー画面表示できないなのです☆: $e');
+    }
+  }
+
+  Future<void> checkUserIdInUsersCollection(
+      String userId, Map<String, dynamic> data) async {
+    try {
+      // users コレクションの参照
+      CollectionReference usersCollection =
+          FirebaseFirestore.instance.collection('users');
+
+      // userid に格納されている値で users コレクションからドキュメントを取得
+      DocumentSnapshot userDocument = await usersCollection.doc(userId).get();
+
+      // ドキュメントが存在するかチェック
+      if (userDocument.exists) {
+        // ドキュメントが存在する場合、nameフィールドの値を取得
+        setState(() {
+          data['userName'] = userDocument['name'];
+        });
+
+        print('ありました。ユーザー名: ${data['userName']} ;userIDは:$userId');
+      } else {
+        print('なし');
+      }
+    } catch (e) {
+      print('エラー: $e');
     }
   }
 
@@ -262,7 +262,9 @@ class YourScreenState extends State<YourScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 0),
+              Column(
+                children: [Text("aaaaaa")],
+              ),
               Column(
                 children: documentList.map<Widget>((documentData) {
                   isLikedMap.putIfAbsent(

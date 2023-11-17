@@ -1,145 +1,172 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:test3/src/user_page/user_page.dart';
+import '../recipe/recipe_page.dart';
+import '../user_page/user_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-final CollectionReference users =
-    FirebaseFirestore.instance.collection('user_post');
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
-final uid = auth.currentUser?.uid.toString();
+final uid = auth.currentUser?.uid;
+User? user = FirebaseAuth.instance.currentUser;
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
-
   @override
-  // ignore: library_private_types_in_public_api
-  _SearchScreenState createState() => _SearchScreenState();
+  YourScreenState createState() => YourScreenState(user: null);
 }
 
-class _SearchScreenState extends State<SearchScreen> {
-  int imagecount = 0;
+class YourScreenState extends State<SearchScreen> {
+  String? userid_test; // 投稿データからuidを取得し格納している変数
+  String? userName;
   TextEditingController searchController = TextEditingController();
-
-  List<Map<String, dynamic>> searchResults = [];
+  List<Map<String, dynamic>> filteredDocumentList = [];
   bool isLiked = false;
-  int likeCount = 0;
+  int imagecount = 0;
   List<Map<String, dynamic>> documentList = [];
   bool isTextVisible = false;
-  late final User? user;
+  final User? user;
+  Map<String, bool> isLikedMap = {};
+
+  YourScreenState({required this.user});
+
+  // SharedPreferences インスタンスを作成
+  late SharedPreferences prefs;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "search",
-          style: GoogleFonts.happyMonkey(
-            textStyle: const TextStyle(
-              fontSize: 35,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                labelText: '検索キーワードを入力してください',
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                performSearch();
-              },
-              child: Text('検索'),
-            ),
-            Expanded(
-              child: searchResults.isEmpty
-                  ? Center(
-                      child: Text('お探しのものはありません'),
-                    )
-                  : ListView.builder(
-                      itemCount: searchResults.length,
-                      itemBuilder: (context, index) {
-                        final documentData = searchResults[index];
-                        return buildPostUI(documentData);
-                      },
-                    ),
-            )
-          ],
-        ),
-      ),
-    );
+  void initState() {
+    super.initState();
+    _initialize();
   }
 
-  Future<void> performSearch() async {
-    final keyword = searchController.text.toLowerCase();
-
-    if (keyword.isEmpty) {
-      // Display a message when the search input is empty
-      setState(() {
-        searchResults = [];
-      });
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('エラー'),
-            content: Text('検索キーワードを入力してください。'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
+  Future<void> checkUserIdInUsersCollection(
+      String userId, Map<String, dynamic> data) async {
     try {
-      QuerySnapshot querySnapshot =
-          await firestore.collection('user_post').get();
+      // users コレクションの参照
+      CollectionReference usersCollection =
+          FirebaseFirestore.instance.collection('users');
 
-      List<Map<String, dynamic>> results = [];
+      // userid に格納されている値で users コレクションからドキュメントを取得
+      DocumentSnapshot userDocument = await usersCollection.doc(userId).get();
 
-      querySnapshot.docs.forEach((doc) {
+      // ドキュメントが存在するかチェック
+      if (userDocument.exists) {
+        // ドキュメントが存在する場合、nameフィールドの値を取得
+        setState(() {
+          data['userName'] = userDocument['name'];
+        });
+
+        print('ありました。ユーザー名: ${data['userName']} ;userIDは:$userId');
+      } else {
+        print('なし');
+      }
+    } catch (e) {
+      print('エラー: $e');
+    }
+  }
+
+  Future<void> fetchDocumentData() async {
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('user_post')
+          .orderBy('time', descending: true)
+          .get();
+      List<Map<String, dynamic>> dataList = [];
+
+      await Future.forEach(querySnapshot.docs, (doc) async {
         if (doc.exists) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
-          // 検索キーワードと一致するものを検索
-
-          if (data['author'].toString().toLowerCase().contains(keyword) ||
-              data['name'].toString().toLowerCase().contains(keyword) ||
-              data['time'].toString().toLowerCase().contains(keyword) ||
-              data['title'].toString().toLowerCase().contains(keyword) ||
-              data['具材'].toString().toLowerCase().contains(keyword) ||
-              data['user_id'].toString().toLowerCase().contains(keyword) ||
-              data['手順'].toString().toLowerCase().contains(keyword)) {
-            results.add(data);
-          }
+          data['documentId'] = doc.id;
+          // ユーザー名を取得
+          await checkUserIdInUsersCollection(data['user_id'], data);
+          dataList.add(data);
         }
       });
 
       setState(() {
-        searchResults = results;
+        documentList = dataList;
       });
+
+      print('ドキュメント数: ${documentList.length}');
+
+      // ハートの状態を読み込む
+      loadLikedStates();
     } catch (e) {
-      print('Error searching documents: $e');
+      print('エラー画面表示できないなのです☆: $e');
+    }
+  }
+
+  void _initialize() async {
+    try {
+      initSharedPreferences();
+      fetchDocumentData();
+    } catch (e) {
+      print('エラーが発生しました: $e');
+      // エラーの対処を行うか、適切なエラーメッセージを表示します。
+    }
+  }
+
+  // SharedPreferences を初期化するメソッド
+  void initSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  void toggleVisibility() {
+    setState(() {
+      isTextVisible = !isTextVisible;
+    });
+  }
+
+  Future<int> fetchHeartCount(String documentId) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentId)
+          .collection('heart')
+          .get();
+
+      return querySnapshot.docs.length;
+    } catch (e) {
+      print('ハートの数を取得できませんでした: $e');
+      return 0;
+    }
+  }
+
+  // SharedPreferences を使ってハートの状態を読み込むメソッド
+  void loadLikedStates() {
+    documentList.forEach((documentData) {
+      bool isLiked =
+          prefs.getBool(documentData['documentId'].toString()) ?? false;
+      setState(() {
+        isLikedMap[documentData['documentId']] = isLiked;
+      });
+    });
+  }
+
+  // SharedPreferences を使ってハートの状態を保存するメソッド
+  void saveLikedState(String documentId, bool isLiked) {
+    prefs.setBool(documentId, isLiked);
+  }
+
+  Future<void> _refreshData() async {
+    await fetchDocumentData();
+  }
+
+  Future<int> fetchCommentCount(String documentId) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentId)
+          .collection('comment') // コメントが保存されているコレクションのパスに適宜変更
+          .get();
+
+      return querySnapshot.docs.length;
+    } catch (e) {
+      print('コメント数を取得できませんでした: $e');
+      return 0;
     }
   }
 
@@ -163,11 +190,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   },
                   enableInfiniteScroll: false,
                 ),
-                itemCount: imageUrls.length,
                 itemBuilder: (context, index, realIndex) {
                   final path = imageUrls[index];
                   return buildImage(path, index);
                 },
+                itemCount: imageUrls.length,
               ),
               const SizedBox(
                 height: 20,
@@ -190,12 +217,15 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     }
 
-    return Container(
-      child: Text("画像がありません"),
+    return Padding(
+      padding: const EdgeInsets.all(60),
+      child: Container(
+        child: Text("画像がないのですよにぱー★"),
+      ),
     );
   }
 
-  Widget buildImage(path, index) => Container(
+  Widget buildImage(String path, int index) => Container(
         margin: EdgeInsets.symmetric(horizontal: 10),
         color: Colors.grey,
         child: Image.network(
@@ -204,193 +234,480 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       );
 
-  Widget buildPostUI(Map<String, dynamic> documentData) {
-    return Container(
-      margin: EdgeInsets.all(5),
-      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-          width: 1,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 10),
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
+        title: Text(
+          "chefGourmet",
+          style: GoogleFonts.happyMonkey(
+            textStyle: const TextStyle(
+              fontSize: 35,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
+        backgroundColor: Colors.white,
       ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => userpage(
-                        name: documentData['name'],
-                        user_image: documentData["user_image"],
-                        time: documentData["time"],
-                        user_id: documentData["user_id"],
-                        //user: null,
+              // 検索フィールド
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    labelText: '検索',
+                    suffixIcon: IconButton(
+                      icon: Icon(LineIcons.search),
+                      onPressed: () {
+                        performSearch();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 0),
+              Column(
+                children: filteredDocumentList.map<Widget>((documentData) {
+                  isLikedMap.putIfAbsent(
+                      documentData['documentId'], () => false);
+                  return Container(
+                    margin: EdgeInsets.all(5),
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
                       ),
                     ),
-                  );
-                },
-                child: Row(
-                  children: [
-                    if (documentData['user_image'] is List)
-                      Column(
-                        children:
-                            documentData['user_image'].map<Widget>((imageUrl) {
-                          return ClipOval(
-                            child: Image.network(
-                              imageUrl,
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
+                    child: Column(
+                      children: [
+                        Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => userpage(
+                                          name: documentData["userName"] ??
+                                              '名無しさんa', // userName が null の場合は '名無しさん' を表示
+                                          user_image:
+                                              documentData["user_image"],
+                                          time: documentData["time"],
+                                          user_id: documentData["user_id"],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      if (documentData['user_image'] is List)
+                                        Column(
+                                          children: documentData['user_image']
+                                              .map<Widget>((imageUrl) {
+                                            return ClipOval(
+                                              child: Image.network(
+                                                imageUrl,
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            );
+                                          }).toList(),
+                                        )
+                                      else if (documentData['user_image']
+                                          is String)
+                                        ClipOval(
+                                          child: Image.network(
+                                            documentData['user_image'],
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: documentData["userName"] !=
+                                                      null
+                                                  ? ' ${documentData["userName"]}'
+                                                  : '名無しさん',
+                                              style: const TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    LineIcons.download,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {
+                                    // Add your download logic here
+                                  },
+                                ),
+                              ],
                             ),
-                          );
-                        }).toList(),
-                      )
-                    else if (documentData['user_image'] is String)
-                      ClipOval(
-                        child: Image.network(
-                          documentData['user_image'],
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
+                          ],
                         ),
-                      ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: documentData['name'] != null
-                                ? ' ${documentData['name']}'
-                                : '名無しさん',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  "  ${documentData['title']}",
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: const Icon(
-                  LineIcons.download,
-                  size: 30,
-                ),
-                onPressed: () {
-                  print('IconButton ダウンロード');
-                },
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Center(
-                  child: Text(
-                    "  ${documentData['title']}",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          abuildImageWidget(documentData),
-          Row(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: const Icon(
-                    LineIcons.heart,
-                    size: 30,
-                  ),
-                  onPressed: () {
-                    print('IconButton ハート');
-                  },
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: const Icon(
-                    LineIcons.comment,
-                    size: 30,
-                  ),
-                  onPressed: () {
-                    showBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          child: Text('Bottom コメント'),
-                          height: 500,
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 20,
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        abuildImageWidget(documentData),
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: FutureBuilder<int>(
+                                    future: fetchHeartCount(
+                                        documentData['documentId']),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        return Text('エラー: ${snapshot.error}');
+                                      } else {
+                                        int heartCount = snapshot.data ?? 0;
+                                        return Row(
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(
+                                                isLikedMap[documentData[
+                                                            'documentId']] ??
+                                                        false
+                                                    ? LineIcons.heartAlt
+                                                    : LineIcons.heart,
+                                                size: 30,
+                                                color: isLikedMap[documentData[
+                                                            'documentId']] ??
+                                                        false
+                                                    ? Colors.red
+                                                    : Colors.black,
+                                              ),
+                                              onPressed: () async {
+                                                final User? user = FirebaseAuth
+                                                    .instance.currentUser;
+                                                if (user != null) {
+                                                  final String userId =
+                                                      user.uid;
+
+                                                  // user_postのハートに対するサブコレクションへの参照を作成
+                                                  final heartRef =
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              "user_post")
+                                                          .doc(documentData[
+                                                              'documentId'])
+                                                          .collection("heart")
+                                                          .doc(uid);
+
+                                                  // user_postのハートに対するサブコレクションへの参照を作成
+                                                  // ignore: unused_local_variable
+                                                  final userPostRef =
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              "user_post")
+                                                          .doc(documentData[
+                                                              'documentId']);
+
+                                                  // currentUserのコレクションに新しいコレクション "liked_posts" を作成
+                                                  final userLikedPostsRef =
+                                                      FirebaseFirestore.instance
+                                                          .collection("users")
+                                                          .doc(userId)
+                                                          .collection(
+                                                              "liked_posts");
+
+                                                  // ハートの状態を反転
+                                                  bool isLiked = isLikedMap[
+                                                          documentData[
+                                                              'documentId']] ??
+                                                      false;
+
+                                                  try {
+                                                    if (isLiked) {
+                                                      // いいねを取り消す場合
+                                                      await heartRef.delete();
+                                                      await userLikedPostsRef
+                                                          .doc(documentData[
+                                                              'documentId'])
+                                                          .delete();
+                                                    } else {
+                                                      // いいねをつける場合
+                                                      await heartRef.set({
+                                                        'ID': uid,
+                                                      });
+
+                                                      // currentUserのliked_postsコレクションにいいねした投稿IDを追加
+                                                      await userLikedPostsRef
+                                                          .doc(documentData[
+                                                              'documentId'])
+                                                          .set({});
+                                                    }
+
+                                                    // いいねの状態を更新
+                                                    setState(() {
+                                                      isLikedMap[documentData[
+                                                              'documentId']] =
+                                                          !isLiked;
+                                                    });
+
+                                                    // ハートの状態を保存
+                                                    saveLikedState(
+                                                        documentData[
+                                                            'documentId'],
+                                                        !isLiked);
+
+                                                    // user_postのハート数を取得
+                                                    int heartCount =
+                                                        await fetchHeartCount(
+                                                            documentData[
+                                                                'documentId']);
+
+                                                    // ハート数を表示
+                                                    print('ハートの数: $heartCount');
+                                                  } catch (e) {
+                                                    print(
+                                                        'いいねの処理でエラーが発生しました: $e');
+                                                  }
+                                                }
+                                              },
+                                            ),
+                                            Text(
+                                              '$heartCount',
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            FutureBuilder<int>(
+                              future:
+                                  fetchCommentCount(documentData['documentId']),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('エラー: ${snapshot.error}');
+                                } else {
+                                  int commentCount = snapshot.data ?? 0;
+                                  return Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          LineIcons.comment,
+                                          size: 30,
+                                        ),
+                                        onPressed: () {
+                                          // コメントが押された時の処理を追加
+                                        },
+                                      ),
+                                      Text(
+                                        '$commentCount件',
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'comment\n',
+                                style: GoogleFonts.happyMonkey(
+                                  textStyle: const TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ${documentData['comment']}',
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.black,
+                                ),
                               ),
                             ],
                           ),
-                        );
-                      },
-                    );
-                    print('IconButton コメント');
-                  },
-                ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RecipePage(
+                                  title: documentData["title"],
+                                  name: documentData["name"],
+                                  comment: documentData["comment"],
+                                  imgURL:
+                                      List<String>.from(documentData["imgURL"]),
+                                  Ingredients: List<String>.from(
+                                      documentData["Ingredients"]),
+                                  procedure: List<String>.from(
+                                      documentData["procedure"]),
+                                  user_image: documentData["user_image"],
+                                  documentId: documentData["documentId"],
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'レシピを見る',
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        // user_id = documentData['user_id'], // フィールドに値を設定
+                        Text(
+                          '投稿 ID: ${documentData['documentId']}',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          'user ID: ${documentData['user_id']}',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'comment\n',
-                  style: GoogleFonts.happyMonkey(
-                    textStyle: const TextStyle(
-                      fontSize: 25,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                TextSpan(
-                  text: ' ${documentData['author']}',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+// 検索ロジック
+  void performSearch() {
+    String searchTerm = searchController.text.toLowerCase();
+    if (searchTerm.isEmpty) {
+      // 検索キーワードが空の場合はメッセージを表示
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('エラー'),
+            content: Text('検索キーワードを入力してください。'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // 検索キーワードに一致するデータを抽出
+      List<Map<String, dynamic>> searchResults = documentList
+          .where((documentData) =>
+              documentData['comment'].toLowerCase().contains(searchTerm) ||
+              documentData['name'].toLowerCase().contains(searchTerm) ||
+              documentData['title'].toLowerCase().contains(searchTerm) ||
+              documentData['user_id'].toLowerCase().contains(searchTerm))
+          .toList();
+
+      setState(() {
+        filteredDocumentList = searchResults;
+      });
+
+      // 検索結果がない場合のメッセージを表示
+      if (searchResults.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('検索結果なし'),
+              content: Text('お探しのものが見つかりませんでした。'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 }

@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
-final uid = auth.currentUser?.uid;
+final myuid = auth.currentUser?.uid;
 User? user = FirebaseAuth.instance.currentUser;
 
 class BookmarkScreen extends StatefulWidget {
@@ -84,12 +84,27 @@ class BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
+  Future<int> fetchHeartCount(String documentId) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentId)
+          .collection('heart')
+          .get();
+
+      return querySnapshot.docs.length;
+    } catch (e) {
+      print('ハートの数を取得できませんでした: $e');
+      return 0;
+    }
+  }
+
   Future<void> fetchDocumentData() async {
     try {
       // 現在のユーザーの 'liked_posts' コレクションからいいねした投稿を取得
       QuerySnapshot likedPostsQuery = await firestore
           .collection('users')
-          .doc(uid)
+          .doc(myuid)
           .collection('liked_posts')
           .get();
 
@@ -119,7 +134,7 @@ class BookmarkScreenState extends State<BookmarkScreen> {
         documentList = dataList;
       });
 
-      print('いいねした投稿数: ${documentList.length}');
+      print('ドキュメント数: ${documentList.length}');
 
       // 各投稿のいいねの状態を読み込む
       loadLikedStates();
@@ -147,21 +162,6 @@ class BookmarkScreenState extends State<BookmarkScreen> {
     setState(() {
       isTextVisible = !isTextVisible;
     });
-  }
-
-  Future<int> fetchHeartCount(String documentId) async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('user_post')
-          .doc(documentId)
-          .collection('heart')
-          .get();
-
-      return querySnapshot.docs.length;
-    } catch (e) {
-      print('ハートの数を取得できませんでした: $e');
-      return 0;
-    }
   }
 
   // SharedPreferences を使ってハートの状態を読み込むメソッド
@@ -256,10 +256,10 @@ class BookmarkScreenState extends State<BookmarkScreen> {
           padding: EdgeInsets.only(left: 10),
         ),
         title: Text(
-          "お気に入り",
+          "like",
           style: GoogleFonts.happyMonkey(
             textStyle: const TextStyle(
-              fontSize: 35,
+              fontSize: 30,
               color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
@@ -443,7 +443,7 @@ class BookmarkScreenState extends State<BookmarkScreen> {
                                                           .doc(documentData[
                                                               'documentId'])
                                                           .collection("heart")
-                                                          .doc(uid);
+                                                          .doc(myuid);
 
                                                   // user_postのハートに対するサブコレクションへの参照を作成
                                                   final userPostRef =
@@ -478,7 +478,7 @@ class BookmarkScreenState extends State<BookmarkScreen> {
                                                     } else {
                                                       // いいねをつける場合
                                                       await heartRef.set({
-                                                        'ID': uid,
+                                                        'ID': myuid,
                                                       });
 
                                                       // currentUserのliked_postsコレクションにいいねした投稿IDを追加
