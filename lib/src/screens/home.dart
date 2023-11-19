@@ -263,7 +263,18 @@ class YourScreenState extends State<YourScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
-                children: [Text("aaaaaa")],
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      '投稿 ${documentList.length}件',
+                      style: TextStyle(
+                        fontSize: 20,
+                        //fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Column(
                 children: documentList.map<Widget>((documentData) {

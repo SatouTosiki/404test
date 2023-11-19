@@ -1,13 +1,17 @@
-import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../recipe/recipe_page.dart';
-import '../user_page/user_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../push/push_class.dart';
+import '../recipe/recipe_page.dart';
+import '../screens/login_page.dart';
+import '../user_page/te.dart';
+import '../user_page/user_page.dart';
+//import 'mypage_model.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
 final auth = FirebaseAuth.instance;
@@ -15,24 +19,49 @@ final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final myuid = auth.currentUser?.uid;
 late SharedPreferences prefs;
 
-class BookmarkScreen extends StatefulWidget {
+class MyPage extends StatefulWidget {
   @override
-  BookmarkScreenState createState() => BookmarkScreenState();
+  MyPageState createState() => MyPageState();
 }
 
-class BookmarkScreenState extends State<BookmarkScreen> {
+Future<int> myfollowers(String myuid) async {
+  try {
+    QuerySnapshot flollo = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(myuid)
+        .collection('followers')
+        .get();
+
+    return flollo.docs.length;
+  } catch (e) {
+    print('フォロワー取得: $e');
+    return 0;
+  }
+}
+
+Future<int> myfollowing(String myuid) async {
+  try {
+    QuerySnapshot flollo = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(myuid)
+        .collection('following')
+        .get();
+
+    return flollo.docs.length;
+  } catch (e) {
+    print('フォロワー取得: $e');
+    return 0;
+  }
+}
+
+class MyPageState extends State<MyPage> {
   bool isLiked = false;
   int imagecount = 0;
   List<Map<String, dynamic>> documentList = [];
   bool isTextVisible = false;
-  // final User? user;
   Map<String, bool> isLikedMap = {};
 
-  //BookmarkScreenState({required this.user});
-
-  // SharedPreferences インスタンスを作成
   late SharedPreferences prefs;
-
   @override
   void initState() {
     super.initState();
@@ -101,7 +130,7 @@ class BookmarkScreenState extends State<BookmarkScreen> {
       QuerySnapshot likedPostsQuery = await firestore
           .collection('users')
           .doc(myuid)
-          .collection('liked_posts')
+          .collection('pushs')
           .get();
 
       List<String> likedPostIds =
@@ -248,28 +277,122 @@ class BookmarkScreenState extends State<BookmarkScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 10),
-        ),
-        title: Text(
-          "like",
-          style: GoogleFonts.happyMonkey(
-            textStyle: const TextStyle(
-              fontSize: 30,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${user?.displayName ?? ''}   is room',
+              style: GoogleFonts.happyMonkey(
+                textStyle: const TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 79, 104, 214),
       ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 0),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(user?.photoURL ?? ''),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FutureBuilder<int>(
+                            future: myfollowers(myuid!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('エラー: ${snapshot.error}');
+                              } else {
+                                return RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'フォロワー\n',
+                                        style: GoogleFonts.happyMonkey(
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: ' ${snapshot.data}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FutureBuilder<int>(
+                            future: myfollowing(myuid!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('エラー: ${snapshot.error}');
+                              } else {
+                                return RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'フォロー中\n',
+                                        style: GoogleFonts.happyMonkey(
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: ' ${snapshot.data}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Column(
                 children: documentList.map<Widget>((documentData) {
                   isLikedMap.putIfAbsent(
@@ -640,6 +763,49 @@ class BookmarkScreenState extends State<BookmarkScreen> {
               ),
             ],
           ),
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue, // グレーに変更
+              ),
+              child: Text(
+                'Drawer Header',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(LineIcons.cog, size: 45),
+              title: Text('ユーザー設定'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileEditPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(LineIcons.running, size: 45),
+              title: Text('ログアウト'),
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => Login(
+                      user: null,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

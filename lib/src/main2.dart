@@ -33,7 +33,8 @@ class _MyHomePageState extends State<MyHomePage> {
     BookmarkScreen(),
     //search(),
     //Login(user: null),
-    MyPage()
+    MyPage(),
+
     //MyPage(user: currentUser),
     //BookmarkScreen2()
   ];
