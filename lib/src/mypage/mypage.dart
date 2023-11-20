@@ -419,21 +419,21 @@ class BookmarkScreenState extends State<MyPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => userpage(
-                                          name: documentData["userName"] ??
-                                              '名無しさんa', // userName が null の場合は '名無しさん' を表示
-                                          user_image:
-                                              documentData["user_image"],
-                                          time: documentData["time"],
-                                          user_id: documentData["user_id"],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                  // onTap: () {
+                                  //   Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => userpage(
+                                  //         name: documentData["userName"] ??
+                                  //             '名無しさんa', // userName が null の場合は '名無しさん' を表示
+                                  //         user_image:
+                                  //             documentData["user_image"],
+                                  //         time: documentData["time"],
+                                  //         user_id: documentData["user_id"],
+                                  //       ),
+                                  //     ),
+                                  //   );
+                                  // },
                                   child: Row(
                                     children: [
                                       if (documentData['user_image'] is List)
@@ -866,76 +866,3 @@ class BookmarkScreenState extends State<MyPage> {
     );
   }
 }
-
-// class Tdel extends StatefulWidget {
-//   Tdel({Key? key}) : super(key: key);
-
-//   @override
-//   State<Tdel> createState() => SimpleDialogSampleState();
-// }
-
-// class SimpleDialogSampleState extends State<Tdel> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return SimpleDialog(
-//       title: Text('投稿を削除します。'),
-//       children: [
-//         SimpleDialogOption(
-//           child: Text('削除する'),
-//           onPressed: () async {
-//             void deletePost(String documentId) async {
-//               try {
-//                 // user_post コレクションからドキュメントを削除
-//                 await FirebaseFirestore.instance
-//                     .collection('user_post')
-//                     .doc(documentId)
-//                     .delete();
-//                 await FirebaseFirestore.instance
-//                     .collection('users')
-//                     .doc(myuid)
-//                     .collection('pushs')
-//                     .doc(documentId)
-//                     .delete();
-//                 print('ドキュメントが正常に削除されました: $documentId');
-//               } catch (e) {
-//                 print('ドキュメントの削除中にエラーが発生しました: $e');
-//               }
-//             }
-
-//             print('投稿を削除しました!');
-//             // Navigator.push(
-//             //     context, MaterialPageRoute(builder: (context) => Registe()));
-//           },
-//         ),
-//         SimpleDialogOption(
-//           child: Text(
-//             '取り消し',
-//             style: TextStyle(color: Colors.red),
-//           ),
-//           onPressed: () {
-//             Navigator.push(
-//                 context, MaterialPageRoute(builder: (context) => MyPage()));
-//             print('キャンセルされました!');
-//             showDialog(
-//               context: context, // BuildContextが必要
-//               builder: (BuildContext context) {
-//                 return AlertDialog(
-//                   // title: Text('投稿削除'),
-//                   content: Text('投稿削除をキャンセルしました'),
-//                   actions: <Widget>[
-//                     TextButton(
-//                       onPressed: () {
-//                         Navigator.of(context).pop(); // ダイアログを閉じる
-//                       },
-//                       child: Text('閉じる'),
-//                     ),
-//                   ],
-//                 );
-//               },
-//             );
-//           },
-//         )
-//       ],
-//     );
-//   }
-// }
