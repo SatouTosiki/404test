@@ -10,7 +10,6 @@ import '../user_page/te.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'mypage_model.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
@@ -248,6 +247,25 @@ class BookmarkScreenState extends State<MyPage> {
         ),
       );
 
+  Future<void> deletePost(String documentId) async {
+    try {
+      // user_post コレクションからドキュメントを削除
+      await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentId)
+          .delete();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(myuid)
+          .collection('pushs')
+          .doc(documentId)
+          .delete();
+      print('ドキュメントが正常に削除されました: $documentId');
+    } catch (e) {
+      print('ドキュメントの削除中にエラーが発生しました: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -368,6 +386,13 @@ class BookmarkScreenState extends State<MyPage> {
                   ),
                 ),
               ),
+              Text(
+                '過去の投稿 ${documentList.length}件',
+                style: TextStyle(
+                  fontSize: 15,
+                  //fontWeight: FontWeight.bold,
+                ),
+              ),
               Column(
                 children: documentList.map<Widget>((documentData) {
                   isLikedMap.putIfAbsent(
@@ -458,11 +483,35 @@ class BookmarkScreenState extends State<MyPage> {
                                 ),
                                 IconButton(
                                   icon: const Icon(
-                                    LineIcons.download,
+                                    LineIcons.trash, // ゴミ箱アイコンや他の適切なアイコンを使用できます
                                     size: 30,
+                                    color: Colors.black, // 必要に応じて色をカスタマイズ
                                   ),
-                                  onPressed: () {
-                                    // Add your download logic here
+                                  onPressed: () async {
+                                    showDialog(
+                                      context: context, // BuildContextが必要
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('投稿削除'),
+                                          content: Text('投稿が投稿されました。'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // ダイアログを閉じる
+                                              },
+                                              child: Text('閉じる'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                    await deletePost(
+                                        documentData['documentId']);
+                                    // ドキュメントを削除した後にリロードするために fetchDocumentData を呼び出す
+                                    await fetchDocumentData();
+                                    // リロードをトリガーするために setState を呼び出す
+                                    setState(() {});
                                   },
                                 ),
                               ],

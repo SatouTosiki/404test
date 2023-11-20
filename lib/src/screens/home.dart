@@ -45,6 +45,23 @@ class YourScreenState extends State<YourScreen> {
     _initialize();
   }
 
+  Future<bool> checkIfUserLiked(String documentId) async {
+    try {
+      DocumentSnapshot heartDoc = await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(documentId)
+          .collection('heart')
+          .doc(uid)
+          .get();
+
+      return heartDoc.exists;
+    } catch (e) {
+      print('ユーザーのいいね確認時にエラーが発生しました: $e');
+
+      return false;
+    }
+  }
+
   Future<void> fetchDocumentData() async {
     try {
       QuerySnapshot querySnapshot = await firestore
@@ -417,18 +434,35 @@ class YourScreenState extends State<YourScreen> {
                                         return Row(
                                           children: [
                                             IconButton(
-                                              icon: Icon(
-                                                isLikedMap[documentData[
-                                                            'documentId']] ??
-                                                        false
-                                                    ? LineIcons.heartAlt
-                                                    : LineIcons.heart,
-                                                size: 30,
-                                                color: isLikedMap[documentData[
-                                                            'documentId']] ??
-                                                        false
-                                                    ? Colors.red
-                                                    : Colors.black,
+                                              icon: FutureBuilder<bool>(
+                                                future: checkIfUserLiked(
+                                                    documentData['documentId']),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return CircularProgressIndicator();
+                                                  } else if (snapshot
+                                                      .hasError) {
+                                                    return Icon(
+                                                      LineIcons.heart,
+                                                      size: 30,
+                                                      color: Colors.black,
+                                                    );
+                                                  } else {
+                                                    bool isLiked =
+                                                        snapshot.data ?? false;
+                                                    return Icon(
+                                                      isLiked
+                                                          ? LineIcons.heartAlt
+                                                          : LineIcons.heart,
+                                                      size: 30,
+                                                      color: isLiked
+                                                          ? Colors.red
+                                                          : Colors.black,
+                                                    );
+                                                  }
+                                                },
                                               ),
                                               onPressed: () async {
                                                 final User? user = FirebaseAuth
