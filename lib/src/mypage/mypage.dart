@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッ
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../recipe/recipe_page.dart';
 import '../screens/login_page.dart';
+import '../user_page/UserDelet.dart';
 import '../user_page/te.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -286,6 +287,7 @@ class BookmarkScreenState extends State<MyPage> {
           ],
         ),
         backgroundColor: Color.fromARGB(255, 79, 104, 214),
+        //backgroundColor: Colors.white,
       ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
@@ -491,24 +493,40 @@ class BookmarkScreenState extends State<MyPage> {
                                     showDialog(
                                       context: context, // BuildContextが必要
                                       builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text('投稿削除'),
-                                          content: Text('投稿が投稿されました。'),
-                                          actions: <Widget>[
-                                            TextButton(
+                                        return SimpleDialog(
+                                          title: Text('投稿を削除します。'),
+                                          children: [
+                                            SimpleDialogOption(
+                                              child: Text('削除する'),
+                                              onPressed: () async {
+                                                deletePost(
+                                                    documentData['documentId']);
+                                                await fetchDocumentData();
+                                                // リロードをトリガーするために setState を呼び出す
+                                                setState(() {});
+                                                print('投稿を削除しました!');
+                                                // Navigator.push(
+                                                //     context, MaterialPageRoute(builder: (context) => Registe()));
+                                              },
+                                            ),
+                                            SimpleDialogOption(
+                                              child: Text(
+                                                '取り消し',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
                                               onPressed: () {
                                                 Navigator.of(context)
                                                     .pop(); // ダイアログを閉じる
                                               },
-                                              child: Text('閉じる'),
-                                            ),
+                                            )
                                           ],
                                         );
                                       },
                                     );
-                                    await deletePost(
-                                        documentData['documentId']);
-                                    // ドキュメントを削除した後にリロードするために fetchDocumentData を呼び出す
+                                    // await deletePost(
+                                    //     documentData['documentId']);
+                                    // // ドキュメントを削除した後にリロードするために fetchDocumentData を呼び出す
                                     await fetchDocumentData();
                                     // リロードをトリガーするために setState を呼び出す
                                     setState(() {});
@@ -829,9 +847,95 @@ class BookmarkScreenState extends State<MyPage> {
                 );
               },
             ),
+            ListTile(
+              leading: Icon(LineIcons.trash, size: 45),
+              title: Text('アカウント削除'),
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => DeleteUserPage(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+// class Tdel extends StatefulWidget {
+//   Tdel({Key? key}) : super(key: key);
+
+//   @override
+//   State<Tdel> createState() => SimpleDialogSampleState();
+// }
+
+// class SimpleDialogSampleState extends State<Tdel> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SimpleDialog(
+//       title: Text('投稿を削除します。'),
+//       children: [
+//         SimpleDialogOption(
+//           child: Text('削除する'),
+//           onPressed: () async {
+//             void deletePost(String documentId) async {
+//               try {
+//                 // user_post コレクションからドキュメントを削除
+//                 await FirebaseFirestore.instance
+//                     .collection('user_post')
+//                     .doc(documentId)
+//                     .delete();
+//                 await FirebaseFirestore.instance
+//                     .collection('users')
+//                     .doc(myuid)
+//                     .collection('pushs')
+//                     .doc(documentId)
+//                     .delete();
+//                 print('ドキュメントが正常に削除されました: $documentId');
+//               } catch (e) {
+//                 print('ドキュメントの削除中にエラーが発生しました: $e');
+//               }
+//             }
+
+//             print('投稿を削除しました!');
+//             // Navigator.push(
+//             //     context, MaterialPageRoute(builder: (context) => Registe()));
+//           },
+//         ),
+//         SimpleDialogOption(
+//           child: Text(
+//             '取り消し',
+//             style: TextStyle(color: Colors.red),
+//           ),
+//           onPressed: () {
+//             Navigator.push(
+//                 context, MaterialPageRoute(builder: (context) => MyPage()));
+//             print('キャンセルされました!');
+//             showDialog(
+//               context: context, // BuildContextが必要
+//               builder: (BuildContext context) {
+//                 return AlertDialog(
+//                   // title: Text('投稿削除'),
+//                   content: Text('投稿削除をキャンセルしました'),
+//                   actions: <Widget>[
+//                     TextButton(
+//                       onPressed: () {
+//                         Navigator.of(context).pop(); // ダイアログを閉じる
+//                       },
+//                       child: Text('閉じる'),
+//                     ),
+//                   ],
+//                 );
+//               },
+//             );
+//           },
+//         )
+//       ],
+//     );
+//   }
+// }

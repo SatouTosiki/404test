@@ -270,374 +270,393 @@ class BookmarkScreenState extends State<BookmarkScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 0),
-              Column(
-                children: documentList.map<Widget>((documentData) {
-                  isLikedMap.putIfAbsent(
-                      documentData['documentId'], () => false);
-                  return Container(
-                    margin: EdgeInsets.all(5),
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1,
+              // documentListが空でない場合、リストを表示
+              if (documentList.isNotEmpty)
+                Column(
+                  children: documentList.map<Widget>((documentData) {
+                    isLikedMap.putIfAbsent(
+                        documentData['documentId'], () => false);
+                    return Container(
+                      margin: EdgeInsets.all(5),
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
                       ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => userpage(
-                                          name: documentData["userName"] ??
-                                              '名無しさんa', // userName が null の場合は '名無しさん' を表示
-                                          user_image:
-                                              documentData["user_image"],
-                                          time: documentData["time"],
-                                          user_id: documentData["user_id"],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Row(
-                                    children: [
-                                      if (documentData['user_image'] is List)
-                                        Column(
-                                          children: documentData['user_image']
-                                              .map<Widget>((imageUrl) {
-                                            return ClipOval(
-                                              child: Image.network(
-                                                imageUrl,
-                                                width: 50,
-                                                height: 50,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            );
-                                          }).toList(),
-                                        )
-                                      else if (documentData['user_image']
-                                          is String)
-                                        ClipOval(
-                                          child: Image.network(
-                                            documentData['user_image'],
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.cover,
+                      child: Column(
+                        children: [
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => userpage(
+                                            name: documentData["userName"] ??
+                                                '名無しさんa', // userName が null の場合は '名無しさん' を表示
+                                            user_image:
+                                                documentData["user_image"],
+                                            time: documentData["time"],
+                                            user_id: documentData["user_id"],
                                           ),
                                         ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      RichText(
-                                        textAlign: TextAlign.center,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: documentData["userName"] !=
-                                                      null
-                                                  ? ' ${documentData["userName"]}'
-                                                  : '名無しさん',
-                                              style: const TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.black,
-                                              ),
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        if (documentData['user_image'] is List)
+                                          Column(
+                                            children: documentData['user_image']
+                                                .map<Widget>((imageUrl) {
+                                              return ClipOval(
+                                                child: Image.network(
+                                                  imageUrl,
+                                                  width: 50,
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              );
+                                            }).toList(),
+                                          )
+                                        else if (documentData['user_image']
+                                            is String)
+                                          ClipOval(
+                                            child: Image.network(
+                                              documentData['user_image'],
+                                              width: 50,
+                                              height: 50,
+                                              fit: BoxFit.cover,
                                             ),
-                                          ],
+                                          ),
+                                        const SizedBox(
+                                          width: 10,
                                         ),
-                                      ),
-                                    ],
+                                        RichText(
+                                          textAlign: TextAlign.center,
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: documentData[
+                                                            "userName"] !=
+                                                        null
+                                                    ? ' ${documentData["userName"]}'
+                                                    : '名無しさん',
+                                                style: const TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      LineIcons.download,
+                                      size: 30,
+                                    ),
+                                    onPressed: () {
+                                      // Add your download logic here
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    "  ${documentData['title']}",
+                                    style: const TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    LineIcons.download,
-                                    size: 30,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          abuildImageWidget(documentData),
+                          Row(
+                            children: [
+                              Row(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: FutureBuilder<int>(
+                                      future: fetchHeartCount(
+                                          documentData['documentId']),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return CircularProgressIndicator();
+                                        } else if (snapshot.hasError) {
+                                          return Text('エラー: ${snapshot.error}');
+                                        } else {
+                                          int heartCount = snapshot.data ?? 0;
+                                          return Row(
+                                            children: [
+                                              IconButton(
+                                                icon: Icon(
+                                                  isLikedMap[documentData[
+                                                              'documentId']] ??
+                                                          false
+                                                      ? LineIcons.heartAlt
+                                                      : LineIcons.heart,
+                                                  size: 30,
+                                                  color: isLikedMap[documentData[
+                                                              'documentId']] ??
+                                                          false
+                                                      ? Colors.red
+                                                      : Colors.black,
+                                                ),
+                                                onPressed: () async {
+                                                  final User? user =
+                                                      FirebaseAuth
+                                                          .instance.currentUser;
+                                                  if (user != null) {
+                                                    final String userId =
+                                                        user.uid;
+
+                                                    // user_postのハートに対するサブコレクションへの参照を作成
+                                                    final heartRef =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                "user_post")
+                                                            .doc(documentData[
+                                                                'documentId'])
+                                                            .collection("heart")
+                                                            .doc(myuid);
+
+                                                    // user_postのハートに対するサブコレクションへの参照を作成
+                                                    final userPostRef =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                "user_post")
+                                                            .doc(documentData[
+                                                                'documentId']);
+
+                                                    // currentUserのコレクションに新しいコレクション "liked_posts" を作成
+                                                    final userLikedPostsRef =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection("users")
+                                                            .doc(userId)
+                                                            .collection(
+                                                                "liked_posts");
+
+                                                    // ハートの状態を反転
+                                                    bool isLiked = isLikedMap[
+                                                            documentData[
+                                                                'documentId']] ??
+                                                        false;
+
+                                                    try {
+                                                      if (isLiked) {
+                                                        // いいねを取り消す場合
+                                                        await heartRef.delete();
+                                                        await userLikedPostsRef
+                                                            .doc(documentData[
+                                                                'documentId'])
+                                                            .delete();
+                                                      } else {
+                                                        // いいねをつける場合
+                                                        await heartRef.set({
+                                                          'ID': myuid,
+                                                        });
+
+                                                        // currentUserのliked_postsコレクションにいいねした投稿IDを追加
+                                                        await userLikedPostsRef
+                                                            .doc(documentData[
+                                                                'documentId'])
+                                                            .set({});
+                                                      }
+
+                                                      // いいねの状態を更新
+                                                      setState(() {
+                                                        isLikedMap[documentData[
+                                                                'documentId']] =
+                                                            !isLiked;
+                                                      });
+
+                                                      // ハートの状態を保存
+                                                      saveLikedState(
+                                                          documentData[
+                                                              'documentId'],
+                                                          !isLiked);
+
+                                                      // user_postのハート数を取得
+                                                      int heartCount =
+                                                          await fetchHeartCount(
+                                                              documentData[
+                                                                  'documentId']);
+
+                                                      // ハート数を表示
+                                                      print(
+                                                          'ハートの数: $heartCount');
+                                                    } catch (e) {
+                                                      print(
+                                                          'いいねの処理でエラーが発生しました: $e');
+                                                    }
+                                                  }
+                                                },
+                                              ),
+                                              Text(
+                                                '$heartCount',
+                                                style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                      },
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    // Add your download logic here
-                                  },
+                                ],
+                              ),
+                              FutureBuilder<int>(
+                                future: fetchCommentCount(
+                                    documentData['documentId']),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('エラー: ${snapshot.error}');
+                                  } else {
+                                    int commentCount = snapshot.data ?? 0;
+                                    return Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            LineIcons.comment,
+                                            size: 30,
+                                          ),
+                                          onPressed: () {
+                                            // コメントが押された時の処理を追加
+                                          },
+                                        ),
+                                        Text(
+                                          '$commentCount件',
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'comment\n',
+                                  style: GoogleFonts.happyMonkey(
+                                    textStyle: const TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  "  ${documentData['title']}",
+                                TextSpan(
+                                  text: ' ${documentData['comment']}',
                                   style: const TextStyle(
                                     fontSize: 17,
                                     color: Colors.black,
                                   ),
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        abuildImageWidget(documentData),
-                        Row(
-                          children: [
-                            Row(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: FutureBuilder<int>(
-                                    future: fetchHeartCount(
-                                        documentData['documentId']),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return CircularProgressIndicator();
-                                      } else if (snapshot.hasError) {
-                                        return Text('エラー: ${snapshot.error}');
-                                      } else {
-                                        int heartCount = snapshot.data ?? 0;
-                                        return Row(
-                                          children: [
-                                            IconButton(
-                                              icon: Icon(
-                                                isLikedMap[documentData[
-                                                            'documentId']] ??
-                                                        false
-                                                    ? LineIcons.heartAlt
-                                                    : LineIcons.heart,
-                                                size: 30,
-                                                color: isLikedMap[documentData[
-                                                            'documentId']] ??
-                                                        false
-                                                    ? Colors.red
-                                                    : Colors.black,
-                                              ),
-                                              onPressed: () async {
-                                                final User? user = FirebaseAuth
-                                                    .instance.currentUser;
-                                                if (user != null) {
-                                                  final String userId =
-                                                      user.uid;
-
-                                                  // user_postのハートに対するサブコレクションへの参照を作成
-                                                  final heartRef =
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              "user_post")
-                                                          .doc(documentData[
-                                                              'documentId'])
-                                                          .collection("heart")
-                                                          .doc(myuid);
-
-                                                  // user_postのハートに対するサブコレクションへの参照を作成
-                                                  final userPostRef =
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              "user_post")
-                                                          .doc(documentData[
-                                                              'documentId']);
-
-                                                  // currentUserのコレクションに新しいコレクション "liked_posts" を作成
-                                                  final userLikedPostsRef =
-                                                      FirebaseFirestore.instance
-                                                          .collection("users")
-                                                          .doc(userId)
-                                                          .collection(
-                                                              "liked_posts");
-
-                                                  // ハートの状態を反転
-                                                  bool isLiked = isLikedMap[
-                                                          documentData[
-                                                              'documentId']] ??
-                                                      false;
-
-                                                  try {
-                                                    if (isLiked) {
-                                                      // いいねを取り消す場合
-                                                      await heartRef.delete();
-                                                      await userLikedPostsRef
-                                                          .doc(documentData[
-                                                              'documentId'])
-                                                          .delete();
-                                                    } else {
-                                                      // いいねをつける場合
-                                                      await heartRef.set({
-                                                        'ID': myuid,
-                                                      });
-
-                                                      // currentUserのliked_postsコレクションにいいねした投稿IDを追加
-                                                      await userLikedPostsRef
-                                                          .doc(documentData[
-                                                              'documentId'])
-                                                          .set({});
-                                                    }
-
-                                                    // いいねの状態を更新
-                                                    setState(() {
-                                                      isLikedMap[documentData[
-                                                              'documentId']] =
-                                                          !isLiked;
-                                                    });
-
-                                                    // ハートの状態を保存
-                                                    saveLikedState(
-                                                        documentData[
-                                                            'documentId'],
-                                                        !isLiked);
-
-                                                    // user_postのハート数を取得
-                                                    int heartCount =
-                                                        await fetchHeartCount(
-                                                            documentData[
-                                                                'documentId']);
-
-                                                    // ハート数を表示
-                                                    print('ハートの数: $heartCount');
-                                                  } catch (e) {
-                                                    print(
-                                                        'いいねの処理でエラーが発生しました: $e');
-                                                  }
-                                                }
-                                              },
-                                            ),
-                                            Text(
-                                              '$heartCount',
-                                              style: TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ),
                               ],
                             ),
-                            FutureBuilder<int>(
-                              future:
-                                  fetchCommentCount(documentData['documentId']),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return Text('エラー: ${snapshot.error}');
-                                } else {
-                                  int commentCount = snapshot.data ?? 0;
-                                  return Row(
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(
-                                          LineIcons.comment,
-                                          size: 30,
-                                        ),
-                                        onPressed: () {
-                                          // コメントが押された時の処理を追加
-                                        },
-                                      ),
-                                      Text(
-                                        '$commentCount件',
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'comment\n',
-                                style: GoogleFonts.happyMonkey(
-                                  textStyle: const TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RecipePage(
+                                    title: documentData["title"],
+                                    name: documentData["name"],
+                                    comment: documentData["comment"],
+                                    imgURL: List<String>.from(
+                                        documentData["imgURL"]),
+                                    Ingredients: List<String>.from(
+                                        documentData["Ingredients"]),
+                                    procedure: List<String>.from(
+                                        documentData["procedure"]),
+                                    user_image: documentData["user_image"],
+                                    documentId: documentData["documentId"],
                                   ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: ' ${documentData['comment']}',
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
+                              );
+                            },
+                            child: const Text(
+                              'レシピを見る',
+                              style: TextStyle(fontSize: 17),
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RecipePage(
-                                  title: documentData["title"],
-                                  name: documentData["name"],
-                                  comment: documentData["comment"],
-                                  imgURL:
-                                      List<String>.from(documentData["imgURL"]),
-                                  Ingredients: List<String>.from(
-                                      documentData["Ingredients"]),
-                                  procedure: List<String>.from(
-                                      documentData["procedure"]),
-                                  user_image: documentData["user_image"],
-                                  documentId: documentData["documentId"],
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'レシピを見る',
-                            style: TextStyle(fontSize: 17),
+                          const SizedBox(
+                            height: 8,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        // user_id = documentData['user_id'], // フィールドに値を設定
-                        Text(
-                          '投稿 ID: ${documentData['documentId']}',
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.grey,
+                          // user_id = documentData['user_id'], // フィールドに値を設定
+                          Text(
+                            '投稿 ID: ${documentData['documentId']}',
+                            style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                        Text(
-                          'user ID: ${documentData['user_id']}',
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.grey,
+                          Text(
+                            'user ID: ${documentData['user_id']}',
+                            style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                )
+              else
+                // documentListが空の場合、投稿がない旨を表示
+                Center(
+                  child: Text(
+                    'お気に入りした投稿がありません',
+                    style: TextStyle(
+                      fontSize: 20,
                     ),
-                  );
-                }).toList(),
-              ),
+                  ),
+                ),
             ],
           ),
         ),

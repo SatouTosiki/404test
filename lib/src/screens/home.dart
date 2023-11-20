@@ -323,7 +323,7 @@ class YourScreenState extends State<YourScreen> {
                                       MaterialPageRoute(
                                         builder: (context) => userpage(
                                           name: documentData["userName"] ??
-                                              '名無しさんa', // userName が null の場合は '名無しさん' を表示
+                                              uid, // userName が null の場合は '名無しさん' を表示
                                           user_image:
                                               documentData["user_image"],
                                           time: documentData["time"],
@@ -381,15 +381,15 @@ class YourScreenState extends State<YourScreen> {
                                     ],
                                   ),
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    LineIcons.download,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
-                                    // Add your download logic here
-                                  },
-                                ),
+                                // IconButton(
+                                //   icon: const Icon(
+                                //     LineIcons.download,
+                                //     size: 30,
+                                //   ),
+                                //   onPressed: () {
+                                //     // Add your download logic here
+                                //   },
+                                // ),
                               ],
                             ),
                           ],
