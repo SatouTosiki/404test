@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test3/src/main2.dart';
-
 import 'GroupInfoPage.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
@@ -69,13 +68,29 @@ class SimpleDialogSample extends StatefulWidget {
 
 class _SimpleDialogSampleState extends State<SimpleDialogSample> {
   void deleteUser() async {
+    await FirebaseAuth.instance.signOut();
     final user = FirebaseAuth.instance.currentUser;
     final uid = user?.uid;
-    final msg =
-        await FirebaseFirestore.instance.collection('users').doc(uid).delete();
-    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
-    // ユーザーを削除
     await user?.delete();
+
+    // usersコレクションからユーザーを削除
+    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+
+    // user_postコレクションから該当ユーザーの投稿を削除
+    QuerySnapshot posts = await FirebaseFirestore.instance
+        .collection('user_post')
+        .where('user_id', isEqualTo: uid)
+        .get();
+
+    for (QueryDocumentSnapshot post in posts.docs) {
+      await FirebaseFirestore.instance
+          .collection('user_post')
+          .doc(post.id)
+          .delete();
+    }
+
+    // ユーザーを削除
+
     await FirebaseAuth.instance.signOut();
     print('ユーザーを削除しました!');
   }

@@ -13,9 +13,27 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String infoText = '';
   String email = '';
   String password = '';
+  String emailError = '';
+  String passwordError = '';
+  String loginError = '';
+  late FocusNode emailFocusNode;
+  late FocusNode passwordFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    emailFocusNode = FocusNode();
+    passwordFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,26 +65,40 @@ class _LoginState extends State<Login> {
                   padding: EdgeInsets.all(25),
                   child: Column(
                     children: [
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'メールアドレス'),
-                        onChanged: (String value) {
+                      buildTextField(
+                        'メールアドレス',
+                        email,
+                        TextInputType.emailAddress,
+                        (String value) {
                           setState(() {
                             email = value;
+                            emailError =
+                                ''; // Clear previous error when user starts typing
                           });
                         },
+                        emailError,
                       ),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: 'パスワード'),
-                        obscureText: true,
-                        onChanged: (String value) {
+                      buildTextField(
+                        'パスワード',
+                        password,
+                        TextInputType.text,
+                        (String value) {
                           setState(() {
                             password = value;
+                            passwordError =
+                                ''; // Clear previous error when user starts typing
                           });
                         },
+                        passwordError,
+                        obscureText: true,
                       ),
                       Container(
                         padding: EdgeInsets.all(9),
-                        child: Text(infoText),
+                        child: Text(
+                          // Display login error message
+                          loginError,
+                          style: TextStyle(color: Colors.red),
+                        ),
                       ),
                       Container(
                         width: double.infinity,
@@ -81,9 +113,17 @@ class _LoginState extends State<Login> {
                             style: TextStyle(fontSize: 18),
                           ),
                           onPressed: () async {
+                            emailFocusNode.unfocus();
+                            passwordFocusNode.unfocus();
+
                             if (email.isEmpty || password.isEmpty) {
                               setState(() {
-                                infoText = 'エラー：メールアドレスもしくはパスワードを入力してください';
+                                emailError =
+                                    email.isEmpty ? 'エラー：メールアドレスを入力してください' : '';
+                                passwordError = password.isEmpty
+                                    ? 'エラー：パスワードを入力してください'
+                                    : '';
+                                loginError = 'エラー：メールアドレスもしくはパスワードを入力してください';
                               });
                             } else {
                               try {
@@ -102,7 +142,7 @@ class _LoginState extends State<Login> {
                               } catch (e) {
                                 print('ログイン失敗：$e');
                                 setState(() {
-                                  infoText = 'エラー：ログインに失敗しました';
+                                  loginError = 'エラー：ログインに失敗しました';
                                 });
                               }
                             }
@@ -122,7 +162,7 @@ class _LoginState extends State<Login> {
                             );
                           },
                           child: const Padding(
-                            padding: EdgeInsets.all(30.0),
+                            padding: EdgeInsets.all(5.0),
                             child: Text(
                               '新規登録はこちら',
                               style: TextStyle(fontSize: 20),
@@ -138,6 +178,36 @@ class _LoginState extends State<Login> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildTextField(
+    String labelText,
+    String value,
+    TextInputType keyboardType,
+    ValueChanged<String> onChanged,
+    String errorText, {
+    bool obscureText = false,
+    int? maxLength,
+  }) {
+    return TextField(
+      decoration: InputDecoration(
+        labelText: labelText,
+        errorText: errorText.isNotEmpty ? errorText : null,
+        labelStyle: TextStyle(
+          color: errorText.isNotEmpty ? Colors.red : Colors.black,
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.lightBlue),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),
+        ),
+      ),
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      onChanged: onChanged,
+      maxLength: maxLength,
     );
   }
 }

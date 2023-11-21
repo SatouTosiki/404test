@@ -381,15 +381,6 @@ class YourScreenState extends State<YourScreen> {
                                     ],
                                   ),
                                 ),
-                                // IconButton(
-                                //   icon: const Icon(
-                                //     LineIcons.download,
-                                //     size: 30,
-                                //   ),
-                                //   onPressed: () {
-                                //     // Add your download logic here
-                                //   },
-                                // ),
                               ],
                             ),
                           ],

@@ -46,7 +46,7 @@ class _RegisteState extends State<Registe> {
               SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: 100),
+                    SizedBox(height: 10),
                     Container(
                       padding: EdgeInsets.all(9),
                       child: Text(infoText),
@@ -54,10 +54,11 @@ class _RegisteState extends State<Registe> {
                     const Text(
                       '新規登録',
                       style: TextStyle(
-                        fontSize: 50,
+                        fontSize: 40,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    SizedBox(height: 10),
                     CircleAvatar(
                       radius: 75,
                       backgroundImage: _selectedImage != null
@@ -65,7 +66,7 @@ class _RegisteState extends State<Registe> {
                           : null,
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 10,
                     ),
                     ElevatedButton(
                       onPressed: isLoading
@@ -77,7 +78,7 @@ class _RegisteState extends State<Registe> {
                               if (pickedImage != null) {
                                 setState(() {
                                   _selectedImage = File(pickedImage.path);
-                                  iconError = ''; // アイコンが選択されたらエラーメッセージをクリア
+                                  iconError = '';
                                 });
                               }
                             },
@@ -95,7 +96,7 @@ class _RegisteState extends State<Registe> {
                         ),
                       ),
                     Container(
-                      padding: EdgeInsets.all(35),
+                      padding: EdgeInsets.all(20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -106,7 +107,7 @@ class _RegisteState extends State<Registe> {
                             (String value) {
                               setState(() {
                                 email = value;
-                                emailError = ''; // ユーザーが入力を再開したらエラーメッセージをクリア
+                                emailError = '';
                               });
                             },
                             emailError,
@@ -118,7 +119,7 @@ class _RegisteState extends State<Registe> {
                             (String value) {
                               setState(() {
                                 password = value;
-                                passwordError = ''; // ユーザーが入力を再開したらエラーメッセージをクリア
+                                passwordError = '';
                               });
                             },
                             passwordError,
@@ -131,7 +132,7 @@ class _RegisteState extends State<Registe> {
                             (String value) {
                               setState(() {
                                 name = value;
-                                nameError = ''; // ユーザーが入力を再開したらエラーメッセージをクリア
+                                nameError = '';
                               });
                             },
                             nameError,
@@ -153,14 +154,14 @@ class _RegisteState extends State<Registe> {
                                 ? null
                                 : () async {
                                     setState(() {
-                                      emailError = ''; // ボタンが押されたらエラーメッセージをクリア
+                                      emailError = '';
                                       passwordError = '';
                                       nameError = '';
                                       iconError = '';
                                     });
 
                                     if (!validate()) {
-                                      return; // バリデーションに失敗したら処理を中断
+                                      return;
                                     }
 
                                     if (_selectedImage == null) {
@@ -173,6 +174,7 @@ class _RegisteState extends State<Registe> {
                                     setState(() {
                                       isLoading = true;
                                     });
+
                                     try {
                                       final UserCredential userCredential =
                                           await _auth
@@ -183,6 +185,10 @@ class _RegisteState extends State<Registe> {
 
                                       await userCredential.user
                                           ?.updateDisplayName(name);
+
+                                      // Firebase Authenticationのメール認証機能を利用して認証コードを送信
+                                      await userCredential.user
+                                          ?.sendEmailVerification();
 
                                       final user = _auth.currentUser;
                                       final storageRef = _storage.ref(
@@ -211,10 +217,7 @@ class _RegisteState extends State<Registe> {
                                         ),
                                       );
                                     } catch (e) {
-                                      setState(() {
-                                        infoText = '画像登録に失敗しました：$e';
-                                        print(infoText);
-                                      });
+                                      // エラーが発生した場合の処理を追加できます
                                     } finally {
                                       setState(() {
                                         isLoading = false;
@@ -222,7 +225,7 @@ class _RegisteState extends State<Registe> {
                                     }
                                   },
                           ),
-                          SizedBox(height: 40),
+                          SizedBox(height: 10),
                           TextButton(
                             onPressed: isLoading
                                 ? null
@@ -235,7 +238,7 @@ class _RegisteState extends State<Registe> {
                                     );
                                   },
                             child: Padding(
-                              padding: EdgeInsets.all(30.0),
+                              padding: EdgeInsets.all(2.0),
                               child: Text(
                                 'ログインに戻る',
                                 style: TextStyle(fontSize: 20),
@@ -315,6 +318,12 @@ class _RegisteState extends State<Registe> {
         errorText: errorText.isNotEmpty ? errorText : null,
         labelStyle: TextStyle(
           color: errorText.isNotEmpty ? Colors.red : Colors.black,
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.lightBlue),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),
         ),
       ),
       keyboardType: keyboardType,

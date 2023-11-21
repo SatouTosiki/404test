@@ -8,7 +8,6 @@ import '../recipe/recipe_page.dart';
 import '../screens/login_page.dart';
 import '../user_page/UserDelet.dart';
 import '../user_page/te.dart';
-import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'mypage_model.dart';
@@ -41,6 +40,7 @@ class BookmarkScreenState extends State<MyPage> {
   void initState() {
     super.initState();
     _initialize();
+    void userss = user?.displayName;
   }
 
   Future<void> checkUserIdInUsersCollection(
@@ -801,7 +801,7 @@ class BookmarkScreenState extends State<MyPage> {
                 color: Colors.blue, // グレーに変更
               ),
               child: Text(
-                'Drawer Header',
+                'オプション',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
