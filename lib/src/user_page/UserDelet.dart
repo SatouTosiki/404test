@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../mypage/mypage.dart';
-import '../register/register_page.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:test3/src/main2.dart';
+
 import 'GroupInfoPage.dart';
+
+User? user = FirebaseAuth.instance.currentUser;
 
 class DeleteUserPage extends StatefulWidget {
   DeleteUserPage({Key? key}) : super(key: key);
@@ -17,7 +20,23 @@ class _DeleteUserPageState extends State<DeleteUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ユーザー削除'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${user?.displayName ?? ''}   is room',
+              style: GoogleFonts.happyMonkey(
+                textStyle: const TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Color.fromARGB(255, 79, 104, 214),
+        //backgroundColor: Colors.white,
       ),
       body: Center(
         child: Column(
@@ -54,9 +73,13 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
     final uid = user?.uid;
     final msg =
         await FirebaseFirestore.instance.collection('users').doc(uid).delete();
-    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('messages')
+        .doc(uid)
+        .delete();
     // ユーザーを削除
-
     await user?.delete();
     await FirebaseAuth.instance.signOut();
     print('ユーザーを削除しました!');
@@ -72,33 +95,16 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
           onPressed: () async {
             deleteUser();
             print('ユーザーを削除しました!');
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Registe()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => GroupInfoPage()));
           },
         ),
         SimpleDialogOption(
           child: Text('退会しない'),
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MyPage()));
+                context, MaterialPageRoute(builder: (context) => MyHomePage()));
             print('キャンセルされました!');
-            showDialog(
-              context: context, // BuildContextが必要
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  // title: Text('投稿削除'),
-                  content: Text('アカウント削除をキャンセルしました'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // ダイアログを閉じる
-                      },
-                      child: Text('閉じる'),
-                    ),
-                  ],
-                );
-              },
-            );
           },
         )
       ],

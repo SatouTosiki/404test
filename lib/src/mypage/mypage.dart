@@ -419,21 +419,6 @@ class BookmarkScreenState extends State<MyPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 InkWell(
-                                  // onTap: () {
-                                  //   Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) => userpage(
-                                  //         name: documentData["userName"] ??
-                                  //             '名無しさんa', // userName が null の場合は '名無しさん' を表示
-                                  //         user_image:
-                                  //             documentData["user_image"],
-                                  //         time: documentData["time"],
-                                  //         user_id: documentData["user_id"],
-                                  //       ),
-                                  //     ),
-                                  //   );
-                                  // },
                                   child: Row(
                                     children: [
                                       if (documentData['user_image'] is List)
@@ -485,13 +470,13 @@ class BookmarkScreenState extends State<MyPage> {
                                 ),
                                 IconButton(
                                   icon: const Icon(
-                                    LineIcons.trash, // ゴミ箱アイコンや他の適切なアイコンを使用できます
+                                    LineIcons.trash,
                                     size: 30,
-                                    color: Colors.black, // 必要に応じて色をカスタマイズ
+                                    color: Colors.black,
                                   ),
                                   onPressed: () async {
                                     showDialog(
-                                      context: context, // BuildContextが必要
+                                      context: context,
                                       builder: (BuildContext context) {
                                         return SimpleDialog(
                                           title: Text('投稿を削除します。'),
@@ -499,14 +484,15 @@ class BookmarkScreenState extends State<MyPage> {
                                             SimpleDialogOption(
                                               child: Text('削除する'),
                                               onPressed: () async {
-                                                deletePost(
+                                                // 投稿削除処理
+                                                await deletePost(
                                                     documentData['documentId']);
-                                                await fetchDocumentData();
-                                                // リロードをトリガーするために setState を呼び出す
+
+                                                // ダイアログを閉じる
+                                                Navigator.of(context).pop();
+
+                                                // 画面を更新
                                                 setState(() {});
-                                                print('投稿を削除しました!');
-                                                // Navigator.push(
-                                                //     context, MaterialPageRoute(builder: (context) => Registe()));
                                               },
                                             ),
                                             SimpleDialogOption(
@@ -516,20 +502,19 @@ class BookmarkScreenState extends State<MyPage> {
                                                     color: Colors.red),
                                               ),
                                               onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(); // ダイアログを閉じる
+                                                // ダイアログを閉じる
+                                                Navigator.of(context).pop();
                                               },
-                                            )
+                                            ),
                                           ],
                                         );
                                       },
                                     );
-                                    // await deletePost(
-                                    //     documentData['documentId']);
-                                    // // ドキュメントを削除した後にリロードするために fetchDocumentData を呼び出す
-                                    await fetchDocumentData();
-                                    // リロードをトリガーするために setState を呼び出す
-                                    setState(() {});
+
+                                    setState(() {
+                                      // 画面を更新するためのロジックを追加（例：fetchDocumentData()）
+                                      // fetchDocumentData();
+                                    });
                                   },
                                 ),
                               ],
@@ -851,8 +836,7 @@ class BookmarkScreenState extends State<MyPage> {
               leading: Icon(LineIcons.trash, size: 45),
               title: Text('アカウント削除'),
               onTap: () {
-                FirebaseAuth.instance.signOut();
-
+                //FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => DeleteUserPage(),
