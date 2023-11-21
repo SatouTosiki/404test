@@ -73,12 +73,7 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
     final uid = user?.uid;
     final msg =
         await FirebaseFirestore.instance.collection('users').doc(uid).delete();
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('messages')
-        .doc(uid)
-        .delete();
+    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
     // ユーザーを削除
     await user?.delete();
     await FirebaseAuth.instance.signOut();
