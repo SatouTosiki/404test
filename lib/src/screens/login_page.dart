@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
 import 'package:test3/src/main2.dart';
 import "package:test3/src/register/register_page.dart";
+import 'package:test3/src/screens/resetting.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -99,8 +100,6 @@ class _LoginState extends State<Login> {
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
-                      Text("パスワードお忘れですか？パスワード変更",
-                          style: TextStyle(color: Colors.blue)),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -186,6 +185,19 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
+                      TextButton(
+                          child: const Text(
+                            'パスワードの再設定',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          onPressed: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => resetting(),
+                              ),
+                            );
+                          }),
                     ],
                   ),
                 ),
