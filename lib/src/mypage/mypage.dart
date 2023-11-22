@@ -44,6 +44,18 @@ class BookmarkScreenState extends State<MyPage> {
     void userss = user?.displayName;
   }
 
+// Firebase Authenticationのキャッシュをクリアする関数
+  Future<void> clearFirebaseAuthCache() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance
+          .signInAnonymously(); // ダミーで再ログインすることでキャッシュをクリア
+    } catch (e) {
+      print('Firebase Auth Cache Clear Error: $e');
+      // エラーハンドリングが必要な場合は追加してください
+    }
+  }
+
   Future<void> checkUserIdInUsersCollection(
       String userId, Map<String, dynamic> data) async {
     try {
@@ -821,6 +833,7 @@ class BookmarkScreenState extends State<MyPage> {
               leading: Icon(LineIcons.running, size: 45),
               title: Text('ログアウト'),
               onTap: () {
+                clearFirebaseAuthCache();
                 FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(

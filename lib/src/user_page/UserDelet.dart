@@ -15,6 +15,8 @@ class DeleteUserPage extends StatefulWidget {
 }
 
 class _DeleteUserPageState extends State<DeleteUserPage> {
+  // Firebase Authenticationのキャッシュをクリアする関数
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,32 +69,40 @@ class SimpleDialogSample extends StatefulWidget {
 }
 
 class _SimpleDialogSampleState extends State<SimpleDialogSample> {
+  Future<void> clearFirebaseAuthCache() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance
+          .signInAnonymously(); // ダミーで再ログインすることでキャッシュをクリア
+    } catch (e) {
+      print('Firebase Auth Cache Clear Error: $e');
+      // エラーハンドリングが必要な場合は追加してください
+    }
+  }
+
+  Future<void> reauthenticateAndDelete(String uid) async {
+    // ユーザーが最後にログインしてから一定の時間が経過しているため、再ログインが必要
+    // ここで再ログインの処理を行う
+    // ...
+    // 再ログイン後、再度ユーザーを削除
+    deleteUser();
+  }
+
   void deleteUser() async {
     final user = FirebaseAuth.instance.currentUser;
     final uid = user?.uid;
-    await user?.delete();
-    await FirebaseAuth.instance.signOut();
 
-    // usersコレクションからユーザーを削除
-    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
-
-    // user_postコレクションから該当ユーザーの投稿を削除
-    QuerySnapshot posts = await FirebaseFirestore.instance
-        .collection('user_post')
-        .where('user_id', isEqualTo: uid)
-        .get();
-
-    for (QueryDocumentSnapshot post in posts.docs) {
-      await FirebaseFirestore.instance
-          .collection('user_post')
-          .doc(post.id)
-          .delete();
+    try {
+      await user?.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        // 再認証が必要な場合の処理
+        await reauthenticateAndDelete(uid!);
+      } else {
+        // その他のエラーの場合の処理
+        print('エラー: ${e.message}');
+      }
     }
-
-    // ユーザーを削除
-
-    await FirebaseAuth.instance.signOut();
-    print('ユーザーを削除しました!');
   }
 
   @override
@@ -104,19 +114,24 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
           child: Text('退会する'),
           onPressed: () async {
             deleteUser();
+            clearFirebaseAuthCache();
             print('ユーザーを削除しました!');
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => GroupInfoPage()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GroupInfoPage()),
+            );
           },
         ),
         SimpleDialogOption(
           child: Text('退会しない'),
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MyHomePage()));
+              context,
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );
             print('キャンセルされました!');
           },
-        )
+        ),
       ],
     );
   }

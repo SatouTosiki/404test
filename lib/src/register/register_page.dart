@@ -13,6 +13,21 @@ class Registe extends StatefulWidget {
 }
 
 class _RegisteState extends State<Registe> {
+  void showNormalLoginNotification() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('メールを送信しました'),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: '閉じる',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _imagePicker = ImagePicker();
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -113,7 +128,7 @@ class _RegisteState extends State<Registe> {
                             emailError,
                           ),
                           buildTextField(
-                            'パスワード',
+                            'パスワード(6文字以上)',
                             password,
                             TextInputType.text,
                             (String value) {
@@ -236,7 +251,9 @@ class _RegisteState extends State<Registe> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Login(user: null),
+                                        builder: (context) => Login(
+                                          user: null,
+                                        ),
                                       ),
                                     );
                                   },

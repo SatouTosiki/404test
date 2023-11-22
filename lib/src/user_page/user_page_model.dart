@@ -56,6 +56,9 @@ Future<void> unfollowUser(String userId) async {
         .doc(userId)
         .delete();
   }
+  final snackBar = SnackBar(
+    content: Text('フォローを解除しました'),
+  );
 }
 
 //フォロ中の取得どうかの確認

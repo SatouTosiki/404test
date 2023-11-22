@@ -248,10 +248,11 @@ class YourScreenState extends State<YourScreen> {
 
   Widget buildImage(String path, int index) => Container(
         margin: EdgeInsets.symmetric(horizontal: 10),
-        color: Colors.grey,
         child: Image.network(
           path,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain, // 画像を画面内に収めるように縮小
+          width: double.infinity,
+          height: double.infinity,
         ),
       );
 
@@ -286,8 +287,6 @@ class YourScreenState extends State<YourScreen> {
                     padding: const EdgeInsets.all(8),
                     child: AnimatedTextKit(
                       animatedTexts: [
-                        TypewriterAnimatedText('投稿 ${documentList.length}件',
-                            textStyle: TextStyle(fontSize: 20)),
                         TypewriterAnimatedText('投稿 ${documentList.length}件',
                             textStyle: TextStyle(fontSize: 20)),
                         TypewriterAnimatedText('投稿 ${documentList.length}件',

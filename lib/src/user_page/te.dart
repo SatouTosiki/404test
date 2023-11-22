@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import '../screens/resetting.dart';
+
 class ProfileEditPage extends StatefulWidget {
   @override
   _ProfileEditPageState createState() => _ProfileEditPageState();
@@ -159,6 +161,23 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                           }
                         },
                         child: Text('保存'),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextButton(
+                            child: const Text(
+                              'パスワードの再設定',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            onPressed: () async {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => resetting(),
+                                ),
+                              );
+                            }),
                       ),
 
                       // ローディングインジケータ

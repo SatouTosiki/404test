@@ -22,6 +22,36 @@ class _LoginState extends State<Login> {
   late FocusNode emailFocusNode;
   late FocusNode passwordFocusNode;
 
+  void showVerificationSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('メール認証が送信されました。メールを確認してください。'),
+        duration: Duration(seconds: 5),
+        action: SnackBarAction(
+          label: '閉じる',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
+  void showNormalLoginNotification() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('ログインしました。'),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: '閉じる',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -147,17 +177,33 @@ class _LoginState extends State<Login> {
                                   );
                                 } else {
                                   // メールの確認が完了していない場合
-                                  // メール送信
-                                  await userCredential.user
-                                      ?.sendEmailVerification();
-
-                                  // ユーザーに確認メッセージを表示
+                                  if (userCredential
+                                          .user?.metadata.creationTime ==
+                                      userCredential
+                                          .user?.metadata.lastSignInTime) {
+                                    // 初回ログインの場合
+                                    await userCredential.user
+                                        ?.sendEmailVerification();
+                                    // ユーザーに確認メッセージを表示
+                                    showVerificationSnackbar();
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MyHomePage(),
+                                      ),
+                                    );
+                                    // 通常のログイン（初回でない場合）
+                                    // 通知を送信する処理を追加
+                                    showNormalLoginNotification();
+                                  }
                                 }
                               } catch (e) {
                                 // エラーハンドリング
                                 print('ログインエラー: $e');
                                 setState(() {
-                                  loginError = 'エラー：ログインに失敗しました';
+                                  loginError =
+                                      'エラー：ログインに失敗しました。もう一度パスワード変更から登録しなおして';
                                 });
                               }
                             }

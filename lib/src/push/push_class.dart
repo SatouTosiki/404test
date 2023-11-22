@@ -1,43 +1,34 @@
 import 'package:line_icons/line_icons.dart';
-import 'package:test3/src/mypage/mypage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
-// ユーザーがログインしていることを確認する関数
 
 User? user = FirebaseAuth.instance.currentUser;
 final auth = FirebaseAuth.instance;
 final myuid = auth.currentUser?.uid;
 
-String? userName = user?.displayName; // ユーザー名を取得
-final uid = auth.currentUser?.uid.toString(); //UIDの取得
+String? userName = user?.displayName;
+final uid = auth.currentUser?.uid.toString();
 final userimage = user?.photoURL;
 
-List<File> images = []; // 選択された複数の画像を格納するリスト
+List<File> images = [];
 
 final picker = ImagePicker();
-
-// Future<User?> getCurrentUser() async {
-//   return FirebaseAuth.instance.currentUser;
-// }
 
 class AddBookModel extends ChangeNotifier {
   String? title;
   String? comment;
-  List<File> imageFiles = []; // 複数の画像ファイルのパスを格納するリスト
-  List<Widget> textFields = []; //テキストフィールドを追加していくリスト
-  List<Widget> ingredients = []; //具材を登録
+  List<File> imageFiles = [];
+  List<Widget> textFields = [];
+  List<Widget> ingredients = [];
   int? heart;
-  //-----------------------------------------------------
-  List<TextEditingController> textControllers = []; // テキストフィールド用のコントローラーリスト
-  List<TextEditingController> ingredientsControllers =
-      []; // 具材のテキストフィールド用のコントローラーリスト
+
+  List<TextEditingController> textControllers = [];
+  List<TextEditingController> ingredientsControllers = [];
   String? timestamp;
   bool isLoading = false;
   final picker = ImagePicker();
@@ -55,7 +46,7 @@ class AddBookModel extends ChangeNotifier {
 
   void addTextField() {
     final textController = TextEditingController();
-    textControllers.add(textController); // コントローラーをリストに追加
+    textControllers.add(textController);
 
     textFields.add(
       TextField(
@@ -63,22 +54,22 @@ class AddBookModel extends ChangeNotifier {
         maxLines: 4,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(border: OutlineInputBorder()),
-        controller: textController, // コントローラーをテキストフィールドに設定
+        controller: textController,
       ),
     );
-    notifyListeners(); // 状態変更を通知
+    notifyListeners();
   }
 
   void rere() {
     final ingredientController = TextEditingController();
-    ingredientsControllers.add(ingredientController); // コントローラーをリストに追加
+    ingredientsControllers.add(ingredientController);
 
     ingredients.add(
       TextField(
         maxLength: 10,
         maxLines: 1,
         decoration: InputDecoration(border: OutlineInputBorder()),
-        controller: ingredientController, // コントローラーをテキストフィールドに設定
+        controller: ingredientController,
       ),
     );
     notifyListeners();
@@ -86,7 +77,6 @@ class AddBookModel extends ChangeNotifier {
 
   Future<void> addBook() async {
     try {
-      // コレクションへの参照を取得
       CollectionReference<Map<String, dynamic>> collectionRef =
           FirebaseFirestore.instance.collection('user_post');
 
@@ -110,14 +100,13 @@ class AddBookModel extends ChangeNotifier {
 
       for (var imageFile in imageFiles) {
         final task = await FirebaseStorage.instance
-            .ref('user_post/${myuid}')
+            .ref('user_post/${imageFile}')
             .putFile(imageFile);
 
         final imgURL = await task.ref.getDownloadURL();
         imgURLs.add(imgURL);
       }
 
-      // コレクションに新しいドキュメントを追加し、追加されたドキュメントの参照を取得
       final DocumentReference<Map<String, dynamic>> documentReference =
           await collectionRef.add({
         'title': title,
@@ -132,13 +121,11 @@ class AddBookModel extends ChangeNotifier {
         "heart": heart,
       });
 
-      // 投稿されたドキュメントのIDを取得
       final String mypushid = documentReference.id;
 
       print('新しいドキュメントのID: $mypushid');
       print("ログインID: $myuid");
 
-      // mypush 関数を呼び出す
       await mypush(myuid!, mypushid);
     } catch (e) {
       print('エラー: $e');
@@ -147,7 +134,6 @@ class AddBookModel extends ChangeNotifier {
 
   Future<int> mypush(String myuid, String mypushid) async {
     try {
-      // ドキュメントIDを指定してドキュメントを作成
       await FirebaseFirestore.instance
           .collection('users')
           .doc(myuid)
@@ -155,14 +141,14 @@ class AddBookModel extends ChangeNotifier {
           .doc(mypushid)
           .set({});
 
-      return 1; // 成功時に1を返す（例として）
+      return 1;
     } catch (e) {
       print('エラー: $e');
-      return 0; // エラー時に0を返す（例として）
+      return 0;
     }
   }
 
-  List<String> imgURLs = []; // 画像のダウンロードURLを格納するリスト
+  List<String> imgURLs = [];
 
   Future pickImage() async {
     final List<XFile>? pickedFiles = await picker.pickMultiImage();
@@ -171,12 +157,11 @@ class AddBookModel extends ChangeNotifier {
       for (var pickedFile in pickedFiles) {
         if (imageFiles.length < 5) {
           String imagePath = pickedFile.path;
-          imageFiles.add(File(imagePath)); // 画像ファイルのパスをリストに追加」
+          imageFiles.add(File(imagePath));
           int length = imageFiles.length;
         } else {
           print("画像が多い");
         }
-        // 各画像ファイルのパスにアクセ
       }
       notifyListeners();
     }
@@ -199,7 +184,7 @@ class textbotton extends StatelessWidget {
           onPressed: myModel.textFields.length >= 10
               ? null
               : () {
-                  myModel.addTextField(); // モデルのメソッドを呼び出し
+                  myModel.addTextField();
                 },
           icon: Icon(
             LineIcons.plus,
@@ -210,8 +195,6 @@ class textbotton extends StatelessWidget {
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
-
-        // テキストフィールドをリストから表示
         Padding(
           padding: const EdgeInsets.all(8),
           child: Column(
@@ -223,7 +206,6 @@ class textbotton extends StatelessWidget {
   }
 }
 
-//テキストフィールドをつかするクラス
 class reee extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -242,15 +224,13 @@ class reee extends StatelessWidget {
           onPressed: myModel.ingredients.length >= 10
               ? null
               : () {
-                  myModel.rere(); // モデルのメソッドを呼び出し
+                  myModel.rere();
                 },
           label: const Text(
             ' 材料を記入 ',
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
-
-        // テキストフィールドをリストから表示
         Padding(
           padding: const EdgeInsets.all(8),
           child: Column(
