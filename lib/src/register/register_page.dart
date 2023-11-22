@@ -215,6 +215,10 @@ class _RegisteState extends State<Registe> {
                                           ),
                                         ),
                                       );
+                                      // 新しいユーザーが登録された後、ユーザーの状態をクリア
+
+                                      // ログアウト処理
+                                      await FirebaseAuth.instance.signOut();
                                     } catch (e) {
                                       // エラーが発生した場合の処理を追加できます
                                     } finally {
