@@ -72,8 +72,7 @@ class _LoginState extends State<Login> {
                         (String value) {
                           setState(() {
                             email = value;
-                            emailError =
-                                ''; // Clear previous error when user starts typing
+                            emailError = '';
                           });
                         },
                         emailError,
@@ -100,6 +99,8 @@ class _LoginState extends State<Login> {
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
+                      Text("パスワードお忘れですか？パスワード変更",
+                          style: TextStyle(color: Colors.blue)),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -146,10 +147,12 @@ class _LoginState extends State<Login> {
                                     ),
                                   );
                                 } else {
-                                  // 確認が完了していない場合はエラーメッセージを表示
-                                  setState(() {
-                                    loginError = 'エラー：メールアドレスの確認が完了していません';
-                                  });
+                                  // メールの確認が完了していない場合
+                                  // メール送信
+                                  await userCredential.user
+                                      ?.sendEmailVerification();
+
+                                  // ユーザーに確認メッセージを表示
                                 }
                               } catch (e) {
                                 // エラーハンドリング
