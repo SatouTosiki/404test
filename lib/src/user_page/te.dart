@@ -106,24 +106,37 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                             // ユーザーネームのアップデート
                             final user = _auth.currentUser;
                             if (user != null) {
-                              await user
-                                  .updateDisplayName(_nameController.text);
-                            }
+                              final newDisplayName = _nameController.text;
 
-                            // Update Firestore document with the new name
-                            await _firestore
-                                .collection('users')
-                                .doc(user?.uid)
-                                .update({
-                              'name': _nameController.text,
-                            });
+                              // 'users' コレクション内の名前を更新
+                              await _firestore
+                                  .collection('users')
+                                  .doc(user.uid)
+                                  .update({
+                                'name': newDisplayName,
+                              });
+
+                              // 'user_post' コレクション内の名前も更新
+                              await _firestore
+                                  .collection('user_post')
+                                  .where('user_id', isEqualTo: user.uid)
+                                  .get()
+                                  .then((querySnapshot) {
+                                querySnapshot.docs.forEach((doc) async {
+                                  await doc.reference
+                                      .update({'name': newDisplayName});
+                                });
+                              });
+
+                              await user.updateDisplayName(newDisplayName);
+                            }
 
                             setState(() {
                               _loading = false;
                               _selectedImage = null;
                             });
 
-                            // Show a SnackBar after the save operation
+                            // 保存操作後にSnackBarを表示
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('変更の保存ができました'),
@@ -131,12 +144,12 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                               ),
                             );
                           } catch (e) {
-                            print('Error saving data: $e');
+                            print('データの保存中にエラーが発生しました: $e');
                             setState(() {
                               _loading = false;
                             });
 
-                            // Show a SnackBar if an error occurs
+                            // エラーが発生した場合にSnackBarを表示
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('変更できませんでした'),

@@ -182,7 +182,6 @@ class _RegisteState extends State<Registe> {
                                         email: email,
                                         password: password,
                                       );
-
                                       await userCredential.user
                                           ?.updateDisplayName(name);
 

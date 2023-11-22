@@ -68,10 +68,10 @@ class SimpleDialogSample extends StatefulWidget {
 
 class _SimpleDialogSampleState extends State<SimpleDialogSample> {
   void deleteUser() async {
-    await FirebaseAuth.instance.signOut();
     final user = FirebaseAuth.instance.currentUser;
     final uid = user?.uid;
     await user?.delete();
+    await FirebaseAuth.instance.signOut();
 
     // usersコレクションからユーザーを削除
     await FirebaseFirestore.instance.collection('users').doc(uid).delete();

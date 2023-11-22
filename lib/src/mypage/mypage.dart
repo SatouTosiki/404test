@@ -492,7 +492,10 @@ class BookmarkScreenState extends State<MyPage> {
                                                 Navigator.of(context).pop();
 
                                                 // 画面を更新
-                                                setState(() {});
+                                                setState(() {
+                                                  // Fetch and update the data after deleting the post
+                                                  fetchDocumentData();
+                                                });
                                               },
                                             ),
                                             SimpleDialogOption(
@@ -510,11 +513,6 @@ class BookmarkScreenState extends State<MyPage> {
                                         );
                                       },
                                     );
-
-                                    setState(() {
-                                      // 画面を更新するためのロジックを追加（例：fetchDocumentData()）
-                                      // fetchDocumentData();
-                                    });
                                   },
                                 ),
                               ],

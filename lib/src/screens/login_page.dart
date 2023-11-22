@@ -127,20 +127,33 @@ class _LoginState extends State<Login> {
                               });
                             } else {
                               try {
-                                UserCredential userCredential =
+                                final userCredential =
                                     await _auth.signInWithEmailAndPassword(
                                   email: email,
                                   password: password,
                                 );
-                                User? user = userCredential.user;
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MyHomePage(),
-                                  ),
-                                );
+
+                                // メールの確認が完了しているかどうかを確認
+                                final isVerified =
+                                    userCredential.user?.emailVerified ?? false;
+
+                                if (isVerified) {
+                                  // 確認が完了していればユーザーをホームページに進める
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MyHomePage(),
+                                    ),
+                                  );
+                                } else {
+                                  // 確認が完了していない場合はエラーメッセージを表示
+                                  setState(() {
+                                    loginError = 'エラー：メールアドレスの確認が完了していません';
+                                  });
+                                }
                               } catch (e) {
-                                print('ログイン失敗：$e');
+                                // エラーハンドリング
+                                print('ログインエラー: $e');
                                 setState(() {
                                   loginError = 'エラー：ログインに失敗しました';
                                 });
