@@ -12,6 +12,7 @@ import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_ detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
@@ -282,13 +283,20 @@ class YourScreenState extends State<YourScreen> {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      '投稿 ${documentList.length}件',
-                      style: TextStyle(
-                        fontSize: 20,
-                        //fontWeight: FontWeight.bold,
-                      ),
+                    padding: const EdgeInsets.all(8),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        TypewriterAnimatedText('投稿 ${documentList.length}件',
+                            textStyle: TextStyle(fontSize: 20)),
+                        TypewriterAnimatedText('投稿 ${documentList.length}件',
+                            textStyle: TextStyle(fontSize: 20)),
+                        TypewriterAnimatedText('投稿 ${documentList.length}件',
+                            textStyle: TextStyle(fontSize: 20)),
+                        TypewriterAnimatedText('にぱー⭐︎',
+                            textStyle: TextStyle(fontSize: 20)),
+                        TypewriterAnimatedText('投稿 ${documentList.length}件',
+                            textStyle: TextStyle(fontSize: 20)),
+                      ],
                     ),
                   ),
                 ],

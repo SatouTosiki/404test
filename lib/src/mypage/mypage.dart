@@ -11,6 +11,7 @@ import '../user_page/te.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'mypage_model.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
 final auth = FirebaseAuth.instance;
