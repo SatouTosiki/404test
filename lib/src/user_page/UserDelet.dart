@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test3/src/main2.dart';
-import 'package:test3/src/screens/bookmark.dart';
 import 'GroupInfoPage.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
@@ -92,14 +92,36 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
   void deleteUser() async {
     final user = FirebaseAuth.instance.currentUser;
     final uid = user?.uid;
-
     try {
       await user?.delete();
+
+      // ユーザーに紐づくドキュメントを削除
+      QuerySnapshot posts = await FirebaseFirestore.instance
+          .collection('user_post')
+          .where('user_id', isEqualTo: uid)
+          .get();
+
+      for (QueryDocumentSnapshot post in posts.docs) {
+        // ドキュメントを削除
+        await post.reference.delete();
+      }
+
+      // usersコレクションからユーザーを削除
       await FirebaseFirestore.instance.collection('users').doc(uid).delete();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         // 再認証が必要な場合の処理
         await reauthenticateAndDelete(uid!);
+        print("まだ消せてない");
+      } else {
+        // その他のエラーの場合の処理
+        print('エラー: ${e.message}');
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        // 再認証が必要な場合の処理
+        await reauthenticateAndDelete(uid!);
+        print("まだ消せてない");
       } else {
         // その他のエラーの場合の処理
         print('エラー: ${e.message}');

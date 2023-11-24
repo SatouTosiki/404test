@@ -98,20 +98,11 @@ class AddBookModel extends ChangeNotifier {
         throw '説明文が入力されていません';
       }
 
-      for (var imageFile in imageFiles) {
-        final task = await FirebaseStorage.instance
-            .ref('$myuid/${imageFile}')
-            .putFile(imageFile);
-
-        final imgURL = await task.ref.getDownloadURL();
-        imgURLs.add(imgURL);
-      }
-
+      // Firestoreに新しいドキュメントを追加し、そのIDを取得
       final DocumentReference<Map<String, dynamic>> documentReference =
           await collectionRef.add({
         'title': title,
         'comment': comment,
-        'imgURL': imgURLs,
         'time': timestamp,
         'name': userName,
         "Ingredients": ingredientsValues,
@@ -121,9 +112,26 @@ class AddBookModel extends ChangeNotifier {
         "heart": heart,
       });
 
+      final String mypostid = documentReference.id;
+      print('新しいドキュメントのID: $mypostid');
+
+      // 画像を保存
+      for (var imageFile in imageFiles) {
+        final task = await FirebaseStorage.instance
+            .ref('$myuid/$mypostid/${imageFile}')
+            .putFile(imageFile);
+
+        final imgURL = await task.ref.getDownloadURL();
+        imgURLs.add(imgURL);
+      }
+
+      // ドキュメントに画像URLを追加
+      await collectionRef.doc(mypostid).update({
+        'imgURL': imgURLs,
+      });
+
       final String mypushid = documentReference.id;
 
-      print('新しいドキュメントのID: $mypushid');
       print("ログインID: $myuid");
 
       await mypush(myuid!, mypushid);

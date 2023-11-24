@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -274,6 +275,7 @@ class BookmarkScreenState extends State<MyPage> {
           .collection('pushs')
           .doc(documentId)
           .delete();
+
       print('ドキュメントが正常に削除されました: $documentId');
     } catch (e) {
       print('ドキュメントの削除中にエラーが発生しました: $e');
