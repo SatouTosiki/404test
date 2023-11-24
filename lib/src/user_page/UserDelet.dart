@@ -86,7 +86,27 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
     // ここで再ログインの処理を行う
     // ...
     // 再ログイン後、再度ユーザーを削除
+    await FirebaseAuth.instance.signOut();
     deleteUser();
+  }
+
+  void deleteStorageFiles(String uid) async {
+    try {
+      // FirebaseStorageの参照を取得
+      Reference storageRef = FirebaseStorage.instance.ref().child(uid);
+
+      // 参照内のファイル一覧を取得
+      ListResult result = await storageRef.listAll();
+
+      // ファイルを削除
+      for (Reference fileRef in result.items) {
+        await fileRef.delete();
+      }
+
+      print('Storageのファイルを削除しました');
+    } catch (e) {
+      print('Storageファイルの削除中にエラーが発生しました: $e');
+    }
   }
 
   void deleteUser() async {
