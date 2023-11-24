@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test3/src/main2.dart';
+import 'package:test3/src/screens/bookmark.dart';
 import 'GroupInfoPage.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
@@ -94,6 +95,7 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
 
     try {
       await user?.delete();
+      await FirebaseFirestore.instance.collection('users').doc(uid).delete();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         // 再認証が必要な場合の処理

@@ -182,17 +182,19 @@ class _LoginState extends State<Login> {
                                       userCredential
                                           .user?.metadata.lastSignInTime) {
                                     // 初回ログインの場合
-                                    await userCredential.user
-                                        ?.sendEmailVerification();
-                                    // ユーザーに確認メッセージを表示
-                                    showVerificationSnackbar();
+                                    // メールが確認されていないかどうかを確認
+                                    if (!userCredential.user!.emailVerified) {
+                                      // メールが未確認の場合は再送信
+                                      await userCredential.user
+                                          ?.sendEmailVerification();
+                                      // ユーザーに確認メッセージを表示
+                                      showVerificationSnackbar();
+                                    } else {
+                                      // メールがすでに確認されている場合は通常のログイン（初回でない場合）
+                                      // 通知を送信する処理を追加
+                                      showNormalLoginNotification();
+                                    }
                                   } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MyHomePage(),
-                                      ),
-                                    );
                                     // 通常のログイン（初回でない場合）
                                     // 通知を送信する処理を追加
                                     showNormalLoginNotification();
@@ -202,8 +204,7 @@ class _LoginState extends State<Login> {
                                 // エラーハンドリング
                                 print('ログインエラー: $e');
                                 setState(() {
-                                  loginError =
-                                      'エラー：ログインに失敗しました。もう一度パスワード変更から登録しなおして';
+                                  loginError = 'ログインエラー';
                                 });
                               }
                             }
