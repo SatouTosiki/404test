@@ -283,7 +283,7 @@ class BookmarkScreenState extends State<MyPage> {
 
       Reference deepestReference =
           subDirectory.child('path_to_deepest_directory');
-
+      await deepestReference.delete();
       // サブディレクトリ内のファイルを削除
       ListResult listResult = await subDirectory.listAll();
       for (Reference fileRef in listResult.items) {
@@ -291,7 +291,6 @@ class BookmarkScreenState extends State<MyPage> {
       }
 
       // サブディレクトリを削除
-      await deepestReference.delete();
 
       // 投稿ごとのストレージのパスを表示
       print('ドキュメントが正常に削除されました: $documentId');
