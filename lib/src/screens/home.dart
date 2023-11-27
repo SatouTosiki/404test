@@ -309,7 +309,7 @@ class YourScreenState extends State<YourScreen> {
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.black,
+                        color: Colors.black26,
                         width: 1,
                       ),
                       borderRadius: BorderRadius.all(

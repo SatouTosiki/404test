@@ -18,6 +18,7 @@ User? user = FirebaseAuth.instance.currentUser;
 final auth = FirebaseAuth.instance;
 final FirebaseFirestore firestore = FirebaseFirestore.instance;
 final myuid = auth.currentUser?.uid;
+
 late SharedPreferences prefs;
 
 class MyPage extends StatefulWidget {
@@ -276,7 +277,25 @@ class BookmarkScreenState extends State<MyPage> {
           .doc(documentId)
           .delete();
 
+      // Firebase Storage から対応するサブディレクトリを削除
+      Reference subDirectory =
+          FirebaseStorage.instance.ref().child('$myuid/$documentId');
+
+      Reference deepestReference =
+          subDirectory.child('path_to_deepest_directory');
+
+      // サブディレクトリ内のファイルを削除
+      ListResult listResult = await subDirectory.listAll();
+      for (Reference fileRef in listResult.items) {
+        await fileRef.delete();
+      }
+
+      // サブディレクトリを削除
+      await subDirectory.delete();
+
+      // 投稿ごとのストレージのパスを表示
       print('ドキュメントが正常に削除されました: $documentId');
+      print('投稿ごとのストレージのパス: ${subDirectory.fullPath}');
     } catch (e) {
       print('ドキュメントの削除中にエラーが発生しました: $e');
     }

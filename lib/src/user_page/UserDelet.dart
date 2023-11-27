@@ -112,6 +112,16 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
   void deleteUser() async {
     final user = FirebaseAuth.instance.currentUser;
     final uid = user?.uid;
+
+    void deleteStorageFolder(String uid) async {
+      try {
+        await FirebaseStorage.instance.ref(uid).delete();
+        print('フォルダが正常に削除されました: $uid');
+      } catch (e) {
+        print('フォルダの削除中にエラーが発生しました: $e');
+      }
+    }
+
     try {
       await user?.delete();
 

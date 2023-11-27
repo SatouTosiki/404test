@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../screens/login_page.dart';
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Registe extends StatefulWidget {
   @override
@@ -13,21 +15,6 @@ class Registe extends StatefulWidget {
 }
 
 class _RegisteState extends State<Registe> {
-  void showNormalLoginNotification() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('メールを送信しました'),
-        duration: Duration(seconds: 3),
-        action: SnackBarAction(
-          label: '閉じる',
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-      ),
-    );
-  }
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _imagePicker = ImagePicker();
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -153,6 +140,19 @@ class _RegisteState extends State<Registe> {
                             nameError,
                             maxLength: 7,
                           ),
+                          TextButton(
+                            onPressed: () {
+                              launch(
+                                  'https://rnpam.github.io/test.github.io/riyoukiyaku');
+                            },
+                            child: Text(
+                              '利用規約',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -200,7 +200,6 @@ class _RegisteState extends State<Registe> {
                                       await userCredential.user
                                           ?.updateDisplayName(name);
 
-                                      // Firebase Authenticationのメール認証機能を利用して認証コードを送信
                                       await userCredential.user
                                           ?.sendEmailVerification();
 
@@ -230,12 +229,10 @@ class _RegisteState extends State<Registe> {
                                           ),
                                         ),
                                       );
-                                      // 新しいユーザーが登録された後、ユーザーの状態をクリア
 
-                                      // ログアウト処理
                                       await FirebaseAuth.instance.signOut();
                                     } catch (e) {
-                                      // エラーが発生した場合の処理を追加できます
+                                      // Handle errors here
                                     } finally {
                                       setState(() {
                                         isLoading = false;
@@ -285,7 +282,6 @@ class _RegisteState extends State<Registe> {
     );
   }
 
-  // 入力バリデーション
   bool validate() {
     bool isValid = true;
 
