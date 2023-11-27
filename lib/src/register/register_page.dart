@@ -30,6 +30,7 @@ class _RegisteState extends State<Registe> {
   String iconError = '';
   String infoText = '';
   bool isLoading = false;
+  bool isTermsAccepted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -140,18 +141,28 @@ class _RegisteState extends State<Registe> {
                             nameError,
                             maxLength: 7,
                           ),
-                          TextButton(
-                            onPressed: () {
-                              launch(
-                                  'https://rnpam.github.io/test.github.io/riyoukiyaku');
-                            },
-                            child: Text(
-                              '利用規約',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline,
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: isTermsAccepted,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isTermsAccepted = value!;
+                                  });
+                                },
                               ),
-                            ),
+                              RichText(
+                                text: TextSpan(
+                                  text: '利用規約に同意する',
+                                  style: TextStyle(color: Colors.blue),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      launch(
+                                          'https://rnpam.github.io/test.github.io/riyoukiyaku');
+                                    },
+                                ),
+                              ),
+                            ],
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -165,7 +176,7 @@ class _RegisteState extends State<Registe> {
                                     '新規登録',
                                     style: TextStyle(fontSize: 18),
                                   ),
-                            onPressed: isLoading
+                            onPressed: isLoading || !isTermsAccepted
                                 ? null
                                 : () async {
                                     setState(() {

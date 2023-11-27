@@ -291,7 +291,7 @@ class BookmarkScreenState extends State<MyPage> {
       }
 
       // サブディレクトリを削除
-      await subDirectory.delete();
+      await deepestReference.delete();
 
       // 投稿ごとのストレージのパスを表示
       print('ドキュメントが正常に削除されました: $documentId');
