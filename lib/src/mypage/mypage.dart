@@ -281,16 +281,16 @@ class BookmarkScreenState extends State<MyPage> {
       Reference subDirectory =
           FirebaseStorage.instance.ref().child('$myuid/$documentId');
 
-      Reference deepestReference =
-          subDirectory.child('path_to_deepest_directory');
-      await deepestReference.delete();
+      // Reference deepestReference =
+      //     subDirectory.child('path_to_deepest_directory');
+
       // サブディレクトリ内のファイルを削除f
       ListResult listResult = await subDirectory.listAll();
       for (Reference fileRef in listResult.items) {
         await fileRef.delete();
       }
 
-      await deepestReference.delete();
+      await subDirectory.delete();
 
       // サブディレクトリを削除
 
