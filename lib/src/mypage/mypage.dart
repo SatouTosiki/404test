@@ -284,11 +284,13 @@ class BookmarkScreenState extends State<MyPage> {
       Reference deepestReference =
           subDirectory.child('path_to_deepest_directory');
       await deepestReference.delete();
-      // サブディレクトリ内のファイルを削除
+      // サブディレクトリ内のファイルを削除f
       ListResult listResult = await subDirectory.listAll();
       for (Reference fileRef in listResult.items) {
         await fileRef.delete();
       }
+
+      await deepestReference.delete();
 
       // サブディレクトリを削除
 

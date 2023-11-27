@@ -117,10 +117,14 @@ class AddBookModel extends ChangeNotifier {
 
       // 画像を保存
       for (var imageFile in imageFiles) {
-        final task = await FirebaseStorage.instance
-            .ref('$myuid/$mypostid/${imageFile}')
-            .putFile(imageFile);
+        // Firebase Storageの参照を作成
+        Reference imageReference = FirebaseStorage.instance.ref(
+            '$myuid/$mypostid/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
+        // 画像をアップロード
+        final task = await imageReference.putFile(imageFile);
+
+        // 画像のダウンロードURLを取得
         final imgURL = await task.ref.getDownloadURL();
         imgURLs.add(imgURL);
       }
