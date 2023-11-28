@@ -4,9 +4,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test3/src/main2.dart';
+import 'package:test3/src/user_page/madaya.dart';
 import 'GroupInfoPage.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
+final myuid = auth.currentUser?.uid;
+final auth = FirebaseAuth.instance;
 
 class DeleteUserPage extends StatefulWidget {
   DeleteUserPage({Key? key}) : super(key: key);
@@ -70,6 +73,34 @@ class SimpleDialogSample extends StatefulWidget {
 }
 
 class _SimpleDialogSampleState extends State<SimpleDialogSample> {
+  Future<void> deletePostall(String documentId) async {
+    try {
+      // user_post コレクションからドキュメントを削除
+
+      // Firebase Storage から対応するサブディレクトリを削除
+      Reference subDirectory = FirebaseStorage.instance.ref().child('$myuid');
+
+      // Reference deepestReference =
+      //     subDirectory.child('path_to_deepest_directory');
+
+      // サブディレクトリ内のファイルを削除f
+      ListResult listResult = await subDirectory.listAll();
+      for (Reference fileRef in listResult.items) {
+        await fileRef.delete();
+      }
+
+      await subDirectory.delete();
+
+      // サブディレクトリを削除
+
+      // 投稿ごとのストレージのパスを表示
+      print('ドキュメントが正常に削除されました: $documentId');
+      print('投稿ごとのストレージのパス: ${subDirectory.fullPath}');
+    } catch (e) {
+      print('ドキュメントの削除中にエラーが発生しました: $e');
+    }
+  }
+
   Future<void> clearFirebaseAuthCache() async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -141,6 +172,11 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         // 再認証が必要な場合の処理
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => madaPage()),
+        );
+
         await reauthenticateAndDelete(uid!);
         print("まだ消せてない");
       } else {
@@ -169,6 +205,7 @@ class _SimpleDialogSampleState extends State<SimpleDialogSample> {
           onPressed: () async {
             deleteUser();
             clearFirebaseAuthCache();
+            //deletePostall();
             print('ユーザーを削除しました!');
             Navigator.push(
               context,
