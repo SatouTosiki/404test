@@ -49,7 +49,7 @@ class YourScreenState extends State<YourScreen> {
           .orderBy('time', descending: true)
           .get();
       List<Map<String, dynamic>> dataList = [];
-      loading(context: context);
+      showLoadingDialog(context: context);
 
       await Future.forEach(querySnapshot.docs, (doc) async {
         if (doc.exists) {

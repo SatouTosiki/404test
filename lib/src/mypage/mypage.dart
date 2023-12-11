@@ -502,7 +502,7 @@ class BookmarkScreenState extends State<MyPage> {
                                                   ? ' ${documentData["userName"]}'
                                                   : '名無しさん',
                                               style: const TextStyle(
-                                                fontSize: 17,
+                                                fontSize: 15,
                                                 color: Colors.black,
                                               ),
                                             ),
@@ -571,7 +571,7 @@ class BookmarkScreenState extends State<MyPage> {
                                 child: Text(
                                   "  ${documentData['title']}",
                                   style: const TextStyle(
-                                    fontSize: 17,
+                                    fontSize: 15,
                                     color: Colors.black,
                                   ),
                                 ),
@@ -707,7 +707,7 @@ class BookmarkScreenState extends State<MyPage> {
                                             Text(
                                               '$heartCount',
                                               style: TextStyle(
-                                                fontSize: 17,
+                                                fontSize: 15,
                                                 color: Colors.black,
                                               ),
                                             ),
@@ -735,7 +735,7 @@ class BookmarkScreenState extends State<MyPage> {
                                       IconButton(
                                         icon: const Icon(
                                           LineIcons.comment,
-                                          size: 30,
+                                          size: 25,
                                         ),
                                         onPressed: () {
                                           // コメントが押された時の処理を追加
@@ -779,7 +779,7 @@ class BookmarkScreenState extends State<MyPage> {
                           ),
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         TextButton(
                           onPressed: () {
