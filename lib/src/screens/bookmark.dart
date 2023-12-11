@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../common.dart';
 import '../recipe/recipe_page.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,6 +42,7 @@ class BookmarkScreenState extends State<BookmarkScreen> {
 
   Future<void> checkUserIdInUsersCollection(
       String userId, Map<String, dynamic> data) async {
+    await loading(context: context);
     try {
       // users コレクションの参照
       CollectionReference usersCollection =
@@ -63,6 +65,7 @@ class BookmarkScreenState extends State<BookmarkScreen> {
     } catch (e) {
       print('エラー: $e');
     }
+    Navigator.pop(context);
   }
 
   Future<int> fetchCommentCount(String documentId) async {

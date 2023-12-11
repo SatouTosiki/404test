@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future<void> showLoadingDialog({
+Future<void> loading({
   required BuildContext context,
 }) async {
   showGeneralDialog(
