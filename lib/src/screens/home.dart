@@ -307,9 +307,18 @@ class YourScreenState extends State<YourScreen> {
                       borderRadius: BorderRadius.all(
                         Radius.circular(20),
                       ),
+                      image: DecorationImage(
+                        image: AssetImage('lib/src/img/卵なしチャーハン.gif'),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          Colors.white.withOpacity(0.1), // 透明度を調整
+                          BlendMode.dstATop, // 色のブレンドモードを指定
+                        ),
+                      ),
                     ),
                     child: Column(
                       children: [
+                        // ここにContainer内の要素を追加
                         Column(
                           children: [
                             Row(

@@ -448,7 +448,7 @@ class BookmarkScreenState extends State<MyPage> {
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.black,
+                        color: Colors.grey,
                         width: 1,
                       ),
                       borderRadius: BorderRadius.all(
