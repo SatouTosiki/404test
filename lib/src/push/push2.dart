@@ -116,7 +116,7 @@ class AddBookPage extends StatelessWidget {
                         TextField(
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            hintText: 'タイトル',
+                            hintText: 'タイトル(必須)',
                           ),
                           onChanged: (text) {
                             model.title = text;
@@ -127,7 +127,7 @@ class AddBookPage extends StatelessWidget {
                         ),
                         TextField(
                           decoration: const InputDecoration(
-                            hintText: 'コメント',
+                            hintText: 'コメント(必須)',
                           ),
                           onChanged: (text) {
                             model.comment = text;

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart'; // carousel_slider パッケージをインポート
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../models/model.dart';
-import '../recipe/recipe_model.dart';
+import '../common.dart';
 import '../recipe/recipe_page.dart';
 import '../user_page/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'home_ detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
@@ -27,7 +24,6 @@ class YourScreen extends StatefulWidget {
 class YourScreenState extends State<YourScreen> {
   String? userid_test; // 投稿データからuidを取得し格納している変数
   String? userName;
-
   bool isLiked = false;
   int imagecount = 0;
   List<Map<String, dynamic>> documentList = [];
@@ -44,6 +40,39 @@ class YourScreenState extends State<YourScreen> {
   void initState() {
     super.initState();
     _initialize();
+  }
+
+  Future<void> fetchDocumentData() async {
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('user_post')
+          .orderBy('time', descending: true)
+          .get();
+      List<Map<String, dynamic>> dataList = [];
+      showLoadingDialog(context: context);
+
+      await Future.forEach(querySnapshot.docs, (doc) async {
+        if (doc.exists) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          data['documentId'] = doc.id;
+          // ユーザー名を取得
+          await checkUserIdInUsersCollection(data['user_id'], data);
+          dataList.add(data);
+        }
+      });
+      Navigator.pop(context);
+
+      setState(() {
+        documentList = dataList;
+      });
+
+      print('ドキュメント数home: ${documentList.length}');
+
+      // ハートの状態を読み込む
+      loadLikedStates();
+    } catch (e) {
+      print('エラー画面表示できないなのです☆: $e');
+    }
   }
 
   Future<bool> checkIfUserLiked(String documentId) async {
@@ -63,37 +92,6 @@ class YourScreenState extends State<YourScreen> {
     }
   }
 
-  Future<void> fetchDocumentData() async {
-    try {
-      QuerySnapshot querySnapshot = await firestore
-          .collection('user_post')
-          .orderBy('time', descending: true)
-          .get();
-      List<Map<String, dynamic>> dataList = [];
-
-      await Future.forEach(querySnapshot.docs, (doc) async {
-        if (doc.exists) {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          data['documentId'] = doc.id;
-          // ユーザー名を取得
-          await checkUserIdInUsersCollection(data['user_id'], data);
-          dataList.add(data);
-        }
-      });
-
-      setState(() {
-        documentList = dataList;
-      });
-
-      print('ドキュメント数: ${documentList.length}');
-
-      // ハートの状態を読み込む
-      loadLikedStates();
-    } catch (e) {
-      print('エラー画面表示できないなのです☆: $e');
-    }
-  }
-
   Future<void> checkUserIdInUsersCollection(
       String userId, Map<String, dynamic> data) async {
     try {
@@ -110,8 +108,6 @@ class YourScreenState extends State<YourScreen> {
         setState(() {
           data['userName'] = userDocument['name'];
         });
-
-        print('ありました。ユーザー名: ${data['userName']} ;userIDは:$userId');
       } else {
         print('なし');
       }
@@ -284,7 +280,7 @@ class YourScreenState extends State<YourScreen> {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(0),
                     child: AnimatedTextKit(
                       animatedTexts: [
                         TypewriterAnimatedText('投稿 ${documentList.length}件',
@@ -361,9 +357,6 @@ class YourScreenState extends State<YourScreen> {
                                             fit: BoxFit.cover,
                                           ),
                                         ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
                                       RichText(
                                         textAlign: TextAlign.center,
                                         text: TextSpan(
@@ -374,7 +367,7 @@ class YourScreenState extends State<YourScreen> {
                                                   ? ' ${documentData["userName"]}'
                                                   : '名無しさん',
                                               style: const TextStyle(
-                                                fontSize: 17,
+                                                fontSize: 15,
                                                 color: Colors.black,
                                               ),
                                             ),
@@ -396,7 +389,7 @@ class YourScreenState extends State<YourScreen> {
                                 child: Text(
                                   "  ${documentData['title']}",
                                   style: const TextStyle(
-                                    fontSize: 17,
+                                    fontSize: 15,
                                     color: Colors.black,
                                   ),
                                 ),
@@ -404,9 +397,7 @@ class YourScreenState extends State<YourScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+
                         abuildImageWidget(documentData),
                         Row(
                           children: [
@@ -450,7 +441,7 @@ class YourScreenState extends State<YourScreen> {
                                                       isLiked
                                                           ? LineIcons.heartAlt
                                                           : LineIcons.heart,
-                                                      size: 30,
+                                                      size: 25,
                                                       color: isLiked
                                                           ? Colors.red
                                                           : Colors.black,
@@ -549,7 +540,7 @@ class YourScreenState extends State<YourScreen> {
                                             Text(
                                               '$heartCount',
                                               style: TextStyle(
-                                                fontSize: 17,
+                                                fontSize: 15,
                                                 color: Colors.black,
                                               ),
                                             ),
@@ -577,7 +568,7 @@ class YourScreenState extends State<YourScreen> {
                                       IconButton(
                                         icon: const Icon(
                                           LineIcons.comment,
-                                          size: 30,
+                                          size: 25,
                                         ),
                                         onPressed: () {
                                           // コメントが押された時の処理を追加
@@ -586,7 +577,7 @@ class YourScreenState extends State<YourScreen> {
                                       Text(
                                         '$commentCount件',
                                         style: TextStyle(
-                                          fontSize: 17,
+                                          fontSize: 15,
                                           color: Colors.black,
                                         ),
                                       ),
@@ -621,7 +612,7 @@ class YourScreenState extends State<YourScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         TextButton(
                           onPressed: () {
@@ -650,7 +641,7 @@ class YourScreenState extends State<YourScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 8,
+                          height: 5,
                         ),
                         // user_id = documentData['user_id'], // フィールドに値を設定
                         Text(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../push/push_class.dart';
 import 'user_page.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
@@ -91,4 +92,19 @@ Future<int> followers(String userId) async {
     print('フォロワー取得: $e');
     return 0;
   }
+}
+
+Future<bool> checkIfFollowing(String user_id) async {
+  User? currentUser = auth.currentUser;
+  if (currentUser != null) {
+    DocumentSnapshot followingDoc = await firestore
+        .collection('users')
+        .doc(currentUser.uid)
+        .collection('following')
+        .doc(user_id)
+        .get();
+
+    return followingDoc.exists;
+  }
+  return false;
 }

@@ -12,7 +12,6 @@ import '../user_page/te.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'mypage_model.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 
 User? user = FirebaseAuth.instance.currentUser;
 final auth = FirebaseAuth.instance;
@@ -44,6 +43,49 @@ class BookmarkScreenState extends State<MyPage> {
     super.initState();
     _initialize();
     void userss = user?.displayName;
+  }
+
+  Future<void> fetchDocumentData() async {
+    try {
+      QuerySnapshot likedPostsQuery = await firestore
+          .collection('users')
+          .doc(myuid)
+          .collection('pushs')
+          .get();
+
+      List<String> likedPostIds =
+          likedPostsQuery.docs.map((doc) => doc.id).toList();
+
+      // 各いいねした投稿に対応する 'user_post' コレクションからデータを取得
+      List<Map<String, dynamic>> dataList = [];
+
+      await Future.forEach(likedPostIds, (documentId) async {
+        DocumentSnapshot postDocument =
+            await firestore.collection('user_post').doc(documentId).get();
+
+        if (postDocument.exists) {
+          Map<String, dynamic> data =
+              postDocument.data() as Map<String, dynamic>;
+          data['documentId'] = documentId;
+
+          // 投稿のユーザー名を取得
+          await checkUserIdInUsersCollection(data['user_id'], data);
+
+          dataList.add(data);
+        }
+      });
+
+      setState(() {
+        documentList = dataList;
+      });
+
+      print('ドキュメント数: ${documentList.length}');
+
+      // 各投稿のいいねの状態を読み込む
+      loadLikedStates();
+    } catch (e) {
+      print('いいねした投稿を取得中にエラーが発生しました: $e');
+    }
   }
 
 // Firebase Authenticationのキャッシュをクリアする関数
@@ -111,50 +153,6 @@ class BookmarkScreenState extends State<MyPage> {
     } catch (e) {
       print('ハートの数を取得できませんでした: $e');
       return 0;
-    }
-  }
-
-  Future<void> fetchDocumentData() async {
-    try {
-      // 現在のユーザーの 'liked_posts' コレクションからいいねした投稿を取得
-      QuerySnapshot likedPostsQuery = await firestore
-          .collection('users')
-          .doc(myuid)
-          .collection('pushs')
-          .get();
-
-      List<String> likedPostIds =
-          likedPostsQuery.docs.map((doc) => doc.id).toList();
-
-      // 各いいねした投稿に対応する 'user_post' コレクションからデータを取得
-      List<Map<String, dynamic>> dataList = [];
-
-      await Future.forEach(likedPostIds, (documentId) async {
-        DocumentSnapshot postDocument =
-            await firestore.collection('user_post').doc(documentId).get();
-
-        if (postDocument.exists) {
-          Map<String, dynamic> data =
-              postDocument.data() as Map<String, dynamic>;
-          data['documentId'] = documentId;
-
-          // 投稿のユーザー名を取得
-          await checkUserIdInUsersCollection(data['user_id'], data);
-
-          dataList.add(data);
-        }
-      });
-
-      setState(() {
-        documentList = dataList;
-      });
-
-      print('ドキュメント数: ${documentList.length}');
-
-      // 各投稿のいいねの状態を読み込む
-      loadLikedStates();
-    } catch (e) {
-      print('いいねした投稿を取得中にエラーが発生しました: $e');
     }
   }
 
@@ -306,6 +304,17 @@ class BookmarkScreenState extends State<MyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(LineIcons.bars), // ハンバーガーアイコン
+              onPressed: () {
+                Scaffold.of(context).openDrawer(); // ハンバーガーボタンが押された時にDrawerを開く
+              },
+            );
+          },
+        ),
+
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -813,7 +822,7 @@ class BookmarkScreenState extends State<MyPage> {
                           'user ID: ${documentData['user_id']}',
                           style: TextStyle(
                             fontSize: 17,
-                            color: Colors.grey,
+                            color: Color.fromARGB(255, 67, 16, 16),
                           ),
                         ),
                       ],
